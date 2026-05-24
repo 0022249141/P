@@ -1,20 +1,22 @@
+"""Institutional Displacement scoring engine."""
 import pandas as pd
 import numpy as np
 
+
 class DisplacementEngine:
-    """
-    Layer 4 — Institutional Displacement scoring.
+    """Layer 4 — Institutional Displacement scoring.
+
     Uses body/range, volume anomaly, range/ATR, and wick penalty.
     """
+
     def __init__(self, market_engine):
+        """Initialize displacement engine."""
         self.mkt = market_engine
         self.df = market_engine.df.copy()
         self.df['displacement_score'] = np.nan
 
     def score_all(self):
-        """
-        Compute displacement score for every candle.
-        """
+        """Compute displacement score for every candle."""
         for i in range(len(self.df)):
             if pd.isna(self.df['ATR14'].iloc[i]):
                 continue
@@ -49,12 +51,14 @@ class DisplacementEngine:
             wick_penalty = 1 - (upper_wick + lower_wick) / 2
 
             # Composite score
-            score = (0.35 * body_ratio + 0.30 * vol_ratio + 0.25 * range_atr + 0.10 * wick_penalty)
+            score = (0.35 * body_ratio + 0.30 * vol_ratio +
+                     0.25 * range_atr + 0.10 * wick_penalty)
             score = min(score, 1.0)
 
             if score > 0.55:  # minimum to be considered
                 self.df.loc[self.df.index[i], 'displacement_score'] = score
 
     def get_score(self, idx: int) -> float:
+        """Get displacement score for a candle."""
         val = self.df['displacement_score'].iloc[idx]
         return val if not pd.isna(val) else 0.0

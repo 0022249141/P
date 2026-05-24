@@ -1,20 +1,19 @@
+"""Session classification - Assign trading sessions to timestamps."""
 import pandas as pd
 from pathlib import Path
 
 DATA = Path("data_features")
 
 def classify(hour):
-
+    """Classify hour into trading session."""
     if 0 <= hour < 7:
         return "asia"
-
-    elif 7 <= hour < 13:
+    if 7 <= hour < 13:
         return "london"
-
     return "newyork"
 
 def main():
-
+    """Process all CSV files and add session classification."""
     for file in DATA.glob("*.csv"):
 
         df = pd.read_csv(file)

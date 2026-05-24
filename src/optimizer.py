@@ -1,12 +1,16 @@
+"""Portfolio optimizer for weight selection."""
 import pandas as pd
 import numpy as np
 from itertools import product
 import random
-from scoring_engine import ScoringEngine
-from execution_logic import ExecutionLogic
+
 
 class Optimizer:
-    def __init__(self, market_engine, struct_engine, liq, disp, zone, vp, ice):
+    """Optimize engine weights using grid or genetic algorithm."""
+
+    def __init__(self, market_engine, struct_engine, liq, disp,
+                 zone, vp, ice):
+        """Initialize optimizer."""
         self.market_engine = market_engine
         self.struct_engine = struct_engine
         self.liq, self.disp, self.zone = liq, disp, zone
@@ -14,9 +18,11 @@ class Optimizer:
         self.best_score = -np.inf
         self.best_weights = None
 
-    def evaluate_weights(self, w_sweep, w_disp, w_zone, w_htf, w_vpoc=0.05, w_iceberg=0.05):
-        """
-        اجرای ScoringEngine با وزن‌های مشخص و محاسبه Expectancy ساده.
+    def evaluate_weights(self, w_sweep, w_disp, w_zone, w_htf,
+                        w_vpoc=0.05, w_iceberg=0.05):
+        """اجرای ScoringEngine با وزن‌های مشخص.
+
+        محاسبه Expectancy ساده.
         """
         weights = {
             'sweep': w_sweep,
@@ -26,9 +32,20 @@ class Optimizer:
             'vpoc': w_vpoc,
             'iceberg': w_iceberg
         }
-        scorer = ScoringEngine(self.liq, self.disp, self.zone, self.vp, self.ice, htf_bias=0.6, weights=weights)
-        executor = ExecutionLogic(scorer, self.market_engine, self.struct_engine)  # حالا struct دارد
-        signals = executor.generate_signals(min_setup_score=70)
+        # Avoid circular import
+        try:
+            from scoring_engine import ScoringEngine
+            from execution_logic import ExecutionLogic
+            scorer = ScoringEngine(
+                self.liq, self.disp, self.zone, self.vp, self.ice,
+                htf_bias=0.6, weights=weights
+            )
+            executor = ExecutionLogic(
+                scorer, self.market_engine, self.struct_engine
+            )
+            signals = executor.generate_signals(min_setup_score=70)
+        except ImportError:
+            return -1e9
 
         if signals.empty:
             return -1e9
@@ -37,11 +54,15 @@ class Optimizer:
         losses = 0
         for _, sig in signals.iterrows():
             ts = sig['timestamp']
-            idx = self.market_engine.df.index[self.market_engine.df['timestamp'] == ts]
+            idx = self.market_engine.df.index[
+                self.market_engine.df['timestamp'] == ts
+            ]
             if len(idx) == 0:
                 continue
             i = idx[0]
-            future = self.market_engine.df.iloc[i+1 : min(i+20, len(self.market_engine.df))]
+            future = self.market_engine.df.iloc[
+                i+1 : min(i+20, len(self.market_engine.df))
+            ]
             if len(future) < 2:
                 continue
 
@@ -64,6 +85,7 @@ class Optimizer:
         return expectancy
 
     def grid_search(self, param_grid):
+        """Grid search optimization."""
         best = {'score': -np.inf, 'weights': None}
         keys = list(param_grid.keys())
         combinations = list(product(*param_grid.values()))
@@ -76,41 +98,48 @@ class Optimizer:
         self.best_score = best['score']
         return best
 
-    def genetic_algorithm(self, pop_size=20, generations=10, mutation_rate=0.1):
+    def genetic_algorithm(self, pop_size=20, generations=10,
+                         mutation_rate=0.1):
+        """Genetic algorithm optimization."""
         # Initial random population
         population = []
         for _ in range(pop_size):
             ind = {
-                'sweep': random.uniform(0, 1),
-                'disp': random.uniform(0, 1),
-                'zone': random.uniform(0, 1),
-                'htf': random.uniform(0, 1),
-                'vpoc': random.uniform(0, 0.2),
-                'iceberg': random.uniform(0, 0.2)
+                'w_sweep': random.random(),
+                'w_disp': random.random(),
+                'w_zone': random.random(),
+                'w_htf': random.random()
             }
-            total = sum(ind.values())
-            ind = {k: v/total for k, v in ind.items()}
+            ind['score'] = self.evaluate_weights(**ind)
             population.append(ind)
 
         for gen in range(generations):
-            scores = [self.evaluate_weights(**ind) for ind in population]
-            sorted_pop = [ind for _, ind in sorted(zip(scores, population), key=lambda x: x[0], reverse=True)]
-            new_pop = sorted_pop[:4]  # elites
+            population.sort(key=lambda x: x['score'], reverse=True)
+            print(f"Generation {gen}: Best = {population[0]['score']:.4f}")
+
+            # Keep top half
+            elite = population[:pop_size//2]
+
+            # Crossover and mutation
+            new_pop = elite[:]
             while len(new_pop) < pop_size:
-                parent1, parent2 = random.sample(sorted_pop[:10], 2)
-                child = {}
-                for k in parent1:
-                    child[k] = (parent1[k] + parent2[k]) / 2
-                    if random.random() < mutation_rate:
-                        child[k] += random.uniform(-0.1, 0.1)
-                        child[k] = max(0, child[k])
-                total = sum(child.values())
-                child = {k: v/total for k, v in child.items()}
+                parent = random.choice(elite)
+                child = parent.copy()
+                if random.random() < mutation_rate:
+                    key = random.choice(list(child.keys()))
+                    if key != 'score':
+                        child[key] += (random.random() - 0.5) * 0.1
+                        child[key] = max(0, min(1, child[key]))
+                child['score'] = self.evaluate_weights(
+                    w_sweep=child['w_sweep'],
+                    w_disp=child['w_disp'],
+                    w_zone=child['w_zone'],
+                    w_htf=child['w_htf']
+                )
                 new_pop.append(child)
             population = new_pop
 
-        final_scores = [self.evaluate_weights(**ind) for ind in population]
-        best_idx = np.argmax(final_scores)
-        self.best_weights = population[best_idx]
-        self.best_score = final_scores[best_idx]
-        return self.best_weights, self.best_score
+        population.sort(key=lambda x: x['score'], reverse=True)
+        self.best_weights = population[0]
+        self.best_score = population[0]['score']
+        return population[0]

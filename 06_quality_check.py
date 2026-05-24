@@ -1,3 +1,4 @@
+"""Quality check - Run all pipeline steps."""
 import subprocess
 
 steps = [
@@ -9,9 +10,8 @@ steps = [
 ]
 
 for s in steps:
-
     print(f"\nRUNNING {s}\n")
-
     subprocess.run(
-        ["python", f"institutional_pipeline/{s}"]
+        ["python", f"institutional_pipeline/{s}"],
+        check=True
     )
