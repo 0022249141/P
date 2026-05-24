@@ -1,19 +1,21 @@
+"""Execution logic and signal generation."""
 import pandas as pd
 
+
 class ExecutionLogic:
-    """
-    Layer 7 — Execution & Risk Management
+    """Layer 7 — Execution & Risk Management.
+
     Generates structured signals for the backtest engine.
     """
+
     def __init__(self, scoring_engine, market_engine, struct_engine):
+        """Initialize execution logic."""
         self.scoring = scoring_engine
         self.mkt = market_engine
         self.struct = struct_engine
 
     def generate_signals(self, min_setup_score=70):
-        """
-        Scans all candles and returns a DataFrame of trade signals.
-        """
+        """Scan all candles and return a DataFrame of trade signals."""
         signals = []
         df = self.mkt.df
 
@@ -31,7 +33,8 @@ class ExecutionLogic:
             # Entry: at the close of the signal candle
             entry = df['close'].iloc[idx]
 
-            # Stop Loss: last swing low (for BUY) or swing high (for SELL) with ATR buffer
+            # Stop Loss: last swing low (for BUY) or swing high (for SELL)
+            # with ATR buffer
             if direction == 'BUY':
                 valid_lows = self.struct.df['swing_low'].iloc[:idx].dropna()
                 if not valid_lows.empty:

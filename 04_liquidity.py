@@ -1,3 +1,4 @@
+"""Liquidity analysis - Detect equal highs and lows in market data."""
 import pandas as pd
 from pathlib import Path
 
@@ -6,7 +7,7 @@ DATA = Path("data_features")
 THRESHOLD = 0.0005
 
 def liquidity(df):
-
+    """Detect equal highs and lows in price data."""
     df["equal_highs"] = False
     df["equal_lows"] = False
 
@@ -27,7 +28,7 @@ def liquidity(df):
     return df
 
 def main():
-
+    """Process all CSV files and add liquidity features."""
     for file in DATA.glob("*.csv"):
 
         df = pd.read_csv(file)
