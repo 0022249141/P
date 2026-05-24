@@ -1,3 +1,4 @@
+# Python
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -5,3 +6,18 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+# Visual Studio
+.vs/
+
+# Environment
+venv/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# داده‌ها (اگر نمی‌خواهید روی گیت‌هاب باشند، کامنت را بردارید)
+# data/*.csv
