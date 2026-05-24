@@ -1,49 +1,101 @@
 import pandas as pd
 from pathlib import Path
 
+# =========================
+# PATHS
+# =========================
 SRC = Path("data_clean")
 OUT = Path("data_features")
-
 OUT.mkdir(exist_ok=True)
 
+# =========================
+# TIMEFRAME STANDARD (INSTITUTIONAL)
+# =========================
 TIMEFRAMES = {
-    "5T": "5m",
-    "15T": "15m",
-    "1H": "1h",
-    "4H": "4h",
-    "1D": "1d"
+    "5min": "5min",
+    "15min": "15min",
+    "30min": "30min",
+    "60min": "60min",
+    "240min": "240min",
+    "1D": "1D",
+    "1W": "1W",
+    "1M": "1M"
 }
 
-def resample_file(file):
+# =========================
+# VALIDATION LAYER
+# =========================
+def validate_df(df: pd.DataFrame):
+    required_cols = {"open", "high", "low", "close", "volume"}
+
+    if df.empty:
+        raise ValueError("Empty dataframe")
+
+    if not required_cols.issubset(df.columns):
+        raise ValueError(f"Missing columns: {required_cols - set(df.columns)}")
+
+    if df.isna().sum().sum() > 0:
+        df = df.dropna()
+
+    return df
+
+
+# =========================
+# RESAMPLE ENGINE
+# =========================
+def resample_engine(df: pd.DataFrame, rule: str):
+
+    # ensure datetime index
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    df = df.set_index("timestamp").sort_index()
+
+    # core resample (institutional OHLCV logic)
+    r = df.resample(rule).agg({
+        "open": "first",
+        "high": "max",
+        "low": "min",
+        "close": "last",
+        "volume": "sum"
+    })
+
+    # remove incomplete candles
+    r = r.dropna()
+
+    return r
+
+
+# =========================
+# PIPELINE PER FILE
+# =========================
+def process_file(file: Path):
 
     df = pd.read_csv(file)
+    df = validate_df(df)
 
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    for tf_name, rule in TIMEFRAMES.items():
 
-    df = df.set_index("timestamp")
+        r = resample_engine(df.copy(), rule)
 
-    for tf, name in TIMEFRAMES.items():
+        out_name = f"{file.stem}_{tf_name}.csv"
+        out_path = OUT / out_name
 
-        r = df.resample(tf).agg({
-            "open": "first",
-            "high": "max",
-            "low": "min",
-            "close": "last",
-            "volume": "sum"
-        })
+        r.to_csv(out_path)
 
-        r = r.dropna()
+        print(f"[OK] {out_name} -> {r.shape}")
 
-        out = OUT / f"{file.stem}_{name}.csv"
 
-        r.to_csv(out)
-
-        print("RESAMPLED:", out.name)
-
+# =========================
+# MAIN
+# =========================
 def main():
+    files = list(SRC.glob("*.csv"))
 
-    for file in SRC.glob("*-1.csv"):
-        resample_file(file)
+    if not files:
+        raise FileNotFoundError("No CSV files found in data_clean")
+
+    for file in files:
+        process_file(file)
+
 
 if __name__ == "__main__":
     main()
