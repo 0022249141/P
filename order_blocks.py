@@ -1,0 +1,169 @@
+# 08_order_blocks.py — تشخیص Order Block (بلوک سفارش)
+# نسخه ۱.۰ — سازگار با چارچوب SMC/ICT
+# خروجی: ستون‌های ob_bull, ob_bear, ob_body_pct, ob_status, ob_mitigation_price
+
+import pandas as pd
+import numpy as np
+from pathlib import Path
+
+# -------------------------------------------------------------------
+# حداقل اندازه بدنه (درصدی از قیمت باز شدن) — قابل تنظیم
+# -------------------------------------------------------------------
+OB_MIN_BODY_PCT = {
+    "AbshodeNaghdi": 0.0020,   # ۰.۲۰٪
+    "HaratUSD":      0.0015,   # ۰.۱۵٪
+    "XAUUSD":        0.0020,   # ۰.۲۰٪
+}
+
+# -------------------------------------------------------------------
+# تابع کمکی: تشخیص BOS (بدون وابستگی به کلاس StructureEngine)
+# -------------------------------------------------------------------
+def detect_bos(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    اضافه کردن ستون‌های boolean به DataFrame:
+      - bullish_bos: کندل فعلی یک BOS صعودی است (Close > آخرین Swing High)
+      - bearish_bos: کندل فعلی یک BOS نزولی است (Close < آخرین Swing Low)
+    """
+    df = df.copy()
+    n = len(df)
+
+    # ستون‌های جدید
+    df['bullish_bos'] = False
+    df['bearish_bos'] = False
+
+    # نیاز به Swing ها دارد — اگر وجود نداشته باشند با High/Low ساده پیش می‌رویم
+    if 'swing_high' in df.columns and 'swing_low' in df.columns:
+        # استفاده از swing_high/swing_low قبلی (ffill برای آخرین مقدار معتبر)
+        last_sh = df['swing_high'].fillna(method='ffill')
+        last_sl = df['swing_low'].fillna(method='ffill')
+    else:
+        # جایگزین: استفاده از rolling max/min به‌عنوان Swing (ساده‌سازی)
+        window = 5
+        last_sh = df['high'].rolling(window=window, min_periods=1).max().shift(1)
+        last_sl = df['low'].rolling(window=window, min_periods=1).min().shift(1)
+
+    # BOS صعودی: Close کندل فعلی > آخرین Swing High
+    df['bullish_bos'] = (df['close'] > last_sh) & (df['close'].shift(1) <= last_sh.shift(1))
+    # BOS نزولی: Close کندل فعلی < آخرین Swing Low
+    df['bearish_bos'] = (df['close'] < last_sl) & (df['close'].shift(1) >= last_sl.shift(1))
+
+    return df
+
+# -------------------------------------------------------------------
+# تابع اصلی تشخیص Order Block
+# -------------------------------------------------------------------
+def detect_order_blocks(df: pd.DataFrame, market_name: str) -> pd.DataFrame:
+    """
+    تشخیص Order Block (بلوک سفارش) و افزودن ستون‌های زیر:
+      - ob_bull: قیمت OB صعودی (عدد) یا NaN
+      - ob_bear: قیمت OB نزولی (عدد) یا NaN
+      - ob_body_pct: اندازه بدنه OB (درصد)
+      - ob_status: وضعیت (Valid / Mitigated / Breached)
+      - ob_mitigation_price: قیمتی که OB را Mitigated کرده (در صورت وقوع)
+
+    خروجی: همان DataFrame به‌همراه ستون‌های جدید
+    """
+    df = df.copy()
+    n = len(df)
+
+    # ستون‌های خروجی
+    df['ob_bull'] = np.nan
+    df['ob_bear'] = np.nan
+    df['ob_body_pct'] = np.nan
+    df['ob_status'] = ''
+    df['ob_mitigation_price'] = np.nan
+
+    # تشخیص BOS
+    df = detect_bos(df)
+
+    # حداقل بدنه (درصد)
+    min_body_pct = OB_MIN_BODY_PCT.get(market_name, 0.0020)
+
+    # پویش کندل‌ها برای تشخیص OB
+    for i in range(1, n):
+        if df['bullish_bos'].iloc[i]:
+            # BOS صعودی: به دنبال آخرین کندل نزولی قبل از این کندل می‌گردیم
+            for j in range(i - 1, -1, -1):
+                # کندل نزولی: Close < Open
+                if df['close'].iloc[j] < df['open'].iloc[j]:
+                    body_pct = abs(df['close'].iloc[j] - df['open'].iloc[j]) / df['open'].iloc[j]
+                    if body_pct >= min_body_pct:
+                        # OB معتبر
+                        df.loc[df.index[j], 'ob_bull'] = df['close'].iloc[j]   # قیمت OB = Close کندل
+                        df.loc[df.index[j], 'ob_body_pct'] = body_pct
+                        df.loc[df.index[j], 'ob_status'] = 'Valid'
+                        break  # فقط اولین کندل نزولی قبل از BOS
+
+        elif df['bearish_bos'].iloc[i]:
+            # BOS نزولی: آخرین کندل صعودی قبل از آن
+            for j in range(i - 1, -1, -1):
+                if df['close'].iloc[j] > df['open'].iloc[j]:
+                    body_pct = abs(df['close'].iloc[j] - df['open'].iloc[j]) / df['open'].iloc[j]
+                    if body_pct >= min_body_pct:
+                        df.loc[df.index[j], 'ob_bear'] = df['close'].iloc[j]
+                        df.loc[df.index[j], 'ob_body_pct'] = body_pct
+                        df.loc[df.index[j], 'ob_status'] = 'Valid'
+                        break
+
+    # -------------------------------------------------------------------
+    # به‌روزرسانی وضعیت OB (Mitigated / Breached) با نگاه به آینده
+    # -------------------------------------------------------------------
+    for i in range(n):
+        status = df['ob_status'].iloc[i]
+        if status == 'Valid':
+            # OB صعودی: محدوده = high تا low همان کندل
+            if pd.notna(df['ob_bull'].iloc[i]):
+                ob_high = df['high'].iloc[i]
+                ob_low  = df['low'].iloc[i]
+                for j in range(i + 1, n):
+                    # اگر قیمت به محدوده OB برخورد کند
+                    if df['low'].iloc[j] <= ob_high and df['high'].iloc[j] >= ob_low:
+                        # اگر قیمت کاملاً از محدوده عبور کند → Breached
+                        if (df['close'].iloc[j] < ob_low):   # برای OB صعودی، Breached یعنی بسته‌شدن زیر Low
+                            df.loc[df.index[i], 'ob_status'] = 'Breached'
+                            df.loc[df.index[i], 'ob_mitigation_price'] = df['close'].iloc[j]
+                            break
+                        else:
+                            # Mitigated: وارد شده ولی Breach نشده
+                            df.loc[df.index[i], 'ob_status'] = 'Mitigated'
+                            df.loc[df.index[i], 'ob_mitigation_price'] = df['close'].iloc[j]
+                            # ادامه می‌دهیم شاید بعداً Breach شود
+            # OB نزولی
+            elif pd.notna(df['ob_bear'].iloc[i]):
+                ob_high = df['high'].iloc[i]
+                ob_low  = df['low'].iloc[i]
+                for j in range(i + 1, n):
+                    if df['low'].iloc[j] <= ob_high and df['high'].iloc[j] >= ob_low:
+                        # Breached اگر Close بالای High برود
+                        if df['close'].iloc[j] > ob_high:
+                            df.loc[df.index[i], 'ob_status'] = 'Breached'
+                            df.loc[df.index[i], 'ob_mitigation_price'] = df['close'].iloc[j]
+                            break
+                        else:
+                            df.loc[df.index[i], 'ob_status'] = 'Mitigated'
+                            df.loc[df.index[i], 'ob_mitigation_price'] = df['close'].iloc[j]
+
+    return df
+
+
+# -------------------------------------------------------------------
+# اجرای مستقل (اختیاری)
+# -------------------------------------------------------------------
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="تشخیص Order Block در داده‌های OHLCV")
+    parser.add_argument("input", help="مسیر فایل CSV ورودی")
+    parser.add_argument("--market", default="XAUUSD", help="نام بازار (AbshodeNaghdi, HaratUSD, XAUUSD)")
+    parser.add_argument("--output", default="output_ob.csv", help="مسیر فایل خروجی")
+    args = parser.parse_args()
+
+    df = pd.read_csv(args.input)
+    if 'timestamp' in df.columns:
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+    result = detect_order_blocks(df, args.market)
+
+    result.to_csv(args.output, index=False)
+    print(f"✅ Order Block‌ها در {args.output} ذخیره شدند.")
+    print(f"   OB صعودی: {result['ob_bull'].notna().sum()} | OB نزولی: {result['ob_bear'].notna().sum()}")

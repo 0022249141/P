@@ -1,59 +1,35 @@
+# 01_fix_data.py — نسخهٔ جدید با اعتبارسنجی کامل
 import pandas as pd
-from pathlib import Path
+import numpy as np
 
-RAW = Path("data")
-CLEAN = Path("data_clean")
+def validate_ohlc(df: pd.DataFrame) -> pd.DataFrame:
+    """اصلاح و حذف کندل‌های نامعتبر"""
+    # ۱. High باید بزرگترین و Low کوچکترین باشد
+    valid_high = (df['high'] >= df[['open', 'close']].max(axis=1))
+    valid_low  = (df['low']  <= df[['open', 'close']].min(axis=1))
+    valid_range = df['high'] >= df['low']
+    df = df[valid_high & valid_low & valid_range].copy()
 
-CLEAN.mkdir(exist_ok=True)
+    # ۲. حذف اسپایک‌ها (دامنه > ۵ برابر ATR قبلی)
+    atr = df['high'] - df['low']  # True Range ساده
+    atr_rolling = atr.rolling(14).mean()
+    spike_mask = atr <= 5 * atr_rolling.shift(1)
+    df = df[spike_mask]
 
-def clean_file(file):
+    # ۳. تشخیص گپ زمانی غیرعادی (برای تایم‌فریم‌های ثابت)
+    if 'timestamp' in df.columns:
+        time_diff = df['timestamp'].diff()
+        # اگر اختلاف بیش از ۱.۵ برابر تایم‌فریم معمول باشد، هشدار می‌دهد ولی حذف نمی‌کند
+        typical = time_diff.median()
+        gaps = time_diff > 1.5 * typical
+        if gaps.any():
+            print(f"⚠️ {gaps.sum()} گپ زمانی غیرعادی پیدا شد (ممکن است داده گم شده باشد).")
 
-    df = pd.read_csv(file, header=None)
+    return df
 
-    df.columns = [
-        "date",
-        "time",
-        "open",
-        "high",
-        "low",
-        "close",
-        "volume"
-    ]
-
-    df["timestamp"] = pd.to_datetime(
-        df["date"].astype(str) + " " + df["time"].astype(str),
-        errors="coerce"
-    )
-
-    df = df.dropna()
-
-    numeric = ["open","high","low","close","volume"]
-
-    for col in numeric:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-
-    df = df.dropna()
-
-    df = df.sort_values("timestamp")
-
-    df = df[
-        ["timestamp","open","high","low","close","volume"]
-    ]
-
-    out = CLEAN / file.name
-
-    df.to_csv(out, index=False)
-
-    print("CLEANED:", file.name)
-
-def main():
-
-    for file in RAW.glob("*.csv"):
-
-        if "signals" in file.name:
-            continue
-
-        clean_file(file)
-
+# ---------- مثال استفاده ----------
 if __name__ == "__main__":
-    main()
+    # خواندن فایل خام و ذخیرهٔ تمیز
+    raw = pd.read_csv("data/XAU_USD-15.csv")
+    clean = validate_ohlc(raw)
+    clean.to_csv("data_clean/XAU_USD-15_clean.csv", index=False)

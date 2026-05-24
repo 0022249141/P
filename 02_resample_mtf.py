@@ -1,101 +1,32 @@
+# 02_resample_mtf.py — نسخهٔ جدید با فیلتر سشن
 import pandas as pd
 from pathlib import Path
 
-# =========================
-# PATHS
-# =========================
-SRC = Path("data_clean")
-OUT = Path("data_features")
-OUT.mkdir(exist_ok=True)
-
-# =========================
-# TIMEFRAME STANDARD (INSTITUTIONAL)
-# =========================
-TIMEFRAMES = {
-    "5min": "5min",
-    "15min": "15min",
-    "30min": "30min",
-    "60min": "60min",
-    "240min": "240min",
-    "1D": "1D",
-    "1W": "1W",
-    "1M": "1M"
-}
-
-# =========================
-# VALIDATION LAYER
-# =========================
-def validate_df(df: pd.DataFrame):
-    required_cols = {"open", "high", "low", "close", "volume"}
-
-    if df.empty:
-        raise ValueError("Empty dataframe")
-
-    if not required_cols.issubset(df.columns):
-        raise ValueError(f"Missing columns: {required_cols - set(df.columns)}")
-
-    if df.isna().sum().sum() > 0:
-        df = df.dropna()
-
-    return df
-
-
-# =========================
-# RESAMPLE ENGINE
-# =========================
-def resample_engine(df: pd.DataFrame, rule: str):
-
-    # ensure datetime index
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
-    df = df.set_index("timestamp").sort_index()
-
-    # core resample (institutional OHLCV logic)
-    r = df.resample(rule).agg({
-        "open": "first",
-        "high": "max",
-        "low": "min",
-        "close": "last",
-        "volume": "sum"
-    })
-
-    # remove incomplete candles
-    r = r.dropna()
-
-    return r
-
-
-# =========================
-# PIPELINE PER FILE
-# =========================
-def process_file(file: Path):
-
+def resample_file(file: Path, market_name: str):
     df = pd.read_csv(file)
-    df = validate_df(df)
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    df = df.set_index("timestamp")
 
-    for tf_name, rule in TIMEFRAMES.items():
+    # ----- فیلتر سشن تهران -----
+    if market_name in ["AbshodeNaghdi", "HaratUSD"]:
+        # تنظیم timezone
+        df.index = df.index.tz_localize('Asia/Tehran')
+        # نگهداشتن فقط ساعات ۹ تا ۲۲
+        df = df.between_time('09:00', '22:00')
+    # ---------------------------
 
-        r = resample_engine(df.copy(), rule)
+    # نقشه تایم‌فریم‌ها (همان‌طور که از market_params می‌آید)
+    from market_params import TIMEFRAMES_BY_MARKET
+    rules = TIMEFRAMES_BY_MARKET[market_name]["rules"]
 
-        out_name = f"{file.stem}_{tf_name}.csv"
-        out_path = OUT / out_name
-
-        r.to_csv(out_path)
-
-        print(f"[OK] {out_name} -> {r.shape}")
-
-
-# =========================
-# MAIN
-# =========================
-def main():
-    files = list(SRC.glob("*.csv"))
-
-    if not files:
-        raise FileNotFoundError("No CSV files found in data_clean")
-
-    for file in files:
-        process_file(file)
-
-
-if __name__ == "__main__":
-    main()
+    for tf_code, tf_name in rules.items():
+        r = df.resample(tf_code).agg({
+            "open": "first",
+            "high": "max",
+            "low": "min",
+            "close": "last",
+            "volume": "sum",
+        })
+        r = r.dropna()
+        print(f"RESAMPLED [{market_name}]: {tf_name} -> {r.shape}")
+        yield tf_name, r

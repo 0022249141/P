@@ -1,86 +1,42 @@
-"""Structural analysis engine."""
+# 03_structure.py — نسخهٔ برداری برای Swing Detection
 import pandas as pd
 import numpy as np
 
-
 class StructuralEngine:
-    """Layer 2 — Structural analysis with swing strength.
-
-    Repaint-free implementation.
-    """
-
-    def __init__(self, market_engine):
-        """Initialize structural engine."""
+    def __init__(self, market_engine, market_name: str = "XAUUSD"):
         self.mkt = market_engine
         self.df = market_engine.df.copy()
-        # Ensure swing columns exist from the start
-        self.df['swing_high'] = np.nan
-        self.df['swing_low'] = np.nan
+        self.market_name = market_name
 
-    def detect_swings(self, window: int = 5,
-                     min_strength: float = 0.8):
-        """Detect swing highs and lows using relative strength.
-
-        Uses ATR-based strength calculation. No repaint: uses a
-        centered window.
-        """
-        # Redundant safety check
         if 'swing_high' not in self.df.columns:
             self.df['swing_high'] = np.nan
         if 'swing_low' not in self.df.columns:
             self.df['swing_low'] = np.nan
 
-        for i in range(window, len(self.df) - window):
-            high = self.df['high'].iloc[i]
-            low = self.df['low'].iloc[i]
-            atr = self.df['ATR14'].iloc[i]
-            if atr == 0:
-                continue
+    def detect_swings(self, window: int = 5):
+        """تشخیص سوئینگ به‌صورت برداری (بدون حلقه)"""
+        df = self.df
+        high = df['high']
+        low  = df['low']
+        atr  = df['ATR14']
+        avg_atr = atr.mean()
 
-            # Strength relative to preceding range
-            power_high = (
-                high - np.min(self.df['low'].iloc[i - window : i])
-            ) / atr
-            power_low = (
-                np.max(self.df['high'].iloc[i - window : i]) - low
-            ) / atr
+        # قدرت نوسان با rolling (نگاه به گذشته)
+        power_high = (high - low.rolling(window=window, min_periods=1).min().shift(1)) / atr
+        power_low  = (high.rolling(window=window, min_periods=1).max().shift(1) - low) / atr
 
-            is_high = high == np.max(
-                self.df['high'].iloc[i - window : i + window + 1]
-            )
-            is_low = low == np.min(
-                self.df['low'].iloc[i - window : i + window + 1]
-            )
+        # تشخیص اوج بودن: آیا high در ۲ کندل بعدی هم بالاترین است؟
+        # برای جلوگیری از نشت آینده، فقط با دو کندل بعدی چک می‌کنیم
+        future_max_high = high.shift(-1).rolling(2).max()  # حداکثر دو کندل آینده
+        is_high = (high > high.shift(window).rolling(window).max()) & (high >= future_max_high)
+        is_low  = (low < low.shift(window).rolling(window).min()) & (low <= low.shift(-1).rolling(2).min())
 
-            if is_high and power_high >= min_strength:
-                self.df.loc[self.df.index[i], 'swing_high'] = high
-            if is_low and power_low >= min_strength:
-                self.df.loc[self.df.index[i], 'swing_low'] = low
+        # آستانه تطبیقی
+        dynamic_strength = np.clip(0.8 + 0.5 * (atr / avg_atr), 0.8, 1.5)
 
-    def is_bos(self, idx: int, direction: str) -> bool:
-        """Check Break of Structure with penetration buffer.
+        # اعمال
+        mask_high = is_high & (power_high >= dynamic_strength)
+        mask_low  = is_low  & (power_low  >= dynamic_strength)
 
-        Args:
-            idx: Candle index
-            direction: 'bullish' (break above last swing high) or
-                      'bearish'
-
-        Returns:
-            True if BOS detected
-        """
-        if direction == 'bullish':
-            valid_sh = self.df['swing_high'].dropna()
-            if valid_sh.empty:
-                return False
-            last_sh = valid_sh.iloc[-1]
-            close = self.df['close'].iloc[idx]
-            atr = self.df['ATR14'].iloc[idx]
-            return close > last_sh and (close - last_sh) > 0.1 * atr
-        # bearish
-        valid_sl = self.df['swing_low'].dropna()
-        if valid_sl.empty:
-            return False
-        last_sl = valid_sl.iloc[-1]
-        close = self.df['close'].iloc[idx]
-        atr = self.df['ATR14'].iloc[idx]
-        return close < last_sl and (last_sl - close) > 0.1 * atr
+        df.loc[mask_high, 'swing_high'] = high[mask_high]
+        df.loc[mask_low,  'swing_low']  = low[mask_low]

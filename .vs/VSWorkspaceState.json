@@ -1,6 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\tests"
   ],
+  "SelectedNode": "\\tests\\quick_test.py",
   "PreviewInSolutionExplorer": false
 }
