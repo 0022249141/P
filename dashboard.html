@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ترمینال زنده معاملاتی</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0f14;color:#d8dee9;font-family:'Vazirmatn',sans-serif;overflow:hidden}
+.wrapper{display:grid;grid-template-columns:260px 1fr 320px;height:100vh}
+.panel{background:#0f141b;border-left:1px solid #1a212c;padding:22px}
+.left{border:none}
+.center{display:flex;flex-direction:column}
+.logo{font-size:20px;font-weight:700;color:#fff;margin-bottom:35px}
+.logo span{color:#00c896}
+.section{margin-bottom:32px}
+.section-title{font-size:11px;text-transform:uppercase;color:#6b7785;margin-bottom:14px;letter-spacing:1px}
+.metric{margin-bottom:18px}
+.metric-label{font-size:13px;color:#8b96a5;margin-bottom:6px}
+.metric-value{font-size:18px;font-weight:600}
+.bull{color:#00c896}
+.bear{color:#ff4d6d}
+.topbar{height:68px;border-bottom:1px solid #1a212c;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#0d1218}
+.market-selector{display:flex;gap:20px}
+.market-btn{background:#1a212c;color:#8b96a5;border:1px solid #2a3441;padding:8px 16px;border-radius:8px;cursor:pointer;font-family:'Vazirmatn';font-size:14px;transition:all 0.3s}
+.market-btn.active{background:#00c896;color:#0b0f14;border-color:#00c896}
+.price-display{font-size:28px;font-weight:700;color:#00c896}
+.chart-container{flex:1;padding:20px;position:relative}
+.terminal{height:170px;border-top:1px solid #1a212c;background:#0c1015;padding:18px;overflow:auto;font-size:13px;line-height:1.8;color:#93a1b2}
+.card{background:#121821;border:1px solid #1c2430;border-radius:12px;padding:18px;margin-bottom:18px}
+.card-title{font-size:12px;color:#7f8a99;margin-bottom:10px;text-transform:uppercase}
+.card-value{font-size:28px;font-weight:700}
+@media(max-width:1100px){body{overflow:auto}.wrapper{grid-template-columns:1fr;height:auto}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+ <div class="panel left">
+  <div class="logo">QUANT<span>SMC</span></div>
+  <div class="section">
+   <div class="section-title">بازارها</div>
+   <div class="market-selector">
+    <button class="market-btn active" onclick="switchMarket('xauusd')">انس طلا</button>
+    <button class="market-btn" onclick="switchMarket('abshode')">آبشده</button>
+   </div>
+  </div>
+  <div class="section">
+   <div class="section-title">داده‌های زنده</div>
+   <div class="metric"><div class="metric-label">قیمت فعلی</div><div class="price-display" id="price">---</div></div>
+   <div class="metric"><div class="metric-label">تغییرات</div><div class="metric-value" id="change">---</div></div>
+   <div class="metric"><div class="metric-label">بیشترین روز</div><div class="metric-value" id="high">---</div></div>
+   <div class="metric"><div class="metric-label">کمترین روز</div><div class="metric-value" id="low">---</div></div>
+  </div>
+ </div>
+ <div class="center">
+  <div class="topbar">
+   <div class="market">
+    <span style="font-size:24px;font-weight:700" id="market-title">انس طلا</span>
+   </div>
+  </div>
+  <div class="chart-container"><canvas id="chart"></canvas></div>
+  <div class="terminal" id="terminal">
+   <div>آماده دریافت داده‌های زنده...</div>
+  </div>
+ </div>
+</div>
+
+<script>
+// ===================== تنظیمات اولیه =====================
+let currentMarket = 'xauusd';
+let labels = [];
+let prices = [];
+let chart;
+
+// ===================== نمودار اولیه =====================
+const ctx = document.getElementById('chart');
+chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: [], datasets: [{ data: [], borderColor: '#00c896', borderWidth: 2, tension: 0.1, pointRadius: 0, fill: false }] },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { x: { display: false, grid: { color: '#18202b' } }, y: { ticks: { color: '#64748b' }, grid: { color: '#18202b' } } }
+    }
+});
+
+// ===================== دریافت داده زنده =====================
+async function fetchLiveData() {
+    try {
+        const response = await fetch('live_prices.json');
+        const data = await response.json();
+        const market = data[currentMarket];
+        if (!market) return;
+
+        // به‌روزرسانی المان‌ها
+        document.getElementById('price').innerText = market.price.toLocaleString('fa-IR');
+        document.getElementById('change').innerHTML = (market.change_pct >= 0 ? '<span class="bull">+' : '<span class="bear">') + market.change_pct + '٪</span>';
+        document.getElementById('high').innerText = market.high?.toLocaleString('fa-IR') || '---';
+        document.getElementById('low').innerText = market.low?.toLocaleString('fa-IR') || '---';
+
+        // به‌روزرسانی نمودار
+        if (labels.length > 60) { labels.shift(); prices.shift(); }
+        labels.push(new Date().toLocaleTimeString('fa-IR'));
+        prices.push(market.price);
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = prices;
+        chart.update();
+
+        // لاگ در ترمینال
+        const terminal = document.getElementById('terminal');
+        const log = document.createElement('div');
+        log.className = market.change_pct >= 0 ? 'log-buy' : 'log-sell';
+        log.innerText = `[${new Date().toLocaleTimeString('fa-IR')}] ${currentMarket === 'xauusd' ? 'انس' : 'آبشده'}: ${market.price.toLocaleString('fa-IR')} (${market.change_pct >= 0 ? '+' : ''}${market.change_pct}٪)`;
+        terminal.appendChild(log);
+        terminal.scrollTop = terminal.scrollHeight;
+
+    } catch (err) {
+        console.warn('منتظر فایل live_prices.json...');
+    }
+}
+
+// ===================== تعویض بازار =====================
+function switchMarket(market) {
+    currentMarket = market;
+    document.querySelectorAll('.market-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('market-title').innerText = market === 'xauusd' ? 'انس طلا' : 'آبشده نقدی';
+    event.target.classList.add('active');
+    // ریست نمودار
+    labels = []; prices = [];
+    chart.data.labels = []; chart.data.datasets[0].data = [];
+    chart.update();
+}
+
+// ===================== حلقهٔ به‌روزرسانی =====================
+setInterval(fetchLiveData, 3000);  // هر ۳ ثانیه
+fetchLiveData();  // اولین فراخوانی
+</script>
+</body>
+</html>
