@@ -19,5 +19,9 @@ venv/
 # Windows
 Thumbs.db
 
+# Output files
+output.txt
+all_output.txt
+
 # داده‌ها (اگر نمی‌خواهید روی گیت‌هاب باشند، کامنت را بردارید)
 # data/*.csv

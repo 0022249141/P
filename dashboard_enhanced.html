@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMC/RTM/LIQ Dashboard — تحلیل کمی سه بازار</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Vazirmatn:wght@300;400;500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0e1a;
+            --bg2: #0f1629;
+            --bg3: #141d2f;
+            --gold: #d4a574;
+            --gold-light: #e8c9a0;
+            --green: #26d07c;
+            --green-dark: #1a8e54;
+            --red: #ff6b6b;
+            --red-dark: #c92a2a;
+            --cyan: #14e5d6;
+            --cyan-dark: #0a9b8b;
+            --amber: #ffc107;
+            --border: rgba(212, 165, 116, 0.12);
+            --border-light: rgba(212, 165, 116, 0.06);
+            --text: #e0ddd4;
+            --text-muted: #a0a8b8;
+            --text-dim: #6a7a8f;
+            --font: 'Vazirmatn', sans-serif;
+            --mono: 'IBM Plex Mono', monospace;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .page-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 12px;
+            padding: 12px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* ═══ HEADER ═══ */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--bg2), var(--bg3));
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .logo-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 18px;
+        }
+
+        .logo-text h1 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 2px;
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            letter-spacing: 0.05em;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            padding: 6px 12px;
+            border: 1px solid rgba(20, 229, 214, 0.3);
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--cyan);
+        }
+
+        .pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            animation: pulse-anim 1.5s infinite;
+        }
+
+        @keyframes pulse-anim {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .clock {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* ═══ MAIN PANEL ═══ */
+        .main-panel {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 12px;
+            grid-column: 1;
+        }
+
+        /* ═══ PRICE HERO ═══ */
+        .hero-section {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            align-items: center;
+        }
+
+        .hero-price {
+            grid-column: 1 / 2;
+            text-align: center;
+            border-right: 1px solid var(--border-light);
+            padding-right: 16px;
+        }
+
+        .hero-symbol {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .hero-value {
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--gold);
+            font-family: var(--mono);
+            line-height: 1;
+        }
+
+        .hero-change {
+            font-size: 12px;
+            margin-top: 6px;
+            font-family: var(--mono);
+            font-weight: 500;
+        }
+
+        .hero-change.up {
+            color: var(--green);
+        }
+
+        .hero-change.down {
+            color: var(--red);
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 11px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .meta-label {
+            color: var(--text-dim);
+            font-family: var(--mono);
+        }
+
+        .meta-value {
+            color: var(--text);
+            font-family: var(--mono);
+            font-weight: 500;
+        }
+
+        /* ═══ VOLATILITY GAUGE ═══ */
+        .volatility-section {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .gauge-card {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .gauge-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .gauge-bar {
+            height: 8px;
+            background: var(--bg3);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gauge-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s;
+            position: relative;
+        }
+
+        .gauge-fill.normal {
+            background: var(--green);
+        }
+
+        .gauge-fill.warning {
+            background: var(--amber);
+        }
+
+        .gauge-fill.critical {
+            background: var(--red);
+        }
+
+        .gauge-value {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: var(--mono);
+        }
+
+        /* ═══ THREE MARKETS ═══ */
+        .markets-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .market-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .market-card.bullish {
+            border-left: 3px solid var(--green);
+        }
+
+        .market-card.bearish {
+            border-left: 3px solid var(--red);
+        }
+
+        .market-card.neutral {
+            border-left: 3px solid var(--amber);
+        }
+
+        .market-name {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--mono);
+            letter-spacing: 0.05em;
+        }
+
+        .market-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gold);
+            font-family: var(--mono);
+        }
+
+        .market-bias {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: 500;
+            width: fit-content;
+        }
+
+        .market-bias.bull {
+            background: rgba(38, 208, 124, 0.1);
+            color: var(--green);
+            border: 1px solid rgba(38, 208, 124, 0.3);
+        }
+
+        .market-bias.bear {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--red);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .market-bias.neutral {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--amber);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .market-session {
+            font-size: 9px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+        }
+
+        /* ═══ STRUCTURE MAP ═══ */
+        .structure-section {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            font-family: var(--mono);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .tf-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tf-card {
+            background: var(--bg3);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .tf-card.bull {
+            background: rgba(38, 208, 124, 0.08);
+            border-color: rgba(38, 208, 124, 0.2);
+        }
+
+        .tf-card.bear {
+            background: rgba(255, 107, 107, 0.08);
+            border-color: rgba(255, 107, 107, 0.2);
+        }
+
+        .tf-card.neutral {
+            background: rgba(255, 193, 7, 0.08);
+            border-color: rgba(255, 193, 7, 0.2);
+        }
+
+        .tf-frame {
+            font-size: 9px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+        }
+
+        .tf-bias {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tf-card.bull .tf-bias {
+            background: rgba(38, 208, 124, 0.2);
+            color: var(--green);
+        }
+
+        .tf-card.bear .tf-bias {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--red);
+        }
+
+        .tf-card.neutral .tf-bias {
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--amber);
+        }
+
+        .tf-label {
+            font-size: 8px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+        }
+
+        /* ═══ SMC/RTM ANALYSIS ═══ */
+        .smc-rtm-section {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .analysis-box {
+            background: var(--bg3);
+            border-left: 3px solid var(--gold);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .analysis-box.smc {
+            border-left-color: var(--gold);
+        }
+
+        .analysis-box.rtm {
+            border-left-color: var(--cyan);
+        }
+
+        .analysis-title {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: var(--mono);
+            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .analysis-item {
+            font-size: 10px;
+            color: var(--text);
+            font-family: var(--mono);
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .analysis-value {
+            font-weight: 600;
+            padding: 2px 6px;
+            background: rgba(212, 165, 116, 0.1);
+            border-radius: 2px;
+        }
+
+        /* ═══ SIDEBAR ═══ */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sidebar-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .sidebar-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+            font-family: var(--mono);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .alert-item {
+            background: rgba(255, 107, 107, 0.08);
+            border-left: 2px solid var(--red);
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 10px;
+            color: var(--text);
+            font-family: var(--mono);
+        }
+
+        .alert-item.warning {
+            background: rgba(255, 193, 7, 0.08);
+            border-left-color: var(--amber);
+        }
+
+        .alert-item.info {
+            background: rgba(20, 229, 214, 0.08);
+            border-left-color: var(--cyan);
+        }
+
+        .liquidity-level {
+            background: var(--bg3);
+            border: 1px solid var(--border-light);
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            font-size: 9px;
+        }
+
+        .liquidity-price {
+            color: var(--gold);
+            font-weight: 600;
+            font-family: var(--mono);
+            margin-bottom: 2px;
+        }
+
+        .liquidity-meta {
+            color: var(--text-dim);
+            font-size: 8px;
+        }
+
+        /* ═══ FOOTER ═══ */
+        .footer {
+            grid-column: 1 / -1;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            font-size: 9px;
+            color: var(--text-dim);
+            font-family: var(--mono);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ═══ CHART ═══ */
+        .mini-chart {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 12px;
+        }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 1200px) {
+            .page-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .markets-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tf-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+            }
+
+            .markets-section {
+                grid-template-columns: 1fr;
+            }
+
+            .smc-rtm-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo-group">
+                <div class="logo-icon">P</div>
+                <div class="logo-text">
+                    <h1>SMC × RTM × LIQ</h1>
+                    <p>Quantified Market Analysis</p>
+                </div>
+            </div>
+            <div class="status-bar">
+                <div class="status-badge">
+                    <div class="pulse"></div>
+                    LIVE — XAUUSD
+                </div>
+                <div class="clock" id="clock">--:--:--</div>
+            </div>
+        </div>
+
+        <!-- MAIN PANEL -->
+        <div class="main-panel">
+            <!-- HERO SECTION -->
+            <div class="hero-section">
+                <div class="hero-price">
+                    <div class="hero-symbol">XAU/USD</div>
+                    <div class="hero-value" id="price">—</div>
+                    <div class="hero-change up" id="change">+0.25%</div>
+                </div>
+                <div class="hero-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">H24</span>
+                        <span class="meta-value" id="high24">—</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">L24</span>
+                        <span class="meta-value" id="low24">—</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">VOL</span>
+                        <span class="meta-value" id="vol">—</span>
+                    </div>
+                </div>
+                <div class="hero-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">ATR 14</span>
+                        <span class="meta-value" id="atr14">—</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">VOLATILITY</span>
+                        <span class="meta-value" id="volatility">NORMAL</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">REGIME</span>
+                        <span class="meta-value" id="regime">TRENDING</span>
+                    </div>
+                </div>
+                <div class="hero-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">CORRELATION</span>
+                        <span class="meta-value" id="corr">0.78</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">SMART MONEY</span>
+                        <span class="meta-value" id="sm-score">ACTIVE</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">RETAIL TRAP</span>
+                        <span class="meta-value" id="retail-trap">LOW</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VOLATILITY GAUGES -->
+            <div class="volatility-section">
+                <div class="gauge-card">
+                    <div class="gauge-label">Current ATR</div>
+                    <div class="gauge-bar">
+                        <div class="gauge-fill normal" style="width: 65%;"></div>
+                    </div>
+                    <div class="gauge-value">12.45 USD (Normal)</div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gauge-label">Compression Score</div>
+                    <div class="gauge-bar">
+                        <div class="gauge-fill warning" style="width: 42%;"></div>
+                    </div>
+                    <div class="gauge-value">0.42 — Medium Setup Risk</div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gauge-label">Manipulation Index</div>
+                    <div class="gauge-bar">
+                        <div class="gauge-fill normal" style="width: 28%;"></div>
+                    </div>
+                    <div class="gauge-value">0.28 — Low</div>
+                </div>
+                <div class="gauge-card">
+                    <div class="gauge-label">Smart Money Footprint</div>
+                    <div class="gauge-bar">
+                        <div class="gauge-fill normal" style="width: 78%;"></div>
+                    </div>
+                    <div class="gauge-value">0.78 — High Conviction</div>
+                </div>
+            </div>
+
+            <!-- MARKETS GRID -->
+            <div class="markets-section">
+                <div class="market-card bullish">
+                    <div class="market-name">🟡 XAUUSD</div>
+                    <div class="market-price">2,547.32</div>
+                    <div class="market-bias bull">Bullish Bias</div>
+                    <div class="market-session">London Kill Zone (11:30-13:00 TRZ)</div>
+                </div>
+                <div class="market-card neutral">
+                    <div class="market-name">🔵 HaratUSD</div>
+                    <div class="market-price">59,240</div>
+                    <div class="market-bias neutral">In Balance</div>
+                    <div class="market-session">Awaiting Trigger Signal</div>
+                </div>
+                <div class="market-card bearish">
+                    <div class="market-name">🟢 AbshodeNaghdi</div>
+                    <div class="market-price">Ø̶̸̸2,456,000</div>
+                    <div class="market-bias bear">Bearish Pressure</div>
+                    <div class="market-session">Tehran Evening Session (19:30-21:30)</div>
+                </div>
+            </div>
+
+            <!-- STRUCTURE MAP -->
+            <div class="structure-section">
+                <div class="section-title">Multi-Timeframe Structure Map</div>
+                <div class="tf-grid">
+                    <div class="tf-card bear">
+                        <div class="tf-frame">1M</div>
+                        <div class="tf-bias">↓</div>
+                        <div class="tf-label">BEAR</div>
+                    </div>
+                    <div class="tf-card bear">
+                        <div class="tf-frame">1W</div>
+                        <div class="tf-bias">↓</div>
+                        <div class="tf-label">STRUCTURE BREAK</div>
+                    </div>
+                    <div class="tf-card neutral">
+                        <div class="tf-frame">1D</div>
+                        <div class="tf-bias">—</div>
+                        <div class="tf-label">WAIT</div>
+                    </div>
+                    <div class="tf-card bull">
+                        <div class="tf-frame">4H</div>
+                        <div class="tf-bias">↑</div>
+                        <div class="tf-label">SETUP</div>
+                    </div>
+                    <div class="tf-card bull">
+                        <div class="tf-frame">1H</div>
+                        <div class="tf-bias">↑</div>
+                        <div class="tf-label">BULL</div>
+                    </div>
+                    <div class="tf-card bull">
+                        <div class="tf-frame">30m</div>
+                        <div class="tf-bias">↑</div>
+                        <div class="tf-label">TRIGGER</div>
+                    </div>
+                    <div class="tf-card neutral">
+                        <div class="tf-frame">5m</div>
+                        <div class="tf-bias">—</div>
+                        <div class="tf-label">MICRO</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SMC/RTM ANALYSIS -->
+            <div class="smc-rtm-section">
+                <div class="analysis-box smc">
+                    <div class="analysis-title">Smart Money Footprint</div>
+                    <div class="analysis-item">
+                        <span>Last Sweep:</span>
+                        <span class="analysis-value">BULLISH</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Sweep Confidence:</span>
+                        <span class="analysis-value">78%</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Mitigate Pattern:</span>
+                        <span class="analysis-value">Active</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Liquidity Pool:</span>
+                        <span class="analysis-value">2,540.50</span>
+                    </div>
+                </div>
+                <div class="analysis-box rtm">
+                    <div class="analysis-title">Retail Trap Detection</div>
+                    <div class="analysis-item">
+                        <span>Exhaustion Signal:</span>
+                        <span class="analysis-value">MEDIUM</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Long Trap Risk:</span>
+                        <span class="analysis-value">62%</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Short Trap Risk:</span>
+                        <span class="analysis-value">34%</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span>Recommendation:</span>
+                        <span class="analysis-value">CAUTION</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <!-- ALERTS -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🔔 Alerts</div>
+                <div class="alert-item info">
+                    ✓ FVG Fill: 2,545.80 — 70% probability
+                </div>
+                <div class="alert-item warning">
+                    ⚠ Compression Break: Monitor 1H close
+                </div>
+                <div class="alert-item">
+                    ✗ Manipulation Risk: High in NY session
+                </div>
+            </div>
+
+            <!-- LIQUIDITY LEVELS -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">💧 Liquidity Zones</div>
+                <div class="liquidity-level">
+                    <div class="liquidity-price">2,550.12</div>
+                    <div class="liquidity-meta">Bearish Pool • 5 touches</div>
+                </div>
+                <div class="liquidity-level">
+                    <div class="liquidity-price">2,540.50</div>
+                    <div class="liquidity-meta">Bullish Pool • 3 touches</div>
+                </div>
+                <div class="liquidity-level">
+                    <div class="liquidity-price">2,535.40</div>
+                    <div class="liquidity-meta">Imbalance • Unfilled</div>
+                </div>
+            </div>
+
+            <!-- ORDER BLOCKS -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">📦 Order Blocks</div>
+                <div class="liquidity-level">
+                    <div class="liquidity-price">2,548.00-2,552.00</div>
+                    <div class="liquidity-meta">Bearish OB • Strong</div>
+                </div>
+                <div class="liquidity-level">
+                    <div class="liquidity-price">2,538.50-2,542.00</div>
+                    <div class="liquidity-meta">Bullish OB • Setup</div>
+                </div>
+            </div>
+
+            <!-- CORRELATION -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🔗 Cross-Market</div>
+                <div class="analysis-item" style="margin-bottom: 6px;">
+                    <span>XAUUSD→HaratUSD</span>
+                    <span class="analysis-value">0.65</span>
+                </div>
+                <div class="analysis-item" style="margin-bottom: 6px;">
+                    <span>XAUUSD→Abshode</span>
+                    <span class="analysis-value">0.78</span>
+                </div>
+                <div class="analysis-item">
+                    <span>Harat→Abshode</span>
+                    <span class="analysis-value">0.85</span>
+                </div>
+            </div>
+
+            <!-- NEXT SETUP -->
+            <div class="sidebar-card">
+                <div class="sidebar-title">🎯 Next Setup</div>
+                <div style="font-size: 10px; color: var(--text); line-height: 1.6;">
+                    <strong style="color: var(--green);">LONG SETUP</strong>
+                    <br>Entry: 2,540.50
+                    <br>SL: 2,535.00
+                    <br>TP: 2,555.00
+                    <br><span style="color: var(--cyan);">RR: 1:3 | Conf: 78%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div
+        style="padding: 12px; border-top: 1px solid var(--border); margin-top: 12px; font-size: 9px; color: var(--text-dim); font-family: var(--mono); text-align: center;">
+        P — SMC/RTM/Liquidity Invertor Analysis Dashboard | Last update: <span id="update-time">—</span>
+        <br>
+        Data Sources: Binance API + Historical Analysis | Refresh: Every 15s
+    </div>
+
+    <script>
+        // Update clock
+        setInterval(() => {
+            const now = new Date();
+            const tehran = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tehran' }));
+            document.getElementById('clock').textContent = tehran.toLocaleTimeString('en-GB', { hour12: false });
+            document.getElementById('update-time').textContent = tehran.toLocaleTimeString('en-GB', { hour12: false });
+        }, 1000);
+
+        // Simulate data updates
+        const prices = {
+            xau: 2547.32,
+            harat: 59240,
+            abshode: 2456000
+        };
+
+        setInterval(() => {
+            const delta = (Math.random() - 0.5) * 2;
+            prices.xau += delta;
+            document.getElementById('price').textContent = prices.xau.toFixed(2);
+            const change = ((delta / 2547.32) * 100).toFixed(2);
+            const changeEl = document.getElementById('change');
+            changeEl.textContent = (change >= 0 ? '+' : '') + change + '%';
+            changeEl.className = 'hero-change ' + (change >= 0 ? 'up' : 'down');
+        }, 3000);
+
+        console.log('✅ Dashboard initialized');
+    </script>
+
+</body>
+
+</html>
