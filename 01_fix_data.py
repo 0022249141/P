@@ -1,35 +1,66 @@
-# 01_fix_data.py — نسخهٔ جدید با اعتبارسنجی کامل
+# 01_fix_data.py — نسخهٔ هوشمند تبدیل فایل‌های خام به تمیز
 import pandas as pd
-import numpy as np
+from pathlib import Path
 
-def validate_ohlc(df: pd.DataFrame) -> pd.DataFrame:
-    """اصلاح و حذف کندل‌های نامعتبر"""
-    # ۱. High باید بزرگترین و Low کوچکترین باشد
-    valid_high = (df['high'] >= df[['open', 'close']].max(axis=1))
-    valid_low  = (df['low']  <= df[['open', 'close']].min(axis=1))
-    valid_range = df['high'] >= df['low']
-    df = df[valid_high & valid_low & valid_range].copy()
+def smart_read(filepath):
+    """تلاش برای خواندن فایل با فرمت‌های مختلف و برگرداندن DataFrame"""
+    # حالت ۱: فایل تمیز با هدر (کاما جداکننده)
+    try:
+        df = pd.read_csv(filepath)
+        if 'timestamp' in df.columns:
+            return df, True
+    except:
+        pass
 
-    # ۲. حذف اسپایک‌ها (دامنه > ۵ برابر ATR قبلی)
-    atr = df['high'] - df['low']  # True Range ساده
-    atr_rolling = atr.rolling(14).mean()
-    spike_mask = atr <= 5 * atr_rolling.shift(1)
-    df = df[spike_mask]
+    # حالت ۲: فایل خام (تب جداکننده، بدون هدر)
+    try:
+        df = pd.read_csv(filepath, sep='\t', header=None,
+                         names=['date', 'time', 'open', 'high', 'low', 'close', 'volume'])
+        if len(df) > 0:
+            df['timestamp'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['time'].astype(str),
+                                             format='%Y.%m.%d %H:%M')
+            df.drop(columns=['date', 'time'], inplace=True)
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+            df.dropna(subset=['open', 'high', 'low', 'close'], inplace=True)
+            df.sort_values('timestamp', inplace=True)
+            df.reset_index(drop=True, inplace=True)
+            return df, False
+    except:
+        pass
 
-    # ۳. تشخیص گپ زمانی غیرعادی (برای تایم‌فریم‌های ثابت)
-    if 'timestamp' in df.columns:
-        time_diff = df['timestamp'].diff()
-        # اگر اختلاف بیش از ۱.۵ برابر تایم‌فریم معمول باشد، هشدار می‌دهد ولی حذف نمی‌کند
-        typical = time_diff.median()
-        gaps = time_diff > 1.5 * typical
-        if gaps.any():
-            print(f"⚠️ {gaps.sum()} گپ زمانی غیرعادی پیدا شد (ممکن است داده گم شده باشد).")
+    # حالت ۳: فایل خام با کاما جداکننده (بدون هدر)
+    try:
+        df = pd.read_csv(filepath, sep=',', header=None,
+                         names=['date', 'time', 'open', 'high', 'low', 'close', 'volume'])
+        if len(df) > 0:
+            df['timestamp'] = pd.to_datetime(df['date'].astype(str) + ' ' + df['time'].astype(str),
+                                             format='%Y.%m.%d %H:%M')
+            df.drop(columns=['date', 'time'], inplace=True)
+            for col in ['open', 'high', 'low', 'close', 'volume']:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+            df.dropna(subset=['open', 'high', 'low', 'close'], inplace=True)
+            df.sort_values('timestamp', inplace=True)
+            df.reset_index(drop=True, inplace=True)
+            return df, False
+    except:
+        pass
 
-    return df
+    return None, False
 
-# ---------- مثال استفاده ----------
+def process_all():
+    data_dir = Path("data")
+    for file in data_dir.glob("*.csv"):
+        print(f"پردازش {file.name}...")
+        df, is_clean = smart_read(file)
+        if df is None or len(df) == 0:
+            print(f"  ⚠️ نمی‌توان فایل را خواند. حذف نمی‌شود.")
+            continue
+        if is_clean:
+            print(f"  ✅ قبلاً تمیز است ({len(df)} ردیف).")
+        else:
+            df.to_csv(file, index=False)
+            print(f"  ✅ تبدیل شد و بازنویسی گردید ({len(df)} ردیف).")
+
 if __name__ == "__main__":
-    # خواندن فایل خام و ذخیرهٔ تمیز
-    raw = pd.read_csv("data/XAU_USD-15.csv")
-    clean = validate_ohlc(raw)
-    clean.to_csv("data_clean/XAU_USD-15_clean.csv", index=False)
+    process_all()
