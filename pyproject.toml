@@ -8,40 +8,20 @@ version = "0.1.0"
 description = "Deterministic backtesting and Monte Carlo validation for SMC probabilistic trading systems"
 requires-python = ">=3.10"
 dependencies = [
-  "numpy>=1.23",
-  "pandas>=1.5",
-]
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "smc-validation"
-version = "0.1.0"
-description = "Deterministic backtesting and Monte Carlo validation for SMC probabilistic trading systems"
-requires-python = ">=3.10"
-
-dependencies = [
     "numpy>=1.23",
     "pandas>=1.5",
 ]
 
 [project.optional-dependencies]
-test = [
-    "pytest>=7"
-]
+test = ["pytest>=7"]
+
 [project.scripts]
 smc-validate = "smc_validation.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["smc_validation*"]
+include = ["smc_validation*", "core*", "validators*"]
 exclude = ["data*", "tests*"]
-[project.optional-dependencies]
-test = ["pytest>=7"]
-
-[project.scripts]
-smc-validate = "smc_validation.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
