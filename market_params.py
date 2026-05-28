@@ -160,9 +160,7 @@ MARKET_ABSHODE = {
     "min_ev": 0.05,
 }
 
-# ╔════════════════════════════════════════════════════════════════╗
-# ║ 4. سایر پارامترهای سیستمی                                      ║
-# ╚════════════════════════════════════════════════════════════════╝
+# ═══════════════════════════════════════════════════════════════
 
 VALID_REGIMES = ["Compressing", "Ranging", "Trending", "Manipulation"]
 VALID_DIRECTIONS = ["LONG", "SHORT", "NEUTRAL"]
@@ -173,16 +171,13 @@ TIMEFRAMES_BY_MARKET = {
     "AbshodeNaghdi": ["M5", "M15", "M30", "H1", "H4"],
 }
 
-# Backtesting & Validation
 DEFAULT_SEED = 42
 DEFAULT_SIMULATIONS = 1000
 DEFAULT_MAX_HOLDING_CANDLES = 96
 DEFAULT_MIN_EV = 0.05
 
-# Cross-market scoring
 MIN_CROSS_MARKET_SCORE = 0.65
 
-# Sessions (فقط برای بازارهای ایران)
 TRADING_SESSIONS = {
     "HaratUSD": {
         "morning": ("08:30", "12:30"),
@@ -194,7 +189,6 @@ TRADING_SESSIONS = {
     },
 }
 
-# اطلاعات در مورد BOS (Break of Structure)
 BOS_MIN_DISPLACEMENT = {
     "XAUUSD": 0.5,
     "HaratUSD": 0.3,
@@ -207,10 +201,8 @@ LIQUIDITY_THRESHOLDS = {
     "AbshodeNaghdi": {"high": 250.0, "medium": 80.0, "low": 15.0},
 }
 
-# ═══════════════════════════════════════════════════════════════
-
 def get_market_params(market_name: str) -> dict:
-    """بازیابی پارامترهای یک بازار بر اساس نام"""
+    """بازیابی پارامترهای یک بازار بر ا��اس نام"""
     market_name = market_name.upper().strip()
     
     if market_name in ["XAUUSD", "XAU", "GOLD"]:
@@ -220,7 +212,6 @@ def get_market_params(market_name: str) -> dict:
     elif market_name in ["ABSHODENAHDI", "ABSHODE", "ABSHODEH", "ABSHO"]:
         return MARKET_ABSHODE
     else:
-        # پیش‌فرض: XAUUSD
         return MARKET_XAUUSD
 
 def get_all_markets() -> list:
