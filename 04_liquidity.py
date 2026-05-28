@@ -1,6 +1,7 @@
-# 04_liquidity.py — نسخه جدید با آستانه‌های کالیبره‌شده
+# 04_liquidity.py — تشخیص Sweep یکپارچه با Clustering و Fallback
 import pandas as pd
 import numpy as np
+from core_constants import IMMUTABLE
 
 class LiquidityEngine:
     def __init__(self, market_engine, market_name: str = "XAUUSD"):
@@ -11,13 +12,11 @@ class LiquidityEngine:
 
     @property
     def threshold(self) -> float:
-        """آستانه EQH/EQL کالیبره‌شده برای هر بازار"""
         from market_params import LIQUIDITY_THRESHOLDS
         return LIQUIDITY_THRESHOLDS.get(self.market_name, 0.0005)
 
     @property
-    def sweep_threshold(self) -> float:
-        """آستانه نفوذ جاروب برای هر بازار"""
+    def sweep_threshold_pct(self) -> float:
         from market_params import MARKET_XAUUSD, MARKET_ABSHODE, MARKET_HARAT
         market_map = {
             "XAUUSD": MARKET_XAUUSD,
@@ -27,27 +26,36 @@ class LiquidityEngine:
         cfg = market_map.get(self.market_name, MARKET_XAUUSD)
         return cfg["liquidity"]["liquidity_sweep_threshold_pct"]
 
-    def detect_equal_highs_lows(self):
-        """تشخیص سقف/کف مساوی با آستانه مختص بازار"""
-        eqh_eql_threshold = self.threshold
-
-        for i in range(2, len(self.df)):
-            if pd.isna(self.df['ATR14'].iloc[i]):
-                continue
-
-            price_i = self.df['close'].iloc[i]
-            price_prev = self.df['close'].iloc[i - 1]
-
-            if abs(price_i - price_prev) / price_prev < eqh_eql_threshold:
-                # ثبت به‌عنوان EQH/EQL بالقوه
-                pass
+    def _cluster_levels(self, prices, atr):
+        if len(prices) == 0:
+            return []
+        sorted_prices = sorted(prices)
+        cluster_gap = IMMUTABLE["SWEEP_CLUSTER_GAP_ATR_MULT"] * atr
+        clusters = []
+        current_cluster = [sorted_prices[0]]
+        for p in sorted_prices[1:]:
+            if p - current_cluster[-1] <= cluster_gap:
+                current_cluster.append(p)
+            else:
+                clusters.append(current_cluster)
+                current_cluster = [p]
+        clusters.append(current_cluster)
+        return [np.mean(c) for c in clusters]
 
     def detect_sweeps(self):
-        """تشخیص جاروب نقدینگی با آستانه اختصاصی هر بازار"""
-        highs = self.df['swing_high'] if 'swing_high' in self.df.columns else self.df['high']
-        lows = self.df['swing_low'] if 'swing_low' in self.df.columns else self.df['low']
+        # اگر ستون swing_high/swing_low وجود نداشت، از high/low استفاده کن
+        if 'swing_high' in self.df.columns:
+            highs_series = self.df['swing_high']
+        else:
+            highs_series = self.df['high']
+
+        if 'swing_low' in self.df.columns:
+            lows_series = self.df['swing_low']
+        else:
+            lows_series = self.df['low']
+
         avg_atr = self.df['ATR14'].mean()
-        min_pen_pct = self.sweep_threshold  # آستانه نفوذ کالیبره‌شده
+        min_pen_pct = self.sweep_threshold_pct
 
         for i in range(3, len(self.df)):
             if pd.isna(self.df['ATR14'].iloc[i]):
@@ -59,15 +67,16 @@ class LiquidityEngine:
             vol = self.df['volume'].iloc[i]
             avg_vol = self.df['avg_volume_20'].iloc[i]
 
-            prev_highs = highs.iloc[:i].dropna()
-            prev_lows = lows.iloc[:i].dropna()
-            sweep = 0.0
+            prev_highs = highs_series.iloc[:i].dropna().tolist()
+            prev_lows  = lows_series.iloc[:i].dropna().tolist()
+            clustered_highs = self._cluster_levels(prev_highs, atr)
+            clustered_lows  = self._cluster_levels(prev_lows, atr)
 
-            # حداقل نفوذ: 0.3 * ATR یا درصد بازار (هرکدام بزرگتر)
+            sweep = 0.0
             min_penetration = max(0.3 * atr, min_pen_pct * close)
 
-            if not prev_highs.empty:
-                last_high = prev_highs.iloc[-1]
+            if len(clustered_highs) > 0:
+                last_high = clustered_highs[-1]
                 if high > last_high and (high - last_high) > min_penetration:
                     penetration = (high - last_high) / atr
                     reclaim = 1.0 if close < last_high else 0.0
@@ -76,8 +85,8 @@ class LiquidityEngine:
                     sweep = (penetration * 0.3 + reclaim * 0.4 + speed * 0.2 + vol_factor * 0.1)
                     sweep = min(sweep, 1.0)
 
-            if not prev_lows.empty:
-                last_low = prev_lows.iloc[-1]
+            if len(clustered_lows) > 0:
+                last_low = clustered_lows[-1]
                 if low < last_low and (last_low - low) > min_penetration:
                     penetration = (last_low - low) / atr
                     reclaim = 1.0 if close > last_low else 0.0

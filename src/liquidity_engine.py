@@ -1,18 +1,17 @@
-# 04_liquidity.py — نسخهٔ بهینه‌شده با آستانه‌های اختصاصی و بردارسازی
+# 04_liquidity.py — تشخیص Sweep یکپارچه با Clustering و Fallback
 import pandas as pd
 import numpy as np
+from core_constants import IMMUTABLE
 
 class LiquidityEngine:
     def __init__(self, market_engine, market_name: str = "XAUUSD"):
         self.mkt = market_engine
         self.df = market_engine.df.copy()
-        self.market_name = market_name
         self.df['sweep_score'] = np.nan
+        self.market_name = market_name
 
     @property
     def threshold(self) -> float:
-        """آستانه EQH/EQL بر اساس بازار (کالیبره‌شده)"""
-        # از فایل market_params وارد می‌کنیم
         from market_params import LIQUIDITY_THRESHOLDS
         return LIQUIDITY_THRESHOLDS.get(self.market_name, 0.0005)
 
@@ -27,40 +26,83 @@ class LiquidityEngine:
         cfg = market_map.get(self.market_name, MARKET_XAUUSD)
         return cfg["liquidity"]["liquidity_sweep_threshold_pct"]
 
-    def detect_equal_highs_lows(self):
-        """تشخیص EQH/EQL به‌صورت برداری – بسیار سریع"""
-        close = self.df['close']
-        prev_close = close.shift(1)
-        # آستانه نسبی برای هر بازار
-        thresh = self.threshold
-        # شرط برداری: اختلاف نسبی کمتر از آستانه
-        self.df['eq_high'] = (close - prev_close).abs() / prev_close < thresh
-        self.df['eq_low']  = (close - prev_close).abs() / prev_close < thresh  # عملاً مشابه، بسته به منطق
+    def _cluster_levels(self, prices, atr):
+        if len(prices) == 0:
+            return []
+        sorted_prices = sorted(prices)
+        cluster_gap = IMMUTABLE["SWEEP_CLUSTER_GAP_ATR_MULT"] * atr
+        clusters = []
+        current_cluster = [sorted_prices[0]]
+        for p in sorted_prices[1:]:
+            if p - current_cluster[-1] <= cluster_gap:
+                current_cluster.append(p)
+            else:
+                clusters.append(current_cluster)
+                current_cluster = [p]
+        clusters.append(current_cluster)
+        return [np.mean(c) for c in clusters]
 
     def detect_sweeps(self):
-        """تشخیص جاروب نقدینگی به‌صورت برداری – بدون حلقه"""
-        df = self.df
-        atr = df['ATR14']
-        avg_atr = atr.mean()
+        # اگر ستون swing_high/swing_low وجود نداشت، از high/low استفاده کن
+        if 'swing_high' in self.df.columns:
+            highs_series = self.df['swing_high']
+        else:
+            highs_series = self.df['high']
+
+        if 'swing_low' in self.df.columns:
+            lows_series = self.df['swing_low']
+        else:
+            lows_series = self.df['low']
+
+        avg_atr = self.df['ATR14'].mean()
         min_pen_pct = self.sweep_threshold_pct
 
-        # Swing highs/lows (از قبل محاسبه شده)
-        swing_high = df['swing_high'].fillna(method='ffill')
-        swing_low  = df['swing_low'].fillna(method='ffill')
+        for i in range(3, len(self.df)):
+            if pd.isna(self.df['ATR14'].iloc[i]):
+                continue
 
-        # محاسبه نفوذ و reclaim به‌صورت برداری
-        high_pen = (df['high'] > swing_high.shift(1)) & ((df['high'] - swing_high.shift(1)) > np.maximum(0.3 * atr, min_pen_pct * df['close']))
-        low_pen  = (df['low']  < swing_low.shift(1))  & ((swing_low.shift(1) - df['low'])  > np.maximum(0.3 * atr, min_pen_pct * df['close']))
+            atr = self.df['ATR14'].iloc[i]
+            high, low = self.df['high'].iloc[i], self.df['low'].iloc[i]
+            close = self.df['close'].iloc[i]
+            vol = self.df['volume'].iloc[i]
+            avg_vol = self.df['avg_volume_20'].iloc[i]
 
-        # امتیازدهی اولیه (مقادیر 0 یا 1)
-        sweep = np.zeros(len(df))
-        sweep[high_pen] = 0.7  # پایهٔ بالا
-        sweep[low_pen]  = np.maximum(sweep[low_pen], 0.7)
+            prev_highs = highs_series.iloc[:i].dropna().tolist()
+            prev_lows  = lows_series.iloc[:i].dropna().tolist()
+            clustered_highs = self._cluster_levels(prev_highs, atr)
+            clustered_lows  = self._cluster_levels(prev_lows, atr)
 
-        # شرط reclaim و سرعت (به‌صورت برداری سخت است، ولی می‌توان با shift ساده کرد)
-        # برای سادگی، امتیاز را همان 0.7 می‌گذاریم و فقط آستانه داینامیک را اعمال می‌کنیم
-        dynamic_threshold = np.clip(0.5 + 0.3 * (atr / avg_atr), 0.6, 0.85)
-        self.df['sweep_score'] = np.where(sweep > dynamic_threshold, sweep, np.nan)
+            sweep = 0.0
+            min_penetration = max(0.3 * atr, min_pen_pct * close)
+
+            if len(clustered_highs) > 0:
+                last_high = clustered_highs[-1]
+                if high > last_high and (high - last_high) > min_penetration:
+                    penetration = (high - last_high) / atr
+                    reclaim = 1.0 if close < last_high else 0.0
+                    speed = (high - close) / (high - low) if high > low else 0.0
+                    vol_factor = min(vol / avg_vol, 3.0) if avg_vol > 0 else 1.0
+                    sweep = (penetration * 0.3 + reclaim * 0.4 + speed * 0.2 + vol_factor * 0.1)
+                    sweep = min(sweep, 1.0)
+
+            if len(clustered_lows) > 0:
+                last_low = clustered_lows[-1]
+                if low < last_low and (last_low - low) > min_penetration:
+                    penetration = (last_low - low) / atr
+                    reclaim = 1.0 if close > last_low else 0.0
+                    speed = (close - low) / (high - low) if high > low else 0.0
+                    vol_factor = min(vol / avg_vol, 3.0) if avg_vol > 0 else 1.0
+                    sweep_bull = (penetration * 0.3 + reclaim * 0.4 + speed * 0.2 + vol_factor * 0.1)
+                    sweep = max(sweep, min(sweep_bull, 1.0))
+
+            if avg_atr > 0:
+                dynamic_threshold = 0.5 + 0.3 * (atr / avg_atr)
+            else:
+                dynamic_threshold = 0.6
+            dynamic_threshold = min(dynamic_threshold, 0.85)
+
+            if sweep > dynamic_threshold:
+                self.df.loc[self.df.index[i], 'sweep_score'] = sweep
 
     def get_sweep(self, idx: int) -> float:
         val = self.df['sweep_score'].iloc[idx]

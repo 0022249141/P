@@ -7,13 +7,13 @@ import importlib
 sys.path.insert(0, str(Path(__file__).parent))
 
 # ایمپورت ماژول‌های عددی با importlib
-sweep_mod = importlib.import_module('07_sweep')
+adaptive_sweep_mod = importlib.import_module('adaptive_sweep')
 disp_mod = importlib.import_module('08_displacement')
 zone_mod = importlib.import_module('09_zone_scoring')
 state_mod = importlib.import_module('10_state_machine')
 exec_mod = importlib.import_module('11_execution')
 
-detect_sweeps = sweep_mod.detect_sweeps
+AdaptiveSweepDetector = adaptive_sweep_mod.AdaptiveSweepDetector
 detect_displacement = disp_mod.detect_displacement
 score_order_blocks = zone_mod.score_order_blocks
 score_breakers_vectorized = zone_mod.score_breakers_vectorized
@@ -42,7 +42,8 @@ for market, tf in markets.items():
     df = pd.read_csv(input_file)
 
     # لایه‌ها
-    df = detect_sweeps(df)
+    detector = AdaptiveSweepDetector()
+    df = detector.detect(df)
     df = detect_displacement(df)
     df = score_order_blocks(df)
     df = score_breakers_vectorized(df)
