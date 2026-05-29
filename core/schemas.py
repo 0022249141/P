@@ -6,7 +6,7 @@ All engine and pipeline outputs should conform to these contracts.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field, ConfigDict, model_validator
@@ -294,7 +294,7 @@ class Narrative(_BaseModel):
 class SystemEvent(_BaseModel):
     event_id: str
     event_type: EventType
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     source_engine: str
     payload: Dict[str, Any] = Field(default_factory=dict)
 
