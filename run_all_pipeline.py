@@ -8,10 +8,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 # ایمپورت ماژول‌های عددی با importlib
 adaptive_sweep_mod = importlib.import_module('adaptive_sweep')
-disp_mod = importlib.import_module('08_displacement')
-zone_mod = importlib.import_module('09_zone_scoring')
-state_mod = importlib.import_module('10_state_machine')
-exec_mod = importlib.import_module('11_execution')
+disp_mod = importlib.import_module('pipelines.legacy.08_displacement')
+zone_mod = importlib.import_module('pipelines.legacy.09_zone_scoring')
+state_mod = importlib.import_module('pipelines.legacy.10_state_machine')
+exec_mod = importlib.import_module('pipelines.legacy.11_execution')
 
 AdaptiveSweepDetector = adaptive_sweep_mod.AdaptiveSweepDetector
 detect_displacement = disp_mod.detect_displacement
