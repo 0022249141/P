@@ -1,24 +1,15 @@
 """
+core/schemas.py
 Standardized Pydantic schemas for the Institutional Abshodeh Quant Terminal.
-
-All data flowing through engines, pipelines, and APIs should conform to these
-contracts. The schemas intentionally validate basic market-data invariants so
-that downstream SMC/ICT, liquidity, regime, and delivery engines do not operate
-on malformed snapshots.
+All engine and pipeline outputs should conform to these contracts.
 """
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import Enum
-from typing import Any, Literal
-
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-
-
-# ---------------------------------------------------------------------------
-# ENUMERATIONS — Institutional Ontology
-# ---------------------------------------------------------------------------
+from typing import Any, Dict, List, Optional
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 
 
 class Market(str, Enum):
@@ -31,15 +22,52 @@ class TimeFrame(str, Enum):
     M1 = "1m"
     M5 = "5m"
     M15 = "15m"
+    M30 = "30m"
     H1 = "1h"
     H4 = "4h"
     D1 = "1d"
+    W1 = "1w"
+    MN1 = "1M"
 
 
 class LiquidityClass(str, Enum):
-    CONSUMABLE = "consumable"  # نقدینگی مصرفی
-    TRANSFER = "transfer"  # نقدینگی انتقالی
-    DELIVERY = "delivery"  # نقدینگی تحویلی
+    CONSUMABLE = "consumable"
+    TRANSFER = "transfer"
+    DELIVERY = "delivery"
+
+
+class LiquiditySide(str, Enum):
+    BUY_SIDE = "buy_side"
+    SELL_SIDE = "sell_side"
+
+
+class LiquiditySource(str, Enum):
+    SWING = "swing"
+    SESSION = "session"
+    ENGINEERED = "engineered"
+    EQUAL_HIGH_LOW = "equal_high_low"
+    PREVIOUS_DAY = "previous_day"
+    PREVIOUS_WEEK = "previous_week"
+
+
+class Bias(str, Enum):
+    BULLISH = "bullish"
+    BEARISH = "bearish"
+    NEUTRAL = "neutral"
+
+
+class CommitmentState(str, Enum):
+    COMMITTED = "committed"
+    UNCOMMITTED = "uncommitted"
+    PENDING = "pending"
+    FAILED = "failed"
+
+
+class ExecutionTiming(str, Enum):
+    IMMEDIATE = "immediate"
+    WAIT_FOR_RETEST = "wait_for_retest"
+    WAIT_FOR_CONFIRMATION = "wait_for_confirmation"
+    NO_TRADE = "no_trade"
 
 
 class MarketState(str, Enum):
@@ -113,20 +141,12 @@ class EventType(str, Enum):
     NARRATIVE_UPDATED = "narrative_updated"
 
 
-# ---------------------------------------------------------------------------
-# BASE SCHEMAS — Core data units
-# ---------------------------------------------------------------------------
+class _BaseModel(BaseModel):
+    model_config = ConfigDict(use_enum_values=False, arbitrary_types_allowed=True)
 
 
-class StrictSchema(BaseModel):
-    """Base model that rejects unexpected payload keys."""
-
-    model_config = ConfigDict(extra="forbid", validate_assignment=True)
-
-
-class CandleSchema(StrictSchema):
-    """A single OHLCV candle for any market and timeframe."""
-
+class CandleSchema(_BaseModel):
+    """A single OHLCV candle for any market/timeframe."""
     timestamp: datetime
     open: float = Field(..., ge=0)
     high: float = Field(..., ge=0)
@@ -137,70 +157,55 @@ class CandleSchema(StrictSchema):
     timeframe: TimeFrame
 
     @model_validator(mode="after")
-    def validate_ohlc_range(self) -> "CandleSchema":
-        """Ensure the candle body is contained within its wick range."""
-
-        highest_body_price = max(self.open, self.close)
-        lowest_body_price = min(self.open, self.close)
-        if self.high < highest_body_price:
-            raise ValueError("high must be >= both open and close")
-        if self.low > lowest_body_price:
-            raise ValueError("low must be <= both open and close")
-        if self.high < self.low:
-            raise ValueError("high must be >= low")
+    def validate_ohlc(self) -> "CandleSchema":
+        if self.high < max(self.open, self.close, self.low):
+            raise ValueError("high must be >= open, close, and low")
+        if self.low > min(self.open, self.close, self.high):
+            raise ValueError("low must be <= open, close, and high")
         return self
 
 
-class LiquidityLevel(StrictSchema):
-    """A specific liquidity level (high/low) on the chart."""
-
-    price: float = Field(..., ge=0)
-    type: Literal["high", "low"]
-    source: str = "swing"  # swing, session, engineered
-    freshness: float = Field(0.0, ge=0.0, le=1.0)  # 1.0 = completely untouched
+class LiquidityLevel(_BaseModel):
+    """A mapped liquidity level. `type` is kept for backward compatibility: high/low."""
+    price: float
+    type: str  # backward-compatible: "high" or "low"
+    source: LiquiditySource | str = LiquiditySource.SWING
+    freshness: float = Field(0.0, ge=0.0, le=1.0)
     importance_score: float = Field(0.0, ge=0.0, le=1.0)
     sweep_probability: float = Field(0.0, ge=0.0, le=1.0)
     delivery_probability: float = Field(0.0, ge=0.0, le=1.0)
     liquidity_class: LiquidityClass
+    side: Optional[LiquiditySide | str] = None
+    engineered_likelihood: float = Field(0.0, ge=0.0, le=1.0)
 
 
-class LiquidityMap(StrictSchema):
-    """Complete liquidity analysis for a market snapshot."""
-
+class LiquidityMap(_BaseModel):
     market: Market
     timeframe: TimeFrame
     timestamp: datetime
-    buy_side_levels: list[LiquidityLevel] = Field(default_factory=list)
-    sell_side_levels: list[LiquidityLevel] = Field(default_factory=list)
-    nearest_consumable_buy: float | None = Field(default=None, ge=0)
-    nearest_consumable_sell: float | None = Field(default=None, ge=0)
-    engineered_liquidity_zones: list[float] = Field(default_factory=list)
+    buy_side_levels: List[LiquidityLevel] = Field(default_factory=list)
+    sell_side_levels: List[LiquidityLevel] = Field(default_factory=list)
+    nearest_consumable_buy: Optional[float] = None
+    nearest_consumable_sell: Optional[float] = None
+    engineered_liquidity_zones: List[float] = Field(default_factory=list)
 
 
-# ---------------------------------------------------------------------------
-# ENGINE OUTPUT SCHEMAS — Dealer, Delivery, Probability
-# ---------------------------------------------------------------------------
-
-
-class DealerInventoryState(StrictSchema):
-    """Output of Dealer Inventory Engine."""
-
+class DealerInventoryState(_BaseModel):
+    """Inferred dealer-inventory-like state. Real dealer inventory is not directly observed."""
     timestamp: datetime
     market: Market
     inventory_state: MarketState
     dealer_intent: DealerIntent
-    inventory_bias: Literal["bullish", "bearish", "neutral"]
-    transfer_phase: str | None = None  # e.g., "box_formation", "transfer_in_progress"
-    commitment_state: Literal["committed", "uncommitted"] | None = None
+    inventory_bias: Bias | str = Bias.NEUTRAL
+    transfer_phase: Optional[str] = None
+    commitment_state: CommitmentState | str | None = CommitmentState.UNCOMMITTED
     accumulation_score: float = Field(0.0, ge=0.0, le=1.0)
     distribution_score: float = Field(0.0, ge=0.0, le=1.0)
-    imbalance_ratio: float | None = None  # positive = long imbalance, negative = short
+    imbalance_ratio: Optional[float] = None
     absorption_detected: bool = False
 
 
-class MarketDeliveryState(StrictSchema):
-    """Output of Market Delivery Engine."""
-
+class MarketDeliveryState(_BaseModel):
     timestamp: datetime
     market: Market
     delivery_state: DeliveryState
@@ -212,9 +217,7 @@ class MarketDeliveryState(StrictSchema):
     reclaim_triggered: bool = False
 
 
-class ProbabilitySnapshot(StrictSchema):
-    """Output of Probability Engine."""
-
+class ProbabilitySnapshot(_BaseModel):
     timestamp: datetime
     market: Market
     delivery_probability: float = Field(0.0, ge=0.0, le=1.0)
@@ -225,124 +228,93 @@ class ProbabilitySnapshot(StrictSchema):
     commitment_probability: float = Field(0.0, ge=0.0, le=1.0)
     confidence_score: float = Field(0.0, ge=0.0, le=1.0)
     uncertainty_score: float = Field(0.0, ge=0.0, le=1.0)
-    expected_path: str = "continuation"
+    expected_path: str = "unresolved"
 
 
-class RegimeSnapshot(StrictSchema):
-    """Output of Regime Engine."""
-
+class RegimeSnapshot(_BaseModel):
     timestamp: datetime
     market: Market
     regime: RegimeType
-    volatility_percentile: float | None = Field(default=None, ge=0.0, le=1.0)
+    volatility_percentile: Optional[float] = Field(None, ge=0.0, le=1.0)
     manipulation_index: float = Field(0.0, ge=0.0, le=1.0)
 
 
-# ---------------------------------------------------------------------------
-# SESSION & CROSS-MARKET SCHEMAS
-# ---------------------------------------------------------------------------
-
-
-class TehranSessionInfo(StrictSchema):
-    """Tehran session specific analysis."""
-
+class TehranSessionInfo(_BaseModel):
     timestamp: datetime
     is_tehran_open: bool = False
     is_friday: bool = False
     holiday_effect: bool = False
     pm_manipulation_likely: bool = False
-    herat_correlation: float | None = Field(default=None, ge=-1.0, le=1.0)
+    herat_correlation: Optional[float] = None
     local_volatility_spike: bool = False
     spread_distortion_detected: bool = False
 
 
-class CrossMarketSyncState(StrictSchema):
-    """Output of Cross-Market Synchronization Engine."""
-
+class CrossMarketSyncState(_BaseModel):
     timestamp: datetime
     dominant_market: Market
-    transfer_direction: str = "neutral"  # "abshodeh_leading", "herat_leading", etc.
+    transfer_direction: str = "neutral"
     divergence_score: float = Field(0.0, ge=0.0, le=1.0)
-    synchronization_state: Literal["aligned", "divergent", "lagging"]
+    synchronization_state: str
     smt_divergence_detected: bool = False
 
 
-# ---------------------------------------------------------------------------
-# SIGNAL & NARRATIVE
-# ---------------------------------------------------------------------------
-
-
-class InstitutionalSignal(StrictSchema):
-    """Complete institutional signal (output of Signal Engine)."""
-
+class InstitutionalSignal(_BaseModel):
     id: str
     timestamp: datetime
     market: Market
     direction: SignalDirection
     entry_price: float = Field(..., ge=0)
     invalidation_price: float = Field(..., ge=0)
-    liquidity_target: float | None = Field(default=None, ge=0)
-    delivery_target: float | None = Field(default=None, ge=0)
+    liquidity_target: Optional[float] = None
+    delivery_target: Optional[float] = None
     probability: float = Field(0.0, ge=0.0, le=1.0)
     confidence: float = Field(0.0, ge=0.0, le=1.0)
     regime: RegimeType
-    dealer_narrative: str | None = None
+    dealer_narrative: Optional[str] = None
     inventory_state: MarketState
     session_context: str = "tehran"
     risk_grade: RiskGrade
-    execution_timing: str = "immediate"  # immediate, wait_for_retest, etc.
-    expected_sequence: list[str] = Field(default_factory=list)
+    execution_timing: ExecutionTiming | str = ExecutionTiming.NO_TRADE
+    expected_sequence: List[str] = Field(default_factory=list)
 
 
-class Narrative(StrictSchema):
-    """Full institutional narrative in two languages."""
-
+class Narrative(_BaseModel):
     id: str
     timestamp: datetime
     market: Market
     english_text: str
     persian_text: str
-    consumed_liquidity: str | None = None
-    remaining_liquidity: str | None = None
-    invalidation_condition: str | None = None
-    commitment_status: str | None = None
+    consumed_liquidity: Optional[str] = None
+    remaining_liquidity: Optional[str] = None
+    invalidation_condition: Optional[str] = None
+    commitment_status: Optional[str] = None
 
 
-# ---------------------------------------------------------------------------
-# EVENT BUS & SYSTEM HEALTH
-# ---------------------------------------------------------------------------
-
-
-class SystemEvent(StrictSchema):
-    """Event dispatched on the internal event bus."""
-
+class SystemEvent(_BaseModel):
     event_id: str
     event_type: EventType
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
     source_engine: str
-    payload: dict[str, Any] = Field(default_factory=dict)
+    payload: Dict[str, Any] = Field(default_factory=dict)
 
 
-class EngineHealth(StrictSchema):
-    """Health status of a single engine."""
-
+class EngineHealth(_BaseModel):
     engine_name: str
-    status: Literal["healthy", "stale", "failed"]
-    last_execution: datetime | None = None
-    latency_ms: float | None = Field(default=None, ge=0)
-    error_message: str | None = None
+    status: str
+    last_execution: Optional[datetime] = None
+    latency_ms: Optional[float] = None
+    error_message: Optional[str] = None
 
 
-class DataQualityReport(StrictSchema):
-    """Output of Data Quality Engine."""
-
+class DataQualityReport(_BaseModel):
     timestamp: datetime
     market: Market
     timeframe: TimeFrame
     quality_score: float = Field(0.0, ge=0.0, le=1.0)
     integrity_score: float = Field(0.0, ge=0.0, le=1.0)
-    warnings: list[str] = Field(default_factory=list)
-    missing_candles: int = Field(0, ge=0)
-    duplicate_timestamps: int = Field(0, ge=0)
-    outliers_detected: int = Field(0, ge=0)
-    gaps_detected: int = Field(0, ge=0)
+    warnings: List[str] = Field(default_factory=list)
+    missing_candles: int = 0
+    duplicate_timestamps: int = 0
+    outliers_detected: int = 0
+    gaps_detected: int = 0
