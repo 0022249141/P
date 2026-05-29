@@ -13,10 +13,10 @@ BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE))
 sys.path.insert(0, str(BASE / "src"))
 
-disp_mod  = importlib.import_module("08_displacement")
-zone_mod  = importlib.import_module("09_zone_scoring")
-state_mod = importlib.import_module("10_state_machine")
-exec_mod  = importlib.import_module("11_execution")
+disp_mod  = importlib.import_module("pipelines.legacy.08_displacement")
+zone_mod  = importlib.import_module("pipelines.legacy.09_zone_scoring")
+state_mod = importlib.import_module("pipelines.legacy.10_state_machine")
+exec_mod  = importlib.import_module("pipelines.legacy.11_execution")
 
 detect_displacement       = disp_mod.detect_displacement
 score_order_blocks        = zone_mod.score_order_blocks

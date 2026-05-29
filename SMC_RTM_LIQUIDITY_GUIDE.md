@@ -230,7 +230,7 @@ df = apply_state_machine_enhanced(df, priority_levels)
 
 ### مکان‌های استفاده در پروژه
 
-#### 1. **06_quality_check.py** (بعدی)
+#### 1. **pipelines/legacy/06_quality_check.py** (بعدی)
 
 ```python
 from smc_rtm_liquidity_enhancer import apply_smc_rtm_liquidity_enhancement

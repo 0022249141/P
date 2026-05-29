@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 def get_project_root() -> Path:
     """یافتن ریشهٔ مخزن (محل فایل‌های src/ و data/)"""
-    return Path(__file__).parent.parent
+    return Path(__file__).resolve().parents[2]
 
 def validate_all_pipelines():
     """
@@ -19,11 +19,11 @@ def validate_all_pipelines():
     logger.info(f"ریشهٔ مخزن: {root}")
 
     steps = [
-        ("تمیزسازی داده‌ها", root / "01_fix_data.py"),
-        ("بازنمونه‌گیری چندتایم‌فریم", root / "02_resample_mtf.py"),
-        ("تحلیل ساختار بازار", root / "03_structure.py"),
-        ("تحلیل نقدینگی", root / "04_liquidity.py"),
-        ("سشن‌بندی", root / "05_sessions.py"),
+        ("تمیزسازی داده‌ها", root / "pipelines" / "legacy" / "01_fix_data.py"),
+        ("بازنمونه‌گیری چندتایم‌فریم", root / "pipelines" / "legacy" / "02_resample_mtf.py"),
+        ("تحلیل ساختار بازار", root / "pipelines" / "legacy" / "03_structure.py"),
+        ("تحلیل نقدینگی", root / "pipelines" / "legacy" / "04_liquidity.py"),
+        ("سشن‌بندی", root / "pipelines" / "legacy" / "05_sessions.py"),
     ]
 
     for step_name, script_path in steps:

@@ -1,10 +1,10 @@
 C:\Users\pouria.sl\Documents\GitHub\P\.gitignore
-C:\Users\pouria.sl\Documents\GitHub\P\01_fix_data.py
-C:\Users\pouria.sl\Documents\GitHub\P\02_resample_mtf.py
-C:\Users\pouria.sl\Documents\GitHub\P\03_structure.py
-C:\Users\pouria.sl\Documents\GitHub\P\04_liquidity.py
-C:\Users\pouria.sl\Documents\GitHub\P\05_sessions.py
-C:\Users\pouria.sl\Documents\GitHub\P\06_quality_check.py
+C:\Users\pouria.sl\Documents\GitHub\P\pipelines\legacy\01_fix_data.py
+C:\Users\pouria.sl\Documents\GitHub\P\pipelines\legacy\02_resample_mtf.py
+C:\Users\pouria.sl\Documents\GitHub\P\pipelines\legacy\03_structure.py
+C:\Users\pouria.sl\Documents\GitHub\P\pipelines\legacy\04_liquidity.py
+C:\Users\pouria.sl\Documents\GitHub\P\pipelines\legacy\05_sessions.py
+C:\Users\pouria.sl\Documents\GitHub\P\pipelines\legacy\06_quality_check.py
 C:\Users\pouria.sl\Documents\GitHub\P\LICENSE.txt
 C:\Users\pouria.sl\Documents\GitHub\P\pipelinefix_data.py
 C:\Users\pouria.sl\Documents\GitHub\P\pipelinerun_all.py
