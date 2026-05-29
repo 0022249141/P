@@ -1,0 +1,40 @@
+# Corrected SMCP Files
+
+Ordered file list:
+1. `core/schemas.py`
+2. `validators/data_quality_engine.py`
+3. `services/csv_watcher.py`
+4. `engines/market_state_machine.py`
+5. `core/market_ontology.py`
+6. `engines/dealer_inventory_engine.py`
+7. `engines/market_delivery_engine.py`
+8. `engines/liquidity_classifier.py`
+9. `engines/probability_engine.py`
+10. `engines/regime_engine.py`
+11. `engines/cross_market_inventory_sync.py`
+12. `engines/tehran_session_engine.py`
+13. `narratives/narrative_engine.py`
+14. `engines/institutional_signal_engine.py`
+15. `engines/risk_engine.py`
+16. `engines/scenario_engine.py`
+17. `engines/explainability_engine.py`
+18. `engines/market_memory_engine.py`
+19. `engines/timeframe_arbitration_engine.py`
+20. `engines/microstructure_engine.py`
+21. `events/event_bus.py`
+22. `core/orchestrator.py`
+23. `engines/state_conflict_engine.py`
+24. `audit/audit_engine.py`
+25. `monitoring/engine_health_monitor.py`
+26. `journal/institutional_journal_engine.py`
+27. `engines/replay_integrity_engine.py`
+28. `feature_store/cache_layer.py`
+29. `storage/database.py`
+30. `config/config_loader.py`
+31. `export/export_engine.py`
+32. `backtest/replay_engine.py`
+33. `packaging/build_installer.py`
+34. `backend/api.py`
+35. `ui/App.jsx`
+36. `ui/components/Dashboard.jsx`
+37. `tests/test_integration.py`
