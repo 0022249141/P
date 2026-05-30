@@ -42,6 +42,7 @@ def main() -> int:
     audit_output = f"{args.output_dir}/data_quality_audit.csv"
     pipeline_summary = f"{args.output_dir}/pipeline_v3_summary.csv"
     validation_output = f"{args.output_dir}/pipeline_v3_validation_report.csv"
+    manifest_output = f"{args.output_dir}/workflow_run_manifest.json"
 
     steps = [
         (
@@ -81,6 +82,21 @@ def main() -> int:
                 validation_output,
             ],
         ),
+        (
+            "Workflow run manifest",
+            [
+                python,
+                "scripts/write_workflow_manifest.py",
+                "--audit",
+                audit_output,
+                "--summary",
+                pipeline_summary,
+                "--validation",
+                validation_output,
+                "--output",
+                manifest_output,
+            ],
+        ),
     ]
 
     for name, command in steps:
@@ -93,6 +109,7 @@ def main() -> int:
     print(f"Audit report:      {ROOT / audit_output}")
     print(f"Pipeline summary:  {ROOT / pipeline_summary}")
     print(f"Validation report: {ROOT / validation_output}")
+    print(f"Run manifest:      {ROOT / manifest_output}")
     print("=" * 100)
 
     return 0
