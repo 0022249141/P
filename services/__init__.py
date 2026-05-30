@@ -8,4 +8,3 @@ __all__ = [
     "DataLoader",
     "LoadedDataset",
 ]
-'@ | Set-Content -Encoding UTF8 .\services\__init__.p

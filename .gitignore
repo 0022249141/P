@@ -24,4 +24,6 @@ output.txt
 all_output.txt
 
 # داده‌ها (اگر نمی‌خواهید روی گیت‌هاب باشند، کامنت را بردارید)
-# data/*.csv
+# data/*.csv*.pyc
+output_fixed/
+*.log
