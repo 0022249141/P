@@ -33,6 +33,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", default="data_clean")
     parser.add_argument("--output-dir", default="output_fixed")
+    parser.add_argument("--archive-root", default="output_fixed/run_history")
     parser.add_argument("--timeframes", nargs="*", default=["5", "15", "30", "60", "240", "1D"])
     parser.add_argument("--tail-rows", type=int, default=5000)
     args = parser.parse_args()
@@ -97,6 +98,17 @@ def main() -> int:
                 manifest_output,
             ],
         ),
+        (
+            "Workflow run archive",
+            [
+                python,
+                "scripts/archive_workflow_run.py",
+                "--output-dir",
+                args.output_dir,
+                "--archive-root",
+                args.archive_root,
+            ],
+        ),
     ]
 
     for name, command in steps:
@@ -110,6 +122,7 @@ def main() -> int:
     print(f"Pipeline summary:  {ROOT / pipeline_summary}")
     print(f"Validation report: {ROOT / validation_output}")
     print(f"Run manifest:      {ROOT / manifest_output}")
+    print(f"Run archive root:  {ROOT / args.archive_root}")
     print("=" * 100)
 
     return 0
