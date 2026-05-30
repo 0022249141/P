@@ -25,7 +25,7 @@ class RegimeEngine:
         regime=self._classify(vol_pct, slope_norm, r2, manip, current_market_state)
         return self._snap(market, regime, vol_pct, manip, recent)
     def _snap(self, market, regime, vol, manip, df=None):
-        ts=pd.Timestamp.utcnow().to_pydatetime()
+        ts=pd.Timestamp.now(tz='UTC').to_pydatetime()
         if df is not None and len(df) and "timestamp" in df.columns:
             t=pd.to_datetime(df.timestamp.iloc[-1], errors="coerce"); ts=t.to_pydatetime() if pd.notna(t) else ts
         return RegimeSnapshot(timestamp=ts, market=market, regime=regime, volatility_percentile=_clamp(vol), manipulation_index=_clamp(manip))

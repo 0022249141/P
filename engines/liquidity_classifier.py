@@ -21,7 +21,7 @@ class LiquidityClassifier:
         self.freshness_decay = max(0.0, float(freshness_decay))
 
     def build_liquidity_map(self, candles: pd.DataFrame, market: Market = Market.ABSHODEH, timeframe: TimeFrame = TimeFrame.H1, existing_liquidity: Optional[List[LiquidityLevel]] = None) -> LiquidityMap:
-        now = pd.Timestamp.utcnow().to_pydatetime()
+        now = pd.Timestamp.now(tz='UTC').to_pydatetime()
         if candles is None or candles.empty or not {"high", "low", "close"}.issubset(candles.columns):
             return LiquidityMap(market=market, timeframe=timeframe, timestamp=now)
         df = candles.copy()
@@ -66,7 +66,7 @@ class LiquidityClassifier:
             ts = pd.to_datetime(df["timestamp"].iloc[-1], errors="coerce")
             if pd.notna(ts):
                 return ts.to_pydatetime()
-        return pd.Timestamp.utcnow().to_pydatetime()
+        return pd.Timestamp.now(tz='UTC').to_pydatetime()
 
     def _find_swing_highs(self, candles: pd.DataFrame) -> List[Tuple[int, float]]:
         highs = candles["high"].to_numpy(dtype=float)
