@@ -1,17 +1,29 @@
-# Python
+# Python environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python caches and test artifacts
 __pycache__/
 *.py[cod]
+*$py.class
 .pytest_cache/
-.venv/
+.mypy_cache/
+.pyre/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Python packaging output
 build/
 dist/
 *.egg-info/
+.eggs/
 
-# Visual Studio
+# IDE-local state
 .vs/
-
-# Environment
-venv/
 
 # macOS
 .DS_Store
@@ -22,6 +34,10 @@ Thumbs.db
 # Output files
 output.txt
 all_output.txt
+
+# Root runtime and local inventory artifacts
+/live_prices.json
+/project_tree.txt
 
 # داده‌ها (اگر نمی‌خواهید روی گیت‌هاب باشند، کامنت را بردارید)
 # data/*.csv
