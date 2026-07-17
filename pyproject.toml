@@ -29,3 +29,8 @@ exclude = ["data*", "tests*"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 pythonpath = ["."]
+addopts = ["-m", "not research"]
+markers = [
+    "integration: cross-module tests that may use dedicated integration fixtures",
+    "research: intentional tests that require the full committed research corpus",
+]

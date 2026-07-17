@@ -24,7 +24,11 @@ jobs:
 
       - name: Verify repository hygiene
         run: |
-          python scripts/verify_git_hygiene.py
+          python scripts/verify_git_hygiene.py --skip-dataset-integrity
+
+      - name: Verify committed dataset manifest
+        run: |
+          python scripts/verify_dataset_manifest.py
 
       - name: Run tests
         run: |
