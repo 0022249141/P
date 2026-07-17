@@ -1,5 +1,9 @@
-import pandas as pd
+import argparse
+from pathlib import Path
+from typing import Sequence
+
 import numpy as np
+import pandas as pd
 
 def compute_trade_parameters(df, risk_percent=1.0, account_balance=10000,
                              atr_sl_mult=1.5, rr_ratio=1.5):
@@ -61,17 +65,24 @@ def compute_trade_parameters(df, risk_percent=1.0, account_balance=10000,
 
     return pd.DataFrame(trades)
 
-if __name__ == "__main__":
-    INPUT = r"C:\Users\pouria.sl\Desktop\GitHub.Desktop.3.5.5.x64\processed_stage2\final_signals_XAU_USD-15.csv"
-    OUTPUT = r"C:\Users\pouria.sl\Desktop\GitHub.Desktop.3.5.5.x64\processed_stage2\execution_plan_XAU_USD-15.csv"
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Build an execution-plan CSV")
+    parser.add_argument("input", type=Path)
+    parser.add_argument("output", type=Path)
+    args = parser.parse_args(argv)
 
-    df = pd.read_csv(INPUT)
+    df = pd.read_csv(args.input)
     trades = compute_trade_parameters(df, risk_percent=1.0, account_balance=10000,
                                       atr_sl_mult=1.5, rr_ratio=1.5)
 
-    trades.to_csv(OUTPUT, index=False)
+    trades.to_csv(args.output, index=False)
 
     print(f"✅ تعداد معاملات: {len(trades)}")
     print(f"   خرید (Long):  {len(trades[trades['direction']=='LONG'])}")
     print(f"   فروش (Short): {len(trades[trades['direction']=='SHORT'])}")
-    print(f"📁 خروجی: {OUTPUT}")
+    print(f"Output: {args.output}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

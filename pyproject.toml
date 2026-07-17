@@ -15,6 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = ["pytest>=7.4"]
+live-broker = ["MetaTrader5>=5.0"]
 
 [project.scripts]
 smc-validate = "smc_validation.cli:main"
