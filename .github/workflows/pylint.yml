@@ -22,6 +22,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[test]"
 
+      - name: Verify repository hygiene
+        run: |
+          python scripts/verify_git_hygiene.py
+
       - name: Run tests
         run: |
           python -m pytest -q
