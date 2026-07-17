@@ -113,7 +113,9 @@ Rollback is a normal revert of this commit. No data migration or destructive cle
 - 2026-07-17: Moved live-data polling behind explicit functions and a guarded CLI entrypoint.
 - 2026-07-17: Removed absolute paths from the legacy execution-plan CLI without changing its analytical calculation.
 - 2026-07-17: Added the optional `live-broker` dependency extra and seven mock-only quarantine tests.
-- 2026-07-17: Completed clean-environment and full-suite local verification. GitHub Actions is pending the push.
+- 2026-07-17: Completed clean-environment and full-suite local verification.
+- 2026-07-17: Committed implementation as `033ee54`, pushed the branch, and opened draft PR #24 with the required title.
+- 2026-07-17: Both GitHub Actions `pytest` checks for implementation head `033ee54` passed in 23 and 35 seconds.
 
 ## 12. Completion Evidence
 Command and result ledger:
@@ -136,10 +138,14 @@ Command and result ledger:
 | `.\.venv\Scripts\python.exe -m pip check` | Passed: no broken requirements. |
 | `git diff --check` | Passed. |
 | `rg` absolute-path scan over changed runtime/test surfaces | Passed: no matches. |
+| `git commit -m "KAN-7 quarantine live and broker side effects"` | Passed: implementation commit `033ee54`. |
+| `git push -u origin KAN-7-live-broker-quarantine` | Passed. |
+| `gh pr create --draft ...` | Passed: draft PR #24, titled `KAN-7 Quarantine live and broker import side effects`. |
+| `gh pr checks 24 --watch --interval 10` | Passed for implementation head: both Python 3.11 `pytest` checks succeeded in 23 and 35 seconds. |
 
 Acceptance status:
 - Import safety: passed with mocked CSV reads, file writes, polling sleep, MT5 initialization, symbol selection, order submission, modification, cancellation, and shutdown.
 - Optional dependency: passed; dry-run does not load MetaTrader5 and an eligible live request reports a clear optional-dependency error when it is unavailable.
 - Execution gates: passed; dry-run is default, live mode needs a separate opt-in, and missing execution-readiness evidence blocks access before broker initialization.
 - Broker/data safety: no broker connection was attempted, no real broker implementation was loaded, no order was sent/modified/cancelled, and no dataset was changed.
-- GitHub Actions, commit, and draft PR evidence: pending push.
+- GitHub publication: implementation commit pushed and draft PR #24 opened; both implementation-head Actions checks passed.
