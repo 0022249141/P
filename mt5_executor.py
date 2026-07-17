@@ -46,6 +46,8 @@ class BrokerAPI(Protocol):
 
     def initialize(self) -> bool: ...
 
+    def account_info(self) -> Any: ...
+
     def symbol_select(self, symbol: str, enable: bool) -> bool: ...
 
     def order_send(self, request: dict[str, Any]) -> Any: ...
@@ -81,9 +83,11 @@ class ExecutionReadiness:
 class ExecutionConfig:
     """Execution settings with a deliberately inert default."""
 
-    symbol: str = "XAUUSD"
+    symbol: str | None = None
     dry_run: bool = True
     allow_live_execution: bool = False
+    expected_account_login: int | None = None
+    expected_server: str | None = None
     readiness: ExecutionReadiness = field(default_factory=ExecutionReadiness)
     deviation: int = 10
     magic: int = 123456
@@ -177,6 +181,26 @@ def validate_execution_plan(trades: pd.DataFrame) -> pd.DataFrame:
                 f"Execution plan column {column} must be finite and positive"
             )
 
+    long_rows = validated["direction"] == "LONG"
+    valid_long_geometry = (
+        (validated["stop_loss"] < validated["entry_price"])
+        & (validated["entry_price"] < validated["take_profit"])
+    )
+    if (long_rows & ~valid_long_geometry).any():
+        raise ValueError(
+            "LONG orders require stop_loss < entry_price < take_profit"
+        )
+
+    short_rows = validated["direction"] == "SHORT"
+    valid_short_geometry = (
+        (validated["take_profit"] < validated["entry_price"])
+        & (validated["entry_price"] < validated["stop_loss"])
+    )
+    if (short_rows & ~valid_short_geometry).any():
+        raise ValueError(
+            "SHORT orders require take_profit < entry_price < stop_loss"
+        )
+
     return validated
 
 
@@ -205,12 +229,42 @@ def validate_live_execution(config: ExecutionConfig) -> None:
         raise ExecutionGateError(
             "Live execution requires allow_live_execution=True in addition to dry_run=False"
         )
+    if not config.symbol or not config.symbol.strip():
+        raise ExecutionGateError("Live execution requires an explicit broker symbol")
+    if (
+        config.expected_account_login is None
+        or isinstance(config.expected_account_login, bool)
+        or not isinstance(config.expected_account_login, int)
+        or config.expected_account_login <= 0
+    ):
+        raise ExecutionGateError(
+            "Live execution requires a positive expected account login"
+        )
+    if config.expected_server is not None and not config.expected_server.strip():
+        raise ExecutionGateError(
+            "Expected server must be non-empty when server verification is enabled"
+        )
 
     missing = config.readiness.missing()
     if missing:
         raise ExecutionGateError(
             "Live execution is missing readiness evidence: " + ", ".join(missing)
         )
+
+
+def verify_active_account(broker: BrokerAPI, config: ExecutionConfig) -> None:
+    """Verify active account identity without exposing account information."""
+
+    account = broker.account_info()
+    if account is None:
+        raise ExecutionGateError("Active broker account information is unavailable")
+    if getattr(account, "login", None) != config.expected_account_login:
+        raise ExecutionGateError("Active broker account login does not match")
+    if (
+        config.expected_server is not None
+        and getattr(account, "server", None) != config.expected_server
+    ):
+        raise ExecutionGateError("Active broker server does not match")
 
 
 def load_mt5() -> ModuleType:
@@ -251,6 +305,7 @@ def execute_orders(
         raise RuntimeError("MetaTrader5 initialization failed")
 
     try:
+        verify_active_account(active_broker, active_config)
         if not active_broker.symbol_select(active_config.symbol, True):
             raise RuntimeError(f"Broker symbol is unavailable: {active_config.symbol}")
 
@@ -290,9 +345,11 @@ def execute_plan(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("plan_file", type=Path)
-    parser.add_argument("--symbol", default="XAUUSD")
+    parser.add_argument("--symbol")
     parser.add_argument("--execute-live", action="store_true")
     parser.add_argument("--allow-live-execution", action="store_true")
+    parser.add_argument("--expected-account-login", type=int)
+    parser.add_argument("--expected-server")
     parser.add_argument("--spread-evidence")
     parser.add_argument("--slippage-evidence")
     parser.add_argument("--commission-evidence")
@@ -307,6 +364,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         symbol=args.symbol,
         dry_run=not args.execute_live,
         allow_live_execution=args.allow_live_execution,
+        expected_account_login=args.expected_account_login,
+        expected_server=args.expected_server,
         readiness=ExecutionReadiness(
             spread=args.spread_evidence,
             slippage=args.slippage_evidence,
