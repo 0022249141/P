@@ -91,6 +91,20 @@ smc-validate \
   --output validation_report.json
 ```
 
+## Development test environment
+
+Use Python 3.11 or newer. Create a fresh environment instead of relying on the
+committed `venv/` directory:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -e ".[test]"
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+On POSIX shells, replace the executable path with `./.venv/bin/python`.
+
 ## Install Codex versions
 
 Run the helper script to install the requested Codex versions globally:
