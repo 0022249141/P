@@ -88,6 +88,12 @@ Leave byte-for-byte untouched:
 7. Recompute protected-dataset paths, bytes, and aggregate SHA-256; then perform fresh Python 3.11 installation and full verification.
 8. Commit, push the existing branch, open one draft PR with the required title, wait for GitHub Actions, and stop for human review.
 
+PR #26 review follow-up:
+9. Add a backward-compatible `--skip-dataset-integrity` hygiene mode that preserves all Git/index checks without opening protected CSV files.
+10. Make the dataset-manifest verifier the only full-corpus content reader in CI.
+11. Exclude research-marked tests from ordinary pytest by default and enforce module-level research marking under `tests/research/` for any protected-corpus dependency.
+12. Add focused skip-mode and research-selection tests, rerun all required checks, push the existing branch, and keep PR #26 draft and unmerged.
+
 ## 8. Verification
 Required checks:
 - generator run twice, with no diff after the second run
@@ -124,6 +130,11 @@ There is no dataset migration. The manifest describes existing committed files a
 - 2026-07-17: Added the fixture policy, pytest marker registration, protected-path source audit, focused temporary-file tests, and one CI manifest gate.
 - 2026-07-17: Generated the 56-record manifest twice; the second run was unchanged and byte-identical.
 - 2026-07-17: Completed fresh Python 3.11 installation, full pytest, dependency, hygiene, and dataset-integrity checks.
+- 2026-07-17: PR #26 review identified duplicate full-corpus CI reads and insufficient separation of research tests from ordinary pytest.
+- 2026-07-17: Confirmed PR #26 remains open and draft at head `6b8cd97`; began the approved follow-up on the existing branch and worktree.
+- 2026-07-17: Added the backward-compatible hygiene skip option and changed CI so only the manifest verifier reads protected dataset content.
+- 2026-07-17: Enforced default research exclusion, the `tests/research/` module-marker convention, and a runtime protected-path guard that integration tests cannot bypass.
+- 2026-07-17: Completed focused and full local review-follow-up verification without changing the manifest or any protected CSV.
 
 ## 12. Command and Failure Ledger
 
@@ -150,6 +161,19 @@ There is no dataset migration. The manifest describes existing committed files a
 | `git diff --check` | Passed with no whitespace errors. |
 | `git diff --quiet -- raw_data data_clean data_features` | Passed with no protected dataset diff. |
 | Independent post-change protected-file SHA-256 calculation | Passed: 56 paths, 90,960,790 bytes, aggregate `781d03bc4763b8654d9eaa5843d40a77ff1123a6d17db0b24179b2bb89c68543`. |
+| GitHub review-thread helper, initial invocation | Failed before GitHub access because `gh` was not discoverable on the helper process PATH; direct `gh auth status` independently passed. |
+| GitHub review-thread helper with GitHub CLI added to PATH | Failed because its GraphQL `-F owner=0022249141` coercion treated the numeric repository owner as a non-string value. The user-provided two blockers are complete and unambiguous, so implementation proceeds without thread mutation. |
+| Focused hygiene and fixture-policy pytest | Passed: 8 tests in the final 4.08-second rerun, including no-read skip mode, marker-expression selection, AST policy, and runtime integration denial. |
+| Review follow-up generator run 1 | Passed: `Unchanged`, 56 records. |
+| Review follow-up generator run 2 with before/after hash and diff | Passed: `Unchanged`; SHA-256 stayed `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`; second-run diff was empty. |
+| Review follow-up `python scripts/verify_dataset_manifest.py` | Passed. |
+| `python scripts/verify_git_hygiene.py` | Passed in 2.314 seconds with the unchanged 56-file dataset summary. |
+| `python scripts/verify_git_hygiene.py --skip-dataset-integrity` | Passed in 2.155 seconds; datasets reported `status: skipped` while tracked-tree, forbidden-path, ignore, gitlink, and submodule checks remained present. |
+| Final ordinary `python -m pytest -q` | Passed: 55 tests and 1 research test deselected; final staged rerun completed in 5.38 seconds. |
+| Explicit `python -m pytest -q -m research tests/research` | Passed: 1 research-selection probe in 0.03 seconds. |
+| Review follow-up `python -m pip check` | Passed: no broken requirements. |
+| Review follow-up `git diff --check` | Passed. |
+| Protected CSV and committed manifest diff check | Passed: no changes under the three protected directories and no manifest content change. |
 
 Publication and GitHub Actions results are recorded in the draft PR checks so a post-success documentation commit does not retrigger the workflow.
 
@@ -190,3 +214,21 @@ Unresolved semantic limitations:
 - Broker/source identity, period-open/period-close meaning, volume meaning, and price unit remain unknown.
 - Market, symbol, and timeframe values are unnormalized filename inferences, not declarations of broker contracts.
 - The five duplicate timestamps are recorded, not repaired; dataset mutation is outside KAN-9 scope.
+
+## 14. PR #26 Review Follow-Up Evidence
+
+Duplicate-read correction:
+- Standalone hygiene behavior remains backward compatible and still reports the KAN-8 dataset fingerprint by default.
+- Skip mode does not invoke `dataset_summary` and a focused test makes any protected fixture `Path.read_bytes` call fail immediately.
+- Skip mode continues index enumeration, tracked blob-size reporting, forbidden-path checks, ignore probes, gitlink checks, and recursive submodule status.
+- GitHub Actions uses skip mode immediately before the dataset manifest verifier, leaving exactly one full-corpus content verification in CI.
+
+Research separation correction:
+- Pytest configuration defaults to marker expression `not research`.
+- Research tests are confined to `tests/research/` and require module-level `pytestmark = pytest.mark.research`.
+- Collection rejects misplaced research markers or unmarked research modules.
+- An autouse runtime guard blocks `builtins.open` and `io.open` for repository protected paths unless the current test has the authorized research marker; integration alone is not an authorization.
+- AST policy validation evaluates actual marker nodes and protected path constants. Marker text elsewhere in a file does not exempt that file.
+- The explicit research command is documented and verified against a dedicated selection probe.
+
+Manifest semantic values, evidence counts, record count, manifest SHA-256, and protected dataset fingerprint are unchanged by this follow-up.

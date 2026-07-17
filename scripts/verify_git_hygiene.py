@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
+from typing import Sequence
 
 
 FORBIDDEN_DIRECTORY_NAMES = {
@@ -136,8 +138,9 @@ def dataset_summary(root: Path) -> dict[str, int | str]:
     }
 
 
-def main() -> int:
-    root = repository_root()
+def build_report(root: Path, *, skip_dataset_integrity: bool = False) -> dict[str, object]:
+    """Build the hygiene report, optionally without reading dataset content."""
+
     entries = index_entries(root)
     paths = [path for _, _, path in entries]
     violations = sorted(path for path in paths if is_forbidden(path))
@@ -145,18 +148,44 @@ def main() -> int:
     gitlinks = sorted(path for mode, _, path in entries if mode == "160000")
     submodules = run_git("submodule", "status", "--recursive", cwd=root, check=False)
 
-    report = {
+    report: dict[str, object] = {
         "tracked_file_count": len(entries),
         "tracked_blob_bytes": tracked_blob_bytes(entries, root),
         "forbidden_tracked_paths": violations,
         "ignore_probe_failures": ignore_failures,
         "gitlinks": gitlinks,
         "submodule_status_exit_code": submodules.returncode,
-        "datasets": dataset_summary(root),
+        "datasets": (
+            {"status": "skipped"}
+            if skip_dataset_integrity
+            else dataset_summary(root)
+        ),
     }
+    return report
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--skip-dataset-integrity",
+        action="store_true",
+        help="Run Git hygiene checks without opening or hashing protected CSV files.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = parse_args(argv)
+    root = repository_root()
+    report = build_report(root, skip_dataset_integrity=args.skip_dataset_integrity)
     print(json.dumps(report, indent=2, sort_keys=True))
 
-    if violations or ignore_failures or submodules.returncode != 0:
+    if (
+        report["forbidden_tracked_paths"]
+        or report["ignore_probe_failures"]
+        or report["submodule_status_exit_code"] != 0
+    ):
+        submodules = run_git("submodule", "status", "--recursive", cwd=root, check=False)
         if submodules.stderr:
             print(submodules.stderr.decode("utf-8", errors="replace"), file=sys.stderr)
         return 1

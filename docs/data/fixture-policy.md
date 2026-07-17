@@ -11,16 +11,18 @@ Tests must be deterministic, reviewable, and proportionate to their purpose. Ord
 | Unit | One behavior or validation rule | Tiny values inline or in `tests/fixtures/unit/` | Default pytest suite; no protected dataset dependency. |
 | Synthetic | Constructed edge cases with no claim of market realism | Generated in memory, temporary directories, or `tests/fixtures/synthetic/` | State the invariant represented; use fixed values or seeds. |
 | Curated | Small, hand-selected real-data excerpt | `tests/fixtures/curated/` | Document source path, selection rule, license/provenance, and any transformation. Never imply the excerpt is representative. |
-| Integration | Cross-module or file-format behavior | Minimal dedicated fixture where possible | Mark with `pytest.mark.integration`; do not use the full corpus when a smaller fixture proves the contract. |
-| Research | Corpus-scale analytical validation | Existing protected dataset directories | Mark with `pytest.mark.research`; run intentionally and keep separate from ordinary unit-test collection. |
+| Integration | Cross-module or file-format behavior | Minimal dedicated fixture where possible | Mark with `pytest.mark.integration`; this marker does not authorize protected-corpus access. |
+| Research | Corpus-scale analytical validation | Existing protected dataset directories | Place under `tests/research/`, set module-level `pytestmark = pytest.mark.research`, and run intentionally. |
 | Generated | Reproducible test or report output | Temporary directories by default | Document the generator, version, seed, and regeneration command before committing any generated artifact. |
 
 ## Protected Corpus Rules
 
 - Every tracked CSV under the three protected directories is classified as RAW, CLEAN, or FEATURE by directory policy and is recorded in `data/manifests/committed_datasets.json`.
 - Unit and synthetic tests must use small temporary files or dedicated fixtures. They must not open protected dataset paths directly.
-- A test that truly requires protected data must carry an `integration` or `research` marker and explain why a small fixture is insufficient.
-- CI runs `python scripts/verify_dataset_manifest.py` once. Pytest tests for the manifest use only temporary small files and do not rehash the full corpus.
+- A test that truly requires protected data must live under `tests/research/`, carry the module-level research marker, and explain why a small fixture is insufficient. An integration marker alone never authorizes protected-corpus access.
+- Ordinary `python -m pytest -q` excludes research tests through the versioned pytest configuration.
+- Collection policy rejects research markers outside `tests/research/` and research modules without the module-level marker. A runtime guard also blocks file opens under protected repository paths for every ordinary or integration test.
+- CI runs repository hygiene with `--skip-dataset-integrity`, then runs `python scripts/verify_dataset_manifest.py` once as the only full-corpus content verification. Pytest manifest tests use only temporary small files.
 - Curated excerpts are new fixtures, not replacements for or modifications of protected source files. Selection must avoid future-data leakage and preserve source attribution.
 
 ## Evidence and Semantics
@@ -49,6 +51,12 @@ Verify without writing:
 ```powershell
 python scripts/verify_dataset_manifest.py
 python -m pytest -q
+```
+
+Run research tests intentionally:
+
+```powershell
+python -m pytest -q -m research tests/research
 ```
 
 The second generator run must report `Unchanged`, and the verifier must leave the worktree unchanged.
