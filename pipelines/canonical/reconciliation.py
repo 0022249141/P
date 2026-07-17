@@ -42,6 +42,31 @@ def reconcile_bars(
 ) -> ReconciliationEvaluation:
     """Compare generated and supplied HTF bars using explicit tolerances."""
 
+    _validate_columns(generated, "generated")
+    _validate_columns(supplied, "supplied")
+    if generated.empty and supplied.empty:
+        result = ReconciliationResult(
+            missing_target_bars=0,
+            extra_target_bars=0,
+            exact_match_count=0,
+            tolerance_match_count=0,
+            mismatch_count=0,
+            field_differences=FieldDifferenceCounts(),
+            mismatch_examples=(),
+            tolerance=tolerance,
+        )
+        gate = GateResult(
+            gate_id=GateId.G5_MTF_RECONCILIATION,
+            status=GateStatus.BLOCKED,
+            reason_code="G5_EMPTY_RECONCILIATION_BLOCKED",
+            message="Reconciliation requires at least one generated or supplied target bar.",
+            checked_record_count=0,
+            affected_record_count=0,
+            limitations=("Empty inputs provide no multi-timeframe reconciliation evidence.",),
+            remediation_guidance=("Provide non-empty higher-timeframe bars for comparison.",),
+        )
+        return ReconciliationEvaluation(result, gate)
+
     generated_indexed = _indexed(generated, "generated")
     supplied_indexed = _indexed(supplied, "supplied")
     generated_timestamps = set(generated_indexed.index)
@@ -137,8 +162,11 @@ def reconcile_bars(
 
 
 def _indexed(frame: pd.DataFrame, label: str) -> pd.DataFrame:
-    if tuple(frame.columns) != CANONICAL_COLUMNS:
-        raise ValueError(f"{label} frame must use canonical columns and order")
+    _validate_columns(frame, label)
+    if frame.empty:
+        indexed = frame.copy(deep=True)
+        indexed["timestamp"] = pd.DatetimeIndex([], tz="UTC")
+        return indexed.set_index("timestamp")
     timestamps = pd.DatetimeIndex(frame["timestamp"])
     if timestamps.tz is None:
         raise ValueError(f"{label} timestamps must be timezone-aware")
@@ -147,3 +175,8 @@ def _indexed(frame: pd.DataFrame, label: str) -> pd.DataFrame:
     indexed = frame.copy(deep=True)
     indexed["timestamp"] = timestamps.tz_convert("UTC")
     return indexed.set_index("timestamp").sort_index()
+
+
+def _validate_columns(frame: pd.DataFrame, label: str) -> None:
+    if tuple(frame.columns) != CANONICAL_COLUMNS:
+        raise ValueError(f"{label} frame must use canonical columns and order")

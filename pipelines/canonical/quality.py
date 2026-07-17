@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import time, timedelta
+from datetime import date, time, timedelta
 from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -244,6 +244,17 @@ def evaluate_calendar_coverage(
             limitations=("G1-G3 did not produce canonical UTC rows.",),
             remediation_guidance=("Resolve earlier gate failures before G4 evaluation.",),
         )
+    if frame.empty:
+        return GateResult(
+            gate_id=GateId.G4_CALENDAR_COVERAGE,
+            status=GateStatus.BLOCKED,
+            reason_code="G4_EMPTY_INPUT_BLOCKED",
+            message="Calendar checks require at least one canonical row.",
+            checked_record_count=0,
+            affected_record_count=0,
+            limitations=("No calendar, interval, or coverage evidence exists for empty input.",),
+            remediation_guidance=("Provide non-empty canonical rows before G4 evaluation.",),
+        )
     calendar = policy.calendar
     if calendar is None:
         return GateResult(
@@ -261,53 +272,12 @@ def evaluate_calendar_coverage(
     limitations: list[str] = []
     timestamps = pd.DatetimeIndex(frame["timestamp"])
     expected = calendar.expected_interval_seconds
-    epoch_ns = timestamps.to_numpy(dtype="datetime64[ns]").astype(np.int64)
-    deltas = np.diff(epoch_ns) / 1_000_000_000 if len(timestamps) > 1 else np.array([])
-    duplicate_positions = np.flatnonzero(deltas == 0) + 1
-    if len(duplicate_positions):
-        findings.append(
-            _finding(
-                "UNEXPECTED_DUPLICATE_INTERVAL",
-                "Duplicate timestamp intervals were detected.",
-                duplicate_positions,
-            )
-        )
-    missing_examples: list[str] = []
-    missing_count = 0
-    irregular_positions: list[int] = []
-    for position, delta in enumerate(deltas, start=1):
-        if delta == expected:
-            continue
-        if delta > expected and delta % expected == 0:
-            missing_count += int(delta // expected) - 1
-            missing_examples.append(
-                f"{timestamps[position - 1].isoformat()}->{timestamps[position].isoformat()}"
-            )
-        elif delta != 0:
-            irregular_positions.append(position)
-    if missing_count:
-        findings.append(
-            _finding(
-                "MISSING_INTERVALS",
-                "Expected timestamp intervals are missing.",
-                missing_examples,
-                affected=missing_count,
-            )
-        )
-    if irregular_positions:
-        findings.append(
-            _finding(
-                "IRREGULAR_INTERVALS",
-                "Observed deltas are not multiples of the expected interval.",
-                irregular_positions,
-            )
-        )
-
     evidence = [
         f"calendar:{calendar.policy_version}",
         f"coverage-start:{timestamps[0].isoformat()}" if len(timestamps) else "coverage-start:EMPTY",
         f"coverage-end:{timestamps[-1].isoformat()}" if len(timestamps) else "coverage-end:EMPTY",
     ]
+    comparable_intervals = [True] * max(0, len(timestamps) - 1)
     if calendar.behavior is CalendarBehavior.VERSIONED_SESSION:
         try:
             local = timestamps.tz_convert(ZoneInfo(calendar.timezone))
@@ -319,14 +289,12 @@ def evaluate_calendar_coverage(
                     [calendar.timezone],
                 )
             )
+            comparable_intervals = [False] * max(0, len(timestamps) - 1)
         else:
             start = time.fromisoformat(calendar.session_start or "00:00:00")
             end = time.fromisoformat(calendar.session_end or "00:00:00")
-            out_of_session = [
-                index
-                for index, timestamp in enumerate(local)
-                if not _time_in_session(timestamp.time(), start, end)
-            ]
+            anchors = tuple(_session_anchor(timestamp, start, end) for timestamp in local)
+            out_of_session = [index for index, anchor in enumerate(anchors) if anchor is None]
             if out_of_session:
                 findings.append(
                     _finding(
@@ -335,8 +303,29 @@ def evaluate_calendar_coverage(
                         out_of_session,
                     )
                 )
+            comparable_intervals = [
+                left is not None and left == right
+                for left, right in zip(anchors, anchors[1:])
+            ]
+            evidence.extend(
+                (
+                    f"session-timezone:{calendar.timezone}",
+                    f"session-bounds:{calendar.session_start}-{calendar.session_end}",
+                )
+            )
+        limitations.append(
+            "Holiday and trading-day completeness was not evaluated because no "
+            "trading-day calendar evidence was supplied."
+        )
     else:
         limitations.append("Continuous calendar declared; exchange/session boundaries were not evaluated.")
+
+    _append_interval_findings(
+        timestamps,
+        expected,
+        comparable_intervals,
+        findings,
+    )
 
     if calendar.coverage_end_utc is not None and len(timestamps):
         coverage_end = pd.Timestamp(calendar.coverage_end_utc).tz_convert("UTC")
@@ -467,3 +456,65 @@ def _time_in_session(value: time, start: time, end: time) -> bool:
     if start <= end:
         return start <= value <= end
     return value >= start or value <= end
+
+
+def _session_anchor(timestamp: pd.Timestamp, start: time, end: time) -> date | None:
+    value = timestamp.time()
+    if not _time_in_session(value, start, end):
+        return None
+    if start <= end or value >= start:
+        return timestamp.date()
+    return timestamp.date() - timedelta(days=1)
+
+
+def _append_interval_findings(
+    timestamps: pd.DatetimeIndex,
+    expected: int,
+    comparable_intervals: list[bool],
+    findings: list[GateFinding],
+) -> None:
+    epoch_ns = timestamps.to_numpy(dtype="datetime64[ns]").astype(np.int64)
+    deltas = np.diff(epoch_ns) / 1_000_000_000
+    duplicate_positions = np.flatnonzero(deltas == 0) + 1
+    if len(duplicate_positions):
+        findings.append(
+            _finding(
+                "UNEXPECTED_DUPLICATE_INTERVAL",
+                "Duplicate timestamp intervals were detected.",
+                duplicate_positions,
+            )
+        )
+
+    missing_examples: list[str] = []
+    missing_count = 0
+    irregular_positions: list[int] = []
+    for position, (delta, comparable) in enumerate(
+        zip(deltas, comparable_intervals),
+        start=1,
+    ):
+        if delta == 0 or not comparable or delta == expected:
+            continue
+        if delta > expected and delta % expected == 0:
+            missing_count += int(delta // expected) - 1
+            missing_examples.append(
+                f"{timestamps[position - 1].isoformat()}->{timestamps[position].isoformat()}"
+            )
+        else:
+            irregular_positions.append(position)
+    if missing_count:
+        findings.append(
+            _finding(
+                "MISSING_INTERVALS",
+                "Expected timestamp intervals are missing within a comparable session.",
+                missing_examples,
+                affected=missing_count,
+            )
+        )
+    if irregular_positions:
+        findings.append(
+            _finding(
+                "IRREGULAR_INTERVALS",
+                "Observed comparable deltas are not multiples of the expected interval.",
+                irregular_positions,
+            )
+        )

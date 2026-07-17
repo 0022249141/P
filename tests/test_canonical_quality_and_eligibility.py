@@ -90,8 +90,28 @@ def _policy(*, gap_policy: GapPolicy = GapPolicy.REJECT) -> CanonicalizationPoli
     )
 
 
+def _session_policy(
+    session_start: str,
+    session_end: str,
+    *,
+    timezone: str = "UTC",
+) -> CanonicalizationPolicy:
+    base = _policy()
+    return CanonicalizationPolicy(
+        timestamp=base.timestamp,
+        calendar=CalendarPolicy(
+            policy_version="explicit-daily-session-v1",
+            behavior=CalendarBehavior.VERSIONED_SESSION,
+            expected_interval_seconds=60,
+            timezone=timezone,
+            session_start=session_start,
+            session_end=session_end,
+        ),
+    )
+
+
 def _evaluation(timestamps: list[str] | None = None):
-    values = timestamps or [
+    values = timestamps if timestamps is not None else [
         "2024-01-01T00:00:00Z",
         "2024-01-01T00:01:00Z",
         "2024-01-01T00:02:00Z",
@@ -123,6 +143,40 @@ def test_g0_to_g4_pass_with_complete_explicit_evidence() -> None:
         GateId.G9_EXECUTION_BACKTEST_ELIGIBILITY,
     ):
         assert by_gate[gate_id].status is GateStatus.NOT_EVALUATED
+
+
+def test_empty_quality_input_blocks_g1_to_g4_and_downstream_callback() -> None:
+    evaluation = _evaluation([])
+    by_gate = {result.gate_id: result for result in evaluation.report.results}
+
+    assert by_gate[GateId.G1_SCHEMA_PARSING].status is GateStatus.FAIL
+    for gate_id in (
+        GateId.G2_TEMPORAL_INTEGRITY,
+        GateId.G3_OHLC_NUMERIC,
+        GateId.G4_CALENDAR_COVERAGE,
+    ):
+        assert by_gate[gate_id].status is GateStatus.BLOCKED
+
+    called = False
+
+    def downstream() -> str:
+        nonlocal called
+        called = True
+        return "should-not-run"
+
+    guarded = execute_if_eligible(
+        evaluation.report,
+        EligibilityRequirement(
+            profile="provenance-only-still-requires-data",
+            required_gates=(GateId.G0_PROVENANCE,),
+        ),
+        downstream,
+    )
+
+    assert guarded.decision.eligible is False
+    assert guarded.decision.blocking_gates[0].reason_code == "EMPTY_DATASET"
+    assert guarded.output is None
+    assert called is False
 
 
 def test_g0_fails_for_duplicate_or_mismatched_manifest_evidence() -> None:
@@ -222,29 +276,82 @@ def test_nonreject_gap_policy_reports_without_silent_repair() -> None:
     assert len(evaluation.canonicalization.frame) == 2
 
 
-def test_versioned_session_only_flags_out_of_session_when_explicitly_supplied() -> None:
-    base = _policy()
-    policy = CanonicalizationPolicy(
-        timestamp=base.timestamp,
-        calendar=CalendarPolicy(
-            policy_version="explicit-session-v1",
-            behavior=CalendarBehavior.VERSIONED_SESSION,
-            expected_interval_seconds=60,
-            timezone="UTC",
-            session_start="09:00:00",
-            session_end="10:00:00",
+def test_two_consecutive_daily_sessions_do_not_report_scheduled_closure_as_gap() -> None:
+    evaluation = evaluate_quality(
+        _bars(
+            [
+                "2024-01-01T09:00:00Z",
+                "2024-01-01T09:01:00Z",
+                "2024-01-02T09:00:00Z",
+                "2024-01-02T09:01:00Z",
+            ]
         ),
+        dataset=_identity(),
+        policy=_session_policy("09:00:00", "10:00:00"),
+        manifest=_manifest(),
     )
+
+    g4 = evaluation.report.results[4]
+    assert g4.status is GateStatus.PASS
+    assert "MISSING_INTERVALS" not in {finding.reason_code for finding in g4.findings}
+
+
+def test_overnight_session_anchors_ignore_daytime_closure() -> None:
+    evaluation = evaluate_quality(
+        _bars(
+            [
+                "2024-01-02T01:59:00Z",
+                "2024-01-02T02:00:00Z",
+                "2024-01-02T22:00:00Z",
+                "2024-01-02T22:01:00Z",
+            ]
+        ),
+        dataset=_identity(),
+        policy=_session_policy("22:00:00", "02:00:00"),
+        manifest=_manifest(),
+    )
+
+    g4 = evaluation.report.results[4]
+    assert g4.status is GateStatus.PASS
+    assert "MISSING_INTERVALS" not in {finding.reason_code for finding in g4.findings}
+
+
+def test_within_session_missing_bar_still_fails_g4() -> None:
+    evaluation = evaluate_quality(
+        _bars(["2024-01-01T09:00:00Z", "2024-01-01T09:02:00Z"]),
+        dataset=_identity(),
+        policy=_session_policy("09:00:00", "10:00:00"),
+        manifest=_manifest(),
+    )
+
+    g4 = evaluation.report.results[4]
+    assert g4.status is GateStatus.FAIL
+    assert "MISSING_INTERVALS" in {finding.reason_code for finding in g4.findings}
+
+
+def test_versioned_session_flags_out_of_session_bars() -> None:
     evaluation = evaluate_quality(
         _bars(["2024-01-01T08:00:00Z"]),
         dataset=_identity(),
-        policy=policy,
+        policy=_session_policy("09:00:00", "10:00:00"),
         manifest=_manifest(),
     )
 
     g4 = evaluation.report.results[4]
     assert g4.status is GateStatus.FAIL
     assert "OUT_OF_SESSION_BARS" in {finding.reason_code for finding in g4.findings}
+
+
+def test_versioned_session_discloses_missing_holiday_and_trading_day_evidence() -> None:
+    evaluation = evaluate_quality(
+        _bars(["2024-01-01T09:00:00Z"]),
+        dataset=_identity(),
+        policy=_session_policy("09:00:00", "10:00:00"),
+        manifest=_manifest(),
+    )
+
+    g4 = evaluation.report.results[4]
+    assert any("trading-day calendar evidence" in limitation for limitation in g4.limitations)
 
 
 def test_incomplete_final_bar_requires_explicit_coverage_end() -> None:

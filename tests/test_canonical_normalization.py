@@ -77,6 +77,20 @@ def test_valid_canonical_utc_m1_is_deterministic() -> None:
     assert first.source_rows == ((0,), (1,), (2,), (3,), (4,))
 
 
+def test_empty_canonical_input_fails_or_blocks_every_canonical_gate() -> None:
+    result = canonicalize(_bars([]), _policy())
+
+    assert result.frame is None
+    assert [gate.status for gate in result.gate_results] == [
+        GateStatus.FAIL,
+        GateStatus.BLOCKED,
+        GateStatus.BLOCKED,
+    ]
+    assert "EMPTY_CANONICAL_INPUT" in _finding_codes(result, 0)
+    assert "EMPTY_TEMPORAL_INPUT" in _finding_codes(result, 1)
+    assert result.gate_results[2].reason_code == "G3_EMPTY_INPUT_BLOCKED"
+
+
 def test_naive_timestamps_with_unknown_timezone_block_utc_output() -> None:
     table = _bars(["2024-01-01 00:00:00", "2024-01-01 00:01:00"])
     policy = _policy(timezone="UNKNOWN", timezone_evidence=EvidenceStatus.UNKNOWN)

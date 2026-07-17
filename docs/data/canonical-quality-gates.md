@@ -42,9 +42,22 @@ and duplicate results all block execution.
 `resample_bars` supports M1 to M5, M15, M30, H1, H4, and D1. Its policy persists the
 source and target timeframes, source period semantics, timestamp label, closed edge,
 origin, offset, UTC requirement, calendar version and behavior, incomplete-bin action,
-and volume aggregation. KAN-10 implements continuous-calendar binning. A versioned
+and volume aggregation. Period-start sources require left-closed groups; period-end
+sources require right-closed groups. This makes source-row membership operational and
+leaves the target timestamp label independently explicit. KAN-10 implements continuous-calendar binning. A versioned
 session policy is rejected until an approved calendar binning implementation is
 supplied; it is never approximated with hard-coded hours.
+
+G4 session diagnostics use the explicit local daily session bounds. Adjacent bars are
+checked for interval continuity only when they belong to the same session anchor, so a
+scheduled daily or overnight closure is not reported as missing bars. Without supplied
+holiday or trading-day evidence, G4 records a limitation and does not claim that whole
+sessions or trading days are complete.
+
+Empty input cannot establish quality evidence. Empty canonical input fails G1 and
+blocks G2-G4, empty resampling and zero produced target bars raise `ResamplingError`,
+empty-vs-empty G5 reconciliation is `BLOCKED`, and the eligibility guard does not invoke
+a callback when the report identifies an empty dataset.
 
 ## Limitations
 

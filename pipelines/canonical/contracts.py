@@ -281,6 +281,16 @@ class ResamplingPolicy(FrozenContract):
             raise ValueError("source timestamp period semantics must be explicit")
         if self.target_timeframe not in {"M5", "M15", "M30", "H1", "H4", "D1"}:
             raise ValueError("unsupported KAN-10 target timeframe")
+        expected_boundary = (
+            BoundaryConvention.LEFT
+            if self.source_period_semantics is PeriodSemantics.PERIOD_START
+            else BoundaryConvention.RIGHT
+        )
+        if self.closed_boundary is not expected_boundary:
+            raise ValueError(
+                f"{self.source_period_semantics.value} source timestamps require "
+                f"a {expected_boundary.value}-closed boundary"
+            )
         if self.volume_aggregation is VolumeAggregation.UNKNOWN:
             raise ValueError("volume aggregation must be explicitly declared")
         return self

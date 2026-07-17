@@ -121,7 +121,11 @@ def canonicalize(
     )
 
     g3_findings = _evaluate_ohlc_numeric(table, numeric, policy)
-    if not all(column in table.columns for column in CANONICAL_COLUMNS[1:]):
+    if row_count == 0:
+        g3_status = GateStatus.BLOCKED
+        g3_reason = "G3_EMPTY_INPUT_BLOCKED"
+        g3_message = "OHLC numeric checks require at least one source row."
+    elif not all(column in table.columns for column in CANONICAL_COLUMNS[1:]):
         g3_status = GateStatus.BLOCKED
         g3_reason = "G3_SCHEMA_DEPENDENCY_BLOCKED"
         g3_message = "OHLC numeric checks require all canonical numeric columns."
@@ -199,6 +203,16 @@ def _evaluate_schema_and_parsing(
     empty_headers = [index for index, column in enumerate(columns) if not column.strip()]
     missing_columns = [column for column in CANONICAL_COLUMNS if column not in column_counts]
     unsupported_columns = [column for column in columns if column not in CANONICAL_COLUMNS]
+
+    if table.empty:
+        findings.append(
+            _finding(
+                "EMPTY_CANONICAL_INPUT",
+                "Canonical input must contain at least one source row.",
+                (),
+                affected=0,
+            )
+        )
 
     if empty_headers:
         findings.append(_finding("EMPTY_HEADER", "Empty column headers were detected.", empty_headers))
@@ -297,6 +311,20 @@ def _evaluate_temporal(
     if list(table.columns).count("timestamp") != 1:
         return (
             [_finding("TIMESTAMP_SCHEMA_DEPENDENCY", "A unique timestamp column is required.", ())],
+            None,
+            True,
+            (),
+        )
+    if table.empty:
+        return (
+            [
+                _finding(
+                    "EMPTY_TEMPORAL_INPUT",
+                    "Temporal integrity requires at least one source row.",
+                    (),
+                    affected=0,
+                )
+            ],
             None,
             True,
             (),

@@ -111,8 +111,9 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
         source_rows.append(source_group)
 
     output = pd.DataFrame(output_rows, columns=CANONICAL_COLUMNS)
-    if not output.empty:
-        output["timestamp"] = pd.DatetimeIndex(output["timestamp"]).tz_convert("UTC")
+    if output.empty:
+        raise ResamplingError("resampling produced zero target bars")
+    output["timestamp"] = pd.DatetimeIndex(output["timestamp"]).tz_convert("UTC")
     return ResamplingResult(
         frame=output,
         source_rows=tuple(source_rows),
@@ -125,6 +126,8 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
 def _validate_source(frame: pd.DataFrame, policy: ResamplingPolicy) -> None:
     if tuple(frame.columns) != CANONICAL_COLUMNS:
         raise ResamplingError("source frame must use exact canonical columns and order")
+    if frame.empty:
+        raise ResamplingError("source frame must contain at least one canonical bar")
     timestamps = pd.DatetimeIndex(frame["timestamp"])
     if timestamps.tz is None:
         raise ResamplingError("source timestamps must be timezone-aware")

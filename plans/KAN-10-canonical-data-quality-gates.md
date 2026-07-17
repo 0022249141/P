@@ -30,6 +30,10 @@ Acceptance trace:
 - Eligibility requires every requested gate to be uniquely present and `PASS` before a callback runs.
 - Ordinary tests use synthetic/in-memory data and remain independent of protected research CSVs.
 - Protected datasets and the committed KAN-9 manifest remain byte-identical.
+- G4 evaluates interval continuity within explicit daily session anchors and does not
+  misclassify scheduled inter-session closures as missing bars.
+- Empty inputs block G1-G5 and downstream callbacks rather than producing vacuous passes.
+- Resampling enforces source period semantics through compatible closed-boundary policy.
 
 ## 3. Current-State Evidence
 Baseline ref: `origin/main` / `origin/KAN-10-canonical-data-quality-gates` at `3eded49f5ba9d91a87da8a8af2efb37cdaf7806e`.
@@ -71,6 +75,19 @@ Implementation assumptions:
 - G4 interval diagnostics can run with an explicit expected interval. Session/calendar claims require a supplied versioned calendar policy; otherwise calendar-specific eligibility is blocked or limited.
 - Canonical resampling accepts validated UTC bars and a fully explicit policy. Continuous-calendar behavior is distinct from a versioned session calendar.
 - Decimal conversion from string plus explicit absolute/relative tolerances is sufficient for deterministic reconciliation comparisons.
+- A versioned daily session supplies local start/end bounds but not a holiday or
+  trading-day schedule. Bars sharing one local session-anchor date are checked for
+  continuity; transitions to another session anchor are scheduled closures. Missing
+  whole sessions are not inferred without trading-day evidence and are disclosed as a
+  limitation.
+- Overnight bars at or after session start belong to that local date's anchor; bars at
+  or before session end belong to the previous local date's anchor.
+- Empty inputs contain no evidence capable of passing a data-quality gate. G1 fails,
+  dependent gates block, G5 blocks empty-vs-empty comparison, and eligibility treats
+  the empty G1 result as a global callback blocker.
+- `PERIOD_START` source timestamps require a left-closed grouping boundary;
+  `PERIOD_END` source timestamps require a right-closed grouping boundary. Target
+  labels remain independently explicit through `timestamp_label`.
 
 Unresolved domain questions intentionally left blocked:
 - The repository does not declare broker/source timezone, trading sessions, DST interpretation, period label semantics, price units, or volume meaning for committed datasets.
@@ -227,6 +244,16 @@ Legacy behavior is documented as evidence, not preserved as correctness. Canonic
 | 2026-07-17 | Committed manifest after-check | Passed: SHA-256 remains `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`. |
 | 2026-07-17 | Final `python -m pip check` | Passed: no broken requirements. |
 | 2026-07-17 | `git diff --cached --check` | Passed with all created and modified files staged. |
+| 2026-07-17 | PR #27 review-blocker audit | Confirmed raw continuous deltas cross session closures, empty canonical/resampling/reconciliation paths can vacuously succeed, and `source_period_semantics` is persisted but not operational. Remediation in progress on the existing branch and PR only. |
+| 2026-07-17 | Session-aware G4 and empty/period follow-up | Implemented explicit session-anchor comparisons, empty-input blocks, and period/boundary compatibility without changing package exports. |
+| 2026-07-17 | Follow-up focused canonical tests | Passed: 65 tests in 4.43 seconds. |
+| 2026-07-17 | Follow-up ordinary `python -m pytest -q` | Passed: 120 tests, 1 research test deselected in 10.80 seconds. |
+| 2026-07-17 | Follow-up explicit research test | Passed: 1 test in 0.06 seconds. |
+| 2026-07-17 | Follow-up dataset manifest verifier | Passed. |
+| 2026-07-17 | Follow-up Git hygiene skip mode | Passed: no forbidden paths, gitlinks, ignore failures, or submodule errors. |
+| 2026-07-17 | Follow-up `python -m pip check` | Passed: no broken requirements. |
+| 2026-07-17 | Follow-up `git diff --check` | Passed. |
+| 2026-07-17 | Follow-up protected-data fingerprint | Unchanged: 56 CSVs, 90,960,790 bytes, aggregate `781d03bc4763b8654d9eaa5843d40a77ff1123a6d17db0b24179b2bb89c68543`; manifest SHA-256 `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`. |
 
 ## 12. Completion Evidence
 Implemented interfaces:
@@ -242,3 +269,18 @@ Acceptance status:
 - Local verification: passed as recorded above.
 - `git diff --check`: passed.
 - Commit/push, draft PR creation, and GitHub Actions: pending publication steps; their results will be reported in the PR and final response so no post-success documentation commit retriggers CI.
+
+Review-blocker follow-up status:
+- G4 session closures: satisfied. Only intervals sharing an explicit local session anchor
+  are compared; daily and overnight closures are excluded, while within-session gaps and
+  out-of-session bars remain failures.
+- Holiday/trading-day evidence: explicitly limited. Whole-session completeness is not
+  claimed without a supplied trading-day calendar.
+- Empty data: satisfied. G1 fails; G2-G4 block; resampling rejects empty/zero-output
+  paths; empty-vs-empty G5 blocks; eligibility prevents callback invocation.
+- Source period semantics: satisfied. Period-start sources require left-closed grouping,
+  period-end sources require right-closed grouping, with tested source lineage and target
+  timestamps.
+- G6-G9, import safety, deterministic serialization, public package exports, protected
+  datasets, and manifest bytes remain preserved.
+- Follow-up commit/push and both GitHub Actions events remain pending.

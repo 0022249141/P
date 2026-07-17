@@ -38,14 +38,22 @@ def _policy(
     *,
     incomplete: IncompleteBinPolicy = IncompleteBinPolicy.REJECT,
     origin: str = "epoch",
+    period: PeriodSemantics = PeriodSemantics.PERIOD_START,
+    label: BoundaryConvention | None = None,
+    closed: BoundaryConvention | None = None,
 ) -> ResamplingPolicy:
+    default_boundary = (
+        BoundaryConvention.LEFT
+        if period is PeriodSemantics.PERIOD_START
+        else BoundaryConvention.RIGHT
+    )
     return ResamplingPolicy(
         policy_version="resample-v1",
         source_timeframe="M1",
         target_timeframe=target,
-        source_period_semantics=PeriodSemantics.PERIOD_START,
-        timestamp_label=BoundaryConvention.LEFT,
-        closed_boundary=BoundaryConvention.LEFT,
+        source_period_semantics=period,
+        timestamp_label=label or default_boundary,
+        closed_boundary=closed or default_boundary,
         origin=origin,
         timezone="UTC",
         calendar_behavior=CalendarBehavior.CONTINUOUS,
@@ -85,6 +93,41 @@ def test_m1_to_m5_and_m15_aggregation_is_deterministic() -> None:
     assert m5_first.to_json_bytes() == m5_second.to_json_bytes()
 
 
+def test_source_period_semantics_control_membership_and_target_timestamp() -> None:
+    period_start = resample_bars(
+        _m1_bars(5, start="2024-01-01T00:00:00Z"),
+        _policy("M5", period=PeriodSemantics.PERIOD_START),
+    )
+    period_end = resample_bars(
+        _m1_bars(5, start="2024-01-01T00:01:00Z"),
+        _policy("M5", period=PeriodSemantics.PERIOD_END),
+    )
+
+    assert period_start.source_rows == (tuple(range(5)),)
+    assert period_start.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T00:00:00Z")
+    ]
+    assert period_end.source_rows == (tuple(range(5)),)
+    assert period_end.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T00:05:00Z")
+    ]
+
+
+@pytest.mark.parametrize(
+    ("period", "closed"),
+    [
+        (PeriodSemantics.PERIOD_START, BoundaryConvention.RIGHT),
+        (PeriodSemantics.PERIOD_END, BoundaryConvention.LEFT),
+    ],
+)
+def test_incompatible_period_semantics_and_closed_boundary_are_rejected(
+    period: PeriodSemantics,
+    closed: BoundaryConvention,
+) -> None:
+    with pytest.raises(ValueError, match="source timestamps require"):
+        _policy("M5", period=period, closed=closed)
+
+
 def test_h1_and_h4_use_explicit_anchor() -> None:
     origin = "2024-01-01T00:00:00Z"
     h1 = resample_bars(_m1_bars(240), _policy("H1", origin=origin))
@@ -109,6 +152,17 @@ def test_incomplete_target_bin_reject_drop_and_keep_are_explicit() -> None:
     assert dropped.incomplete_bin_count == 1
     assert len(kept.frame) == 2
     assert kept.incomplete_bin_count == 1
+
+
+def test_empty_source_and_zero_output_after_drop_are_rejected() -> None:
+    with pytest.raises(ResamplingError, match="at least one canonical bar"):
+        resample_bars(_m1_bars(0), _policy("M5"))
+
+    with pytest.raises(ResamplingError, match="zero target bars"):
+        resample_bars(
+            _m1_bars(2),
+            _policy("M5", incomplete=IncompleteBinPolicy.DROP),
+        )
 
 
 def test_resampling_rejects_irregular_or_non_utc_source() -> None:
@@ -148,6 +202,16 @@ def test_reconciliation_exact_tolerance_and_mismatch() -> None:
     assert mismatch.gate_result.status is GateStatus.FAIL
     assert mismatch.result.mismatch_count == 1
     assert mismatch.result.field_differences.close == 1
+
+
+def test_empty_reconciliation_is_blocked_instead_of_passing() -> None:
+    empty = _m1_bars(0)
+
+    evaluation = reconcile_bars(empty, empty.copy(), ReconciliationTolerance())
+
+    assert evaluation.gate_result.status is GateStatus.BLOCKED
+    assert evaluation.gate_result.reason_code == "G5_EMPTY_RECONCILIATION_BLOCKED"
+    assert evaluation.result.exact_match_count == 0
 
 
 def test_reconciliation_reports_missing_and_extra_target_bars() -> None:

@@ -10,6 +10,7 @@ from .contracts import (
     EligibilityBlock,
     EligibilityDecision,
     EligibilityRequirement,
+    GateId,
     GateReport,
     GateStatus,
 )
@@ -35,6 +36,27 @@ def evaluate_eligibility(
         by_gate[result.gate_id].append(result)
 
     blocks: list[EligibilityBlock] = []
+    empty_g1 = next(
+        (
+            result
+            for result in by_gate.get(GateId.G1_SCHEMA_PARSING, [])
+            if result.checked_record_count == 0
+            or any(
+                finding.reason_code == "EMPTY_CANONICAL_INPUT"
+                for finding in result.findings
+            )
+        ),
+        None,
+    )
+    if empty_g1 is not None:
+        blocks.append(
+            EligibilityBlock(
+                gate_id=GateId.G1_SCHEMA_PARSING,
+                status=empty_g1.status,
+                reason_code="EMPTY_DATASET",
+                message="Downstream execution requires a non-empty canonical dataset.",
+            )
+        )
     for gate_id in requirement.required_gates:
         matches = by_gate.get(gate_id, [])
         if not matches:
