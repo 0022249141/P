@@ -22,7 +22,7 @@ smc-validate = "smc_validation.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["smc_validation*", "core*", "engines*"]
+include = ["smc_validation*", "core*", "engines*", "pipelines*"]
 exclude = ["data*", "tests*"]
 
 [tool.pytest.ini_options]
