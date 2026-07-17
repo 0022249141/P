@@ -1,0 +1,3428 @@
+{
+  "datasets": [
+    {
+      "bytes": 2910574,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2026-02-18 10:22:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-1.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2936364,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2023-01-05 16:00:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-15.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "8218da57a562ce3b85c668b09252428b0cc52bec8e00f3f03fbe8eb7df098fd2",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "15"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 220192,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-20",
+      "last_timestamp": "2026-05-18",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-1D.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 4758,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "82e7c6320ce33574273f45438bc8766282f8c4c3df6c59f283a7a411e0751169",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1D"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 7963,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-01",
+      "last_timestamp": "2026-05-01",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-1M.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 166,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "672d5b599743099bfeae64ef8bc145de519ff5e2b5a460b4c58fc8b4883e8c2b",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1M"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 33653,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-18",
+      "last_timestamp": "2026-05-16",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-1W.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 715,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "820e73730b99969ed1d5f45d2a89c520346bb97785a65a0a0c9c2437048d4d7f",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1W"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 761506,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-21 00:00:00",
+      "last_timestamp": "2026-05-18 20:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-240.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 13707,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "3c7aade0f5deb188adec7f6c0847a0b3c52ecef4e08adafa7817a2f960405146",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "240"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2844776,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-12-17 15:00:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-30.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "854e066ba28dbe3bf877f960b7c4a71a87ab71febbe6e080cc82113e9eb295d5",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "30"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2939151,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-05-14 13:00:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-5.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "a48d3adf07a31b36069ae3ee4d01ba1ee0ab0b9c3db78d3404a05ebe48744e97",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "5"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2028958,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-21 00:00:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/abshodeNaghdi-60.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 36402,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "92796753e33b260a7c5c5862fe1ac98f133364d318bba76c5553c1aacb5bb9e0",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "60"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2701837,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-11-03 19:08:00",
+      "last_timestamp": "2026-05-18 20:59:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-1.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "5bdab3adc12c9e8416386596a9010635a97eb0aae8f78fbbf629cde88c43307b",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2591725,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2022-12-21 16:15:00",
+      "last_timestamp": "2026-05-18 20:45:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-15.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "15af9a7b45d416a7da2159e9cd938c1d606ad6abb2d3000ad060cbe8f04a6c37",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "15"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 118070,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-05",
+      "last_timestamp": "2026-05-18",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-1D.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 2701,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "6a42901a4e760bb12704ab8bd125ea4f1e72cb8463a9a429c9a86371f413cc11",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1D"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 4475,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-01",
+      "last_timestamp": "2026-05-01",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-1M.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 97,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "b7b69dd3dca602a83933dcbdb488cc675ee973be289bc67ea1ba99b60825e395",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1M"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 18411,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-03",
+      "last_timestamp": "2026-05-16",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-1W.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 412,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "90d24b62ef8f1aad600020936b0ac46837589897492744f14939ed5bd42a4d08",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1W"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 528723,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-05 12:00:00",
+      "last_timestamp": "2026-05-18 20:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-240.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 10163,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "748fcfa5adf8ed630466b92c29124689185d0fdd6c4e3de265ad5073bf4d0a13",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "240"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2584827,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2020-03-16 18:30:00",
+      "last_timestamp": "2026-05-18 20:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-30.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "c8de79c5fb623ce6047c988940590c917f73b6e98414b9c83a26e58f9926abd8",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "30"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2624400,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2024-12-31 11:15:00",
+      "last_timestamp": "2026-05-18 20:55:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-5.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "7366cab70af754c70572baa205bd6f889af9c5b2acd1c51b97f79e7f596244c2",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "5"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 1702086,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-05 12:00:00",
+      "last_timestamp": "2026-05-18 20:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/haratFardayi-60.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 32996,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "545ad1424730187dc4c34760b91e5a605253429517a86f00813c68859c07464c",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "60"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2892653,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2026-03-26 20:24:00",
+      "last_timestamp": "2026-05-19 05:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-1.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "1386fcc87e4b169a957a10655b35d053de74d51d70e00ecb1a02ea8f2dd60497",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2942904,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2024-04-05 18:30:00",
+      "last_timestamp": "2026-05-19 05:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-15.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "39a116c4a554dd1f6d2070eedd8d064cae8575d1a6fc1cc034222599eb5d219f",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "15"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 263568,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-20",
+      "last_timestamp": "2026-05-19",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-1D.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 5223,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "4a1aa1a0c8889532d3de75d1093a65f35d793b9c2751e95e89c738ae076f74bf",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1D"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 12621,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-01",
+      "last_timestamp": "2026-05-01",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-1M.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 243,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "8212944eed80d2254eb0a8fba7ef7e474e70debbda5681549757121a1bfc7da8",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1M"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 53991,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-20",
+      "last_timestamp": "2026-05-18",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-1W.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 1053,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "dfef70d8ed9a6acd7b286144c9216181bd38597482c5dccb1db5b60f7c23da27",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1W"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 1876298,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-19 21:30:00",
+      "last_timestamp": "2026-05-19 04:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-240.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 32003,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "cea69cdf1d2371192d56f49a548d67b356f1f7467c518d5f845e4356c76d4a1f",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "240"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2943870,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 2,
+      "first_timestamp": "2022-02-23 19:00:00",
+      "last_timestamp": "2026-05-19 05:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-30.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "3b601e349fdb1745fc40e382826a8ccbaae14805eb210b9749a1f7d70c7a209b",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "30"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2932008,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-09-02 12:25:00",
+      "last_timestamp": "2026-05-19 05:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-5.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "d76d77d2eec2e429498b1388e27496e056bac466476262211126ef384d8f60a7",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "5"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2970860,
+      "classification": "CLEAN",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 3,
+      "first_timestamp": "2017-11-30 09:30:00",
+      "last_timestamp": "2026-05-19 05:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_clean/XAU_USD-60.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "0ec7293d263b13a5518ef44f8f29fb7df9f9dccf9bdbb67a5cc777c0b65c0f3a",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "60"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 292006,
+      "classification": "FEATURE",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2026-02-18 10:15:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_features/abshodeNaghdi-1_15m.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 4345,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "0b819ccd5cb55cd8ec9b116035412e04966ec13c8e5ace0c0d1f89f5b818254f",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1_15m"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 824760,
+      "classification": "FEATURE",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2026-02-18 10:20:00",
+      "last_timestamp": "2026-05-18 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "data_features/abshodeNaghdi-1_5m.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 12352,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "984735a9570cba89d258c0eec0876883f78b3e8f0cfc0289b9e32304c05dffcc",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1_5m"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2961446,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2026-02-25 10:51:00",
+      "last_timestamp": "2026-05-25 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-1.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "274be4cefd9293cea2b9b772e9feac9f4e755377070f35f8db25d905033ef5a0",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2988128,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2023-01-16 15:30:00",
+      "last_timestamp": "2026-05-25 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-15.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "f0e7808c74bae17c726dcb86c960d59f3f483e4568a74c811ff11436ad3a25fc",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "15"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 268207,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-20 00:00:00",
+      "last_timestamp": "2026-05-25 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-1D.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 4765,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "47f7ef9cc3d75b53cf9cc1452539fa58dff89cd21c0f287733c17e38b21d2952",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1D"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 9625,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-01 00:00:00",
+      "last_timestamp": "2026-05-01 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-1M.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 166,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "7ee6ed118e240f7e4e77c1c6ad3139aead4fbb48bf0cf8b34ea39b63bebe1538",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1M"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 40867,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-18 00:00:00",
+      "last_timestamp": "2026-05-23 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-1W.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 716,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "9ba98caa17043446f9b382328a2fd26ba1a7719e25255c0d4ef37977458e9908",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1W"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 776944,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-21 00:00:00",
+      "last_timestamp": "2026-05-25 20:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-240.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 13735,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "0bc9ac2a791fe6979b517e5aaf8632b297d6b15630a42f27ced83341fdd17be2",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "240"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2895777,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-12-29 16:00:00",
+      "last_timestamp": "2026-05-25 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-30.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "d63bf1bd32aa03d9fab5310015351af46b94a67c791f20aec8058c04d7a0e187",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "30"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2989596,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-05-21 14:45:00",
+      "last_timestamp": "2026-05-25 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-5.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "01ceed702592485c530a4cbdc0c91efeb44979b489963745a49c9f3d4a20c182",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "5"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2071209,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2012-08-21 00:00:00",
+      "last_timestamp": "2026-05-25 22:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/abshodeNaghdi-60.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 36498,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "bd350f21f0b1d3658fd58f47202430be62ff373d91f24a5fc3daee10febb0f0b",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "abshodeNaghdi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "60"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2752463,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-11-10 10:05:00",
+      "last_timestamp": "2026-05-23 20:59:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-1.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "4564cdd49cf613e2f3913711c2a7dc5af80a72a1b15254e7533c69fd0f1e963c",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2642475,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2022-12-26 11:45:00",
+      "last_timestamp": "2026-05-23 20:45:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-15.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "deb99dfa66719f04f4a5b5c84685a11fa767a5c512de74dda27f733a58f8ff70",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "15"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 145371,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-05 00:00:00",
+      "last_timestamp": "2026-05-23 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-1D.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 2706,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "a83c7a37467c8778786226b64d3c49adad6bbe71514b38b509400cf8100d3c2b",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1D"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 5447,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-01 00:00:00",
+      "last_timestamp": "2026-05-01 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-1M.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 97,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "ea0e2e2aaa1399bcc6967be6e5dcb99d0d0868a212bdb1dfc4e4f751e5edf42f",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1M"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 22590,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-03 00:00:00",
+      "last_timestamp": "2026-05-23 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-1W.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 413,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "12929f1a37cc24f0454a11741b4b91b478b5ffc9e6dd048080d5e4967b54c13d",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1W"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 540034,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-05 12:00:00",
+      "last_timestamp": "2026-05-23 20:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-240.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 10183,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "d29467edcf49fb1a52ad0d0d996dcf51287e57ac6a5b822097b196996ab1961b",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "240"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2635501,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2020-04-06 20:30:00",
+      "last_timestamp": "2026-05-23 20:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-30.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "5dc2f43c4c385977cd49a71f750ac55a8ee2dd38acdba505d4934cc7e924c53a",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "30"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2677132,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-01-05 18:25:00",
+      "last_timestamp": "2026-05-23 20:55:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-5.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "9419372b7ad39b76eb1425ea58cce7bc8188ff5d4b309aec281399cca84c8ea5",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "5"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 1738767,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2018-02-05 12:00:00",
+      "last_timestamp": "2026-05-23 20:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/haratFardayi-60.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 33061,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "d25a79cfa6970aa820f2ef32c987fc2c23ee1bc72bd083825895ecb81c1b808e",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "haratFardayi"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "60"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2940727,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2026-04-02 19:37:00",
+      "last_timestamp": "2026-05-26 06:54:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-1.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "4b3501bec38301a36a3e3c2ce7e6d51c75651e048924aa51d99f5df8ffdd7b20",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2993052,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2024-04-12 17:15:00",
+      "last_timestamp": "2026-05-26 06:45:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-15.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "24a1458790667c66a07992ed19d2c7556c558e0470960cb285a020e83da80bc4",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "15"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 316111,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-20 00:00:00",
+      "last_timestamp": "2026-05-26 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-1D.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 5228,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "d694c5cc0b79f9b4e4c5946401463cde8161dd9b11950844692b202dc96a4f03",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1D"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 15054,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-01 00:00:00",
+      "last_timestamp": "2026-05-01 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-1M.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 243,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "27a8f93c1ca5abb3eb75342d994302cd863ad3c416ae6110a596cffb58f918b1",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1M"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 64585,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-20 00:00:00",
+      "last_timestamp": "2026-05-25 00:00:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-1W.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 1054,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "32e72609135b0d2a18a389c77f62b7de9c2a932ced13975bed3b4c91eb5940b7",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "1W"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 1910146,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2006-03-19 21:30:00",
+      "last_timestamp": "2026-05-26 04:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-240.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 32033,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "77aea53c71cba6e7f398d104ac0b54f4afedf785fed785ef7083527aa4e7f530",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "240"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2993694,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2022-03-02 17:30:00",
+      "last_timestamp": "2026-05-26 06:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-30.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 49998,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "4d6092d3908eee06a787bff2f2bc2c1a27321616505f9db25ed589904175e4f7",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "30"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 2981967,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2025-09-09 11:15:00",
+      "last_timestamp": "2026-05-26 06:50:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-5.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 50000,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "b203cfeb3e0a00bb81bd6cabd49d0acc661af69ca31ce8b8cbdf4dc2c78a797c",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "5"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    },
+    {
+      "bytes": 3020645,
+      "classification": "RAW",
+      "classification_evidence_status": "DECLARED",
+      "columns": [
+        "timestamp",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume"
+      ],
+      "columns_evidence_status": "OBSERVED",
+      "duplicate_timestamp_count": 0,
+      "first_timestamp": "2017-12-07 08:30:00",
+      "last_timestamp": "2026-05-26 06:30:00",
+      "market": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "missing_cell_count": 0,
+      "parser_decision": {
+        "evidence_status": "DECLARED",
+        "value": "PYTHON_CSV_EXCEL_DIALECT_WITH_HEADER"
+      },
+      "parser_schema_version": "1.0.0",
+      "path": "raw_data/XAU_USD-60.csv",
+      "price_unit": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "row_count": 49997,
+      "schema_status": "CANONICAL_OHLCV",
+      "sha256": "701729aa8f9f9df11e3dd79d46e45a5d18ff437f8e6eb5bc4392528744f86443",
+      "source": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "symbol": {
+        "evidence_status": "INFERRED",
+        "value": "XAU_USD"
+      },
+      "timeframe": {
+        "evidence_status": "INFERRED",
+        "value": "60"
+      },
+      "timestamp_coverage_evidence_status": "OBSERVED",
+      "timestamp_period_semantics": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      },
+      "timezone_status": "NAIVE_UNKNOWN",
+      "volume_meaning": {
+        "evidence_status": "UNKNOWN",
+        "value": "UNKNOWN"
+      }
+    }
+  ],
+  "manifest_schema_version": "1.0.0",
+  "parser_schema_version": "1.0.0",
+  "protected_directories": [
+    "raw_data",
+    "data_clean",
+    "data_features"
+  ],
+  "record_count": 56
+}

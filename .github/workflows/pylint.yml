@@ -26,6 +26,10 @@ jobs:
         run: |
           python scripts/verify_git_hygiene.py
 
+      - name: Verify committed dataset manifest
+        run: |
+          python scripts/verify_dataset_manifest.py
+
       - name: Run tests
         run: |
           python -m pytest -q
