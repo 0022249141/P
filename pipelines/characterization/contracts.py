@@ -133,11 +133,16 @@ class EventObservation(FrozenContract):
             raise ValueError("observation_timestamp cannot precede the origin")
         if confirmation < origin:
             raise ValueError("confirmation cannot precede the origin")
+        if confirmation < observed:
+            raise ValueError("confirmation cannot precede observation")
         if self.eligibility_classification is EligibilityClassification.INELIGIBLE:
             if eligible is not None:
                 raise ValueError("ineligible events cannot declare downstream eligibility")
-        elif eligible is None or eligible < confirmation:
-            raise ValueError("eligible events require a timestamp at or after confirmation")
+        elif eligible is None or eligible < observed or eligible < confirmation:
+            raise ValueError(
+                "eligible events require a timestamp at or after both observation "
+                "and confirmation"
+            )
         return self
 
 
