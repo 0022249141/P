@@ -1,0 +1,2126 @@
+{
+  "artifact_id": "KAN-11-structure-liquidity-comparison",
+  "comparisons": [
+    {
+      "capability": "LIQUIDITY_LIFECYCLE_AND_RANKING",
+      "classification": "BLOCKED_BY_MISSING_SEMANTICS",
+      "comparison_id": "liquidity-layer3-zone",
+      "evidence": "Layer3 has resting/sweep proxies but no reclaim, acceptance, or rank; ZoneEngine exposes none of those liquidity semantics.",
+      "fixture_ids": [
+        "liquidity-pool-registration-v1",
+        "liquidity-multiple-destinations-v1"
+      ],
+      "left_implementation": "layer3-liquidity",
+      "parameter_mapping": [],
+      "right_implementation": "zone-engine"
+    },
+    {
+      "capability": "SWEEP_AND_EQUAL_LEVELS",
+      "classification": "INTENTIONALLY_DIVERGENT",
+      "comparison_id": "liquidity-legacy-layer3",
+      "evidence": "Simple liquidity uses internal clustering/same-candle scoring, while layer3 emits prior-touch counts and next-candle-confirmed sweep records.",
+      "fixture_ids": [
+        "liquidity-equal-levels-v1",
+        "liquidity-bearish-wick-raid-v1"
+      ],
+      "left_implementation": "legacy-liquidity",
+      "parameter_mapping": [],
+      "right_implementation": "layer3-liquidity"
+    },
+    {
+      "capability": "ALL_EXPOSED_BEHAVIOR",
+      "classification": "EQUIVALENT",
+      "comparison_id": "liquidity-legacy-vector",
+      "evidence": "The files are byte-identical and independent freezes produce identical cluster events and the same committed-config failure.",
+      "fixture_ids": [
+        "liquidity-equal-levels-v1"
+      ],
+      "left_implementation": "legacy-liquidity",
+      "parameter_mapping": [],
+      "right_implementation": "vector-liquidity"
+    },
+    {
+      "capability": "LIQUIDITY_LIFECYCLE_AND_RANKING",
+      "classification": "BLOCKED_BY_MISSING_SEMANTICS",
+      "comparison_id": "liquidity-legacy-zone",
+      "evidence": "Neither surface exposes the required lifecycle and destination-ranking contract; ZoneEngine is FVG/order-block focused.",
+      "fixture_ids": [
+        "liquidity-multiple-destinations-v1"
+      ],
+      "left_implementation": "legacy-liquidity",
+      "parameter_mapping": [],
+      "right_implementation": "zone-engine"
+    },
+    {
+      "capability": "SWEEP_AND_EQUAL_LEVELS",
+      "classification": "INTENTIONALLY_DIVERGENT",
+      "comparison_id": "liquidity-vector-layer3",
+      "evidence": "The byte-duplicate simple surface and layer3 expose different outputs, parameters, and confirmation horizons.",
+      "fixture_ids": [
+        "liquidity-equal-levels-v1",
+        "liquidity-bullish-wick-raid-v1"
+      ],
+      "left_implementation": "vector-liquidity",
+      "parameter_mapping": [],
+      "right_implementation": "layer3-liquidity"
+    },
+    {
+      "capability": "LIQUIDITY_LIFECYCLE_AND_RANKING",
+      "classification": "BLOCKED_BY_MISSING_SEMANTICS",
+      "comparison_id": "liquidity-vector-zone",
+      "evidence": "The compared sources do not expose compatible lifecycle or ranking semantics.",
+      "fixture_ids": [
+        "liquidity-multiple-destinations-v1"
+      ],
+      "left_implementation": "vector-liquidity",
+      "parameter_mapping": [],
+      "right_implementation": "zone-engine"
+    },
+    {
+      "capability": "CONFIRMED_SWING_HIGH_LOW",
+      "classification": "EQUIVALENT_WITH_PARAMETER_MAPPING",
+      "comparison_id": "structure-legacy-layer2-confirmed-pivots",
+      "evidence": "The selected confirmed high/low fixture matches after mapping legacy window=2 to layer2 lookback=2 and min_strength=0.0; this is fixture equivalence only.",
+      "fixture_ids": [
+        "structure-confirmed-pivots-v1"
+      ],
+      "left_implementation": "legacy-structure",
+      "parameter_mapping": [
+        "legacy.window=2",
+        "layer2.lookback=2",
+        "layer2.min_strength=0.0"
+      ],
+      "right_implementation": "layer2-structure"
+    },
+    {
+      "capability": "SWING_HIGH_LOW",
+      "classification": "INTENTIONALLY_DIVERGENT",
+      "comparison_id": "structure-legacy-vector-swings",
+      "evidence": "The vector surface emits extra pivots and accepts a candidate with one right candle; source hashes differ.",
+      "fixture_ids": [
+        "structure-confirmed-pivots-v1",
+        "structure-insufficient-right-confirmation-v1"
+      ],
+      "left_implementation": "legacy-structure",
+      "parameter_mapping": [],
+      "right_implementation": "vector-structure"
+    },
+    {
+      "capability": "MSS",
+      "classification": "BLOCKED_BY_MISSING_SEMANTICS",
+      "comparison_id": "structure-mss-all-surfaces",
+      "evidence": "No listed structure surface emits a complete or incomplete MSS sequence contract.",
+      "fixture_ids": [
+        "structure-mss-valid-sequence-v1",
+        "structure-mss-incomplete-sequence-v1"
+      ],
+      "left_implementation": "legacy-structure",
+      "parameter_mapping": [],
+      "right_implementation": "layer2-structure"
+    },
+    {
+      "capability": "PREFIX_INVARIANCE",
+      "classification": "FUTURE_DERIVED_UNSAFE",
+      "comparison_id": "structure-simple-layer2-temporal-safety",
+      "evidence": "Legacy whole-series ATR makes a nominally confirmed pivot depend on later candles; layer2 stays stable at its declared availability.",
+      "fixture_ids": [
+        "structure-future-atr-leakage-v1"
+      ],
+      "left_implementation": "legacy-structure",
+      "parameter_mapping": [],
+      "right_implementation": "layer2-structure"
+    },
+    {
+      "capability": "SWING_HIGH_LOW",
+      "classification": "INTENTIONALLY_DIVERGENT",
+      "comparison_id": "structure-vector-layer2-swings",
+      "evidence": "Vector alignment emits additional pivots and insufficient-right output that symmetric layer2 does not emit.",
+      "fixture_ids": [
+        "structure-confirmed-pivots-v1",
+        "structure-insufficient-right-confirmation-v1"
+      ],
+      "left_implementation": "vector-structure",
+      "parameter_mapping": [],
+      "right_implementation": "layer2-structure"
+    }
+  ],
+  "fixture_scope": "SYNTHETIC_ONLY",
+  "fixtures": [
+    {
+      "first_timestamp": "2025-02-04T00:00:00Z",
+      "fixture_id": "liquidity-bearish-close-through-v1",
+      "fixture_sha256": "8c5c945bec592215b8f9718bcdd4eead10614bce59b9892293637bd0b2bb6019",
+      "last_timestamp": "2025-02-04T00:25:00Z",
+      "purpose": "High-side close-through followed by next-candle bearish reversal.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-02-03T00:00:00Z",
+      "fixture_id": "liquidity-bearish-wick-raid-v1",
+      "fixture_sha256": "de3b4bc4debbc5474e40d5cc1383adfee361795336ab422e327f98b16c37f6fe",
+      "last_timestamp": "2025-02-03T00:25:00Z",
+      "purpose": "High-side wick raid with next-candle bearish reversal.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-02-05T00:00:00Z",
+      "fixture_id": "liquidity-bullish-wick-raid-v1",
+      "fixture_sha256": "98c286554b4b6aa53d01146952d0665964ac30e5f20189986cd150bcc0982ac3",
+      "last_timestamp": "2025-02-05T00:25:00Z",
+      "purpose": "Low-side raid with next-candle bullish reversal.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-02-01T00:00:00Z",
+      "fixture_id": "liquidity-equal-levels-v1",
+      "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+      "last_timestamp": "2025-02-01T00:25:00Z",
+      "purpose": "Three prior equal highs and lows within ATR tolerance.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-02-06T00:00:00Z",
+      "fixture_id": "liquidity-multiple-destinations-v1",
+      "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+      "last_timestamp": "2025-02-06T00:25:00Z",
+      "purpose": "Multiple unswept candidate levels with no source ranking contract.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-02-02T00:00:00Z",
+      "fixture_id": "liquidity-pool-registration-v1",
+      "fixture_sha256": "c91741ff6a68a63a96d99b1677f3d43f23a1d9b87b5d6f3e76bb44012b70a17f",
+      "last_timestamp": "2025-02-02T00:20:00Z",
+      "purpose": "Unswept high/low pools and adapter BSL/SSL registration mapping.",
+      "row_count": 5
+    },
+    {
+      "first_timestamp": "2025-01-01T00:00:00Z",
+      "fixture_id": "structure-confirmed-pivots-v1",
+      "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+      "last_timestamp": "2025-01-01T00:40:00Z",
+      "purpose": "Confirmed high/low pivots and duplicate-engine divergence.",
+      "row_count": 9
+    },
+    {
+      "first_timestamp": "2025-01-03T00:00:00Z",
+      "fixture_id": "structure-future-atr-leakage-v1",
+      "fixture_sha256": "df39964478a1f32a514296745878a080833cafa4427dea667244bc43624cf7cc",
+      "last_timestamp": "2025-01-03T00:45:00Z",
+      "purpose": "Whole-series ATR mean changes a previously confirmable pivot.",
+      "row_count": 10
+    },
+    {
+      "first_timestamp": "2025-01-05T00:00:00Z",
+      "fixture_id": "structure-future-level-selection-v1",
+      "fixture_sha256": "ceec7fc5ec8932314ea291dc827e1513e50f5c60cc8d0836f94d8163515ecc2a",
+      "last_timestamp": "2025-01-05T00:25:00Z",
+      "purpose": "Later swing changes simple BOS evaluation at an earlier candle.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-01-02T00:00:00Z",
+      "fixture_id": "structure-insufficient-right-confirmation-v1",
+      "fixture_sha256": "7cd7c1d59ec7afb0d7f1583a023fdf433775082524fd354b377653480902640e",
+      "last_timestamp": "2025-01-02T00:25:00Z",
+      "purpose": "Candidate pivot with only one right-side candle.",
+      "row_count": 6
+    },
+    {
+      "first_timestamp": "2025-01-06T00:00:00Z",
+      "fixture_id": "structure-layer2-break-sequence-v1",
+      "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+      "last_timestamp": "2025-01-06T00:30:00Z",
+      "purpose": "Bearish/bullish BOS and both CHoCH transitions.",
+      "row_count": 7
+    },
+    {
+      "first_timestamp": "2025-01-06T00:00:00Z",
+      "fixture_id": "structure-mss-incomplete-sequence-v1",
+      "fixture_sha256": "fc179f2cd8ba757dd6386d772bdaf252368edea87867185f8a00e2fdc87f3399",
+      "last_timestamp": "2025-01-06T00:20:00Z",
+      "purpose": "A candidate CHoCH/new-swing sequence without confirming BOS.",
+      "row_count": 5
+    },
+    {
+      "first_timestamp": "2025-01-06T00:00:00Z",
+      "fixture_id": "structure-mss-valid-sequence-v1",
+      "fixture_sha256": "9c1179adb728e43cac5a83e9adeb26912e97c55147eca8ac271264a1623bf223",
+      "last_timestamp": "2025-01-06T00:30:00Z",
+      "purpose": "A candidate CHoCH/new-swing/BOS sequence for missing MSS capability.",
+      "row_count": 7
+    },
+    {
+      "first_timestamp": "2025-01-04T00:00:00Z",
+      "fixture_id": "structure-simple-bos-v1",
+      "fixture_sha256": "a8727dbbd84201e41f9aaae75631516eacbf632568d7ece944d31422c2184125",
+      "last_timestamp": "2025-01-04T00:20:00Z",
+      "purpose": "Bullish and bearish simple-engine BOS at its configured displacement.",
+      "row_count": 5
+    }
+  ],
+  "implementation_snapshots": [
+    {
+      "capabilities": [
+        {
+          "capability": "BULLISH_BEARISH_BOS",
+          "evidence": "Both directions are emitted; source logic uses high/low wick penetration.",
+          "fixture_ids": [
+            "structure-layer2-break-sequence-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "BULLISH_BEARISH_CHOCH",
+          "evidence": "Both trend transitions are emitted by the source state variable.",
+          "fixture_ids": [
+            "structure-layer2-break-sequence-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "CONFIRMED_SWING_HIGH_LOW",
+          "evidence": "Symmetric lookback pivots are observed and delayed by the adapter until confirmation.",
+          "fixture_ids": [
+            "structure-confirmed-pivots-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "MSS_INCOMPLETE_SEQUENCE",
+          "evidence": "No MSS sequence output exists despite module prose.",
+          "fixture_ids": [
+            "structure-mss-incomplete-sequence-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "MSS_VALID_SEQUENCE",
+          "evidence": "No CHoCH/new-swing/confirming-BOS MSS contract is implemented.",
+          "fixture_ids": [
+            "structure-mss-valid-sequence-v1"
+          ],
+          "status": "BLOCKED"
+        }
+      ],
+      "domain": "STRUCTURE",
+      "events": [
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:25:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": "2025-01-01T00:25:00Z",
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-01T00:15:00Z",
+          "observed_price_or_level": 16.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:15:00Z",
+          "raw_observation": {
+            "source_index": 3,
+            "source_type": "HIGH",
+            "strength": 0.4283660130718955
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "lookback=2",
+            "min_strength=0.0"
+          ],
+          "temporal_evidence": [
+            "source emits the pivot timestamp",
+            "two right-side candles are required by lookback=2",
+            "first downstream use is delayed to the right-window close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:35:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "SWING_LOW",
+          "first_downstream_eligible_timestamp": "2025-01-01T00:35:00Z",
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-01T00:25:00Z",
+          "observed_price_or_level": 7.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:25:00Z",
+          "raw_observation": {
+            "source_index": 5,
+            "source_type": "LOW",
+            "strength": 0.413921568627451
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "lookback=2",
+            "min_strength=0.0"
+          ],
+          "temporal_evidence": [
+            "source emits the pivot timestamp",
+            "two right-side candles are required by lookback=2",
+            "first downstream use is delayed to the right-window close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-03T00:25:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": "2025-01-03T00:25:00Z",
+          "fixture_sha256": "df39964478a1f32a514296745878a080833cafa4427dea667244bc43624cf7cc",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-03T00:15:00Z",
+          "observed_price_or_level": 11.0,
+          "origin_or_pivot_timestamp": "2025-01-03T00:15:00Z",
+          "raw_observation": {
+            "source_index": 3,
+            "source_type": "HIGH",
+            "strength": 0.5243749999999999
+          },
+          "source_fixture": "structure-future-atr-leakage-v1",
+          "source_parameters": [
+            "lookback=2",
+            "min_strength=0.0"
+          ],
+          "temporal_evidence": [
+            "source emits the pivot timestamp",
+            "two right-side candles are required by lookback=2",
+            "first downstream use is delayed to the right-window close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-06T00:10:00Z",
+          "direction": "BEARISH",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "BOS",
+          "first_downstream_eligible_timestamp": "2025-01-06T00:10:00Z",
+          "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-06T00:10:00Z",
+          "observed_price_or_level": 95.0,
+          "origin_or_pivot_timestamp": "2025-01-06T00:00:00Z",
+          "raw_observation": {
+            "break_basis": "wick",
+            "source_index": 2,
+            "source_result": true
+          },
+          "source_fixture": "structure-layer2-break-sequence-v1",
+          "source_parameters": [
+            "supplied_confirmed_swings=true"
+          ],
+          "temporal_evidence": [
+            "referenced swing is confirmed before this break candle",
+            "source compares the candle wick, not the governed close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-06T00:15:00Z",
+          "direction": "BULLISH",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "BOS",
+          "first_downstream_eligible_timestamp": "2025-01-06T00:15:00Z",
+          "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-06T00:15:00Z",
+          "observed_price_or_level": 105.0,
+          "origin_or_pivot_timestamp": "2025-01-06T00:05:00Z",
+          "raw_observation": {
+            "break_basis": "wick",
+            "source_index": 3,
+            "source_result": true
+          },
+          "source_fixture": "structure-layer2-break-sequence-v1",
+          "source_parameters": [
+            "supplied_confirmed_swings=true"
+          ],
+          "temporal_evidence": [
+            "referenced swing is confirmed before this break candle",
+            "source compares the candle wick, not the governed close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-06T00:15:00Z",
+          "direction": "BULLISH",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "CHOCH",
+          "first_downstream_eligible_timestamp": "2025-01-06T00:15:00Z",
+          "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-06T00:15:00Z",
+          "observed_price_or_level": 105.0,
+          "origin_or_pivot_timestamp": "2025-01-06T00:05:00Z",
+          "raw_observation": {
+            "break_basis": "wick",
+            "source_index": 3,
+            "source_result": true
+          },
+          "source_fixture": "structure-layer2-break-sequence-v1",
+          "source_parameters": [
+            "supplied_confirmed_swings=true"
+          ],
+          "temporal_evidence": [
+            "source trend state changed on the current wick break",
+            "referenced swing was available before the transition"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-06T00:20:00Z",
+          "direction": "BULLISH",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "BOS",
+          "first_downstream_eligible_timestamp": "2025-01-06T00:20:00Z",
+          "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-06T00:20:00Z",
+          "observed_price_or_level": 105.0,
+          "origin_or_pivot_timestamp": "2025-01-06T00:05:00Z",
+          "raw_observation": {
+            "break_basis": "wick",
+            "source_index": 4,
+            "source_result": true
+          },
+          "source_fixture": "structure-layer2-break-sequence-v1",
+          "source_parameters": [
+            "supplied_confirmed_swings=true"
+          ],
+          "temporal_evidence": [
+            "referenced swing is confirmed before this break candle",
+            "source compares the candle wick, not the governed close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-06T00:25:00Z",
+          "direction": "BEARISH",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "BOS",
+          "first_downstream_eligible_timestamp": "2025-01-06T00:25:00Z",
+          "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-06T00:25:00Z",
+          "observed_price_or_level": 95.0,
+          "origin_or_pivot_timestamp": "2025-01-06T00:00:00Z",
+          "raw_observation": {
+            "break_basis": "wick",
+            "source_index": 5,
+            "source_result": true
+          },
+          "source_fixture": "structure-layer2-break-sequence-v1",
+          "source_parameters": [
+            "supplied_confirmed_swings=true"
+          ],
+          "temporal_evidence": [
+            "referenced swing is confirmed before this break candle",
+            "source compares the candle wick, not the governed close"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-06T00:25:00Z",
+          "direction": "BEARISH",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "CHOCH",
+          "first_downstream_eligible_timestamp": "2025-01-06T00:25:00Z",
+          "fixture_sha256": "c54dc455bbe63492a43c82d6228097067b1d6a066c5634793c7f283587236a72",
+          "implementation_identifier": "layer2-structure",
+          "observation_timestamp": "2025-01-06T00:25:00Z",
+          "observed_price_or_level": 95.0,
+          "origin_or_pivot_timestamp": "2025-01-06T00:00:00Z",
+          "raw_observation": {
+            "break_basis": "wick",
+            "source_index": 5,
+            "source_result": true
+          },
+          "source_fixture": "structure-layer2-break-sequence-v1",
+          "source_parameters": [
+            "supplied_confirmed_swings=true"
+          ],
+          "temporal_evidence": [
+            "source trend state changed on the current wick break",
+            "referenced swing was available before the transition"
+          ]
+        }
+      ],
+      "implementation_identifier": "layer2-structure",
+      "repository_path": "src/layer2_structural_engine.py",
+      "source_sha256": "74406477903916ababd4db7ce25b4e459e576e4bcce15bf52ff4a6ebb44d2310",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "FUTURE_PIVOT_CONFIRMATION",
+          "evidence": "Swing pivots require a symmetric right window and are emitted with pivot timestamps only.",
+          "fixture_ids": [
+            "structure-confirmed-pivots-v1"
+          ],
+          "source_lines": [
+            147,
+            157,
+            202,
+            212
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "AST scan found no negative shift call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "PREFIX_INVARIANCE",
+          "evidence": "A confirmed pivot is identical on the full fixture and a prefix ending at its declared availability.",
+          "fixture_ids": [
+            "structure-future-atr-leakage-v1"
+          ],
+          "source_lines": [],
+          "status": "PASSED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "WICK_BASED_BREAK",
+          "evidence": "BOS/CHoCH compare high and low wicks rather than close.",
+          "fixture_ids": [
+            "structure-layer2-break-sequence-v1"
+          ],
+          "source_lines": [
+            262,
+            276
+          ],
+          "status": "DETECTED"
+        }
+      ]
+    },
+    {
+      "capabilities": [
+        {
+          "capability": "ACCEPTED_STATE",
+          "evidence": "A mitigation score distinguishes close placement, but it is not an acceptance state or hold-count contract.",
+          "fixture_ids": [
+            "liquidity-bearish-wick-raid-v1",
+            "liquidity-bearish-close-through-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "BSL_SSL_REGISTRATION",
+          "evidence": "RESTING_HIGH and RESTING_LOW are explicitly preserved as adapter-labeled BSL/SSL proxies.",
+          "fixture_ids": [
+            "liquidity-pool-registration-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "DESTINATION_RANKING",
+          "evidence": "Multiple candidates retain source input order, but no score, rank, tie, or as-of contract exists.",
+          "fixture_ids": [
+            "liquidity-multiple-destinations-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "EQUAL_HIGH_EQUAL_LOW",
+          "evidence": "Both prior-touch counters are emitted at the current candle.",
+          "fixture_ids": [
+            "liquidity-equal-levels-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "RECLAIMED_STATE",
+          "evidence": "No reclaimed lifecycle state or confirmation rule is exposed.",
+          "fixture_ids": [
+            "liquidity-bearish-wick-raid-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "SWEPT_STATE",
+          "evidence": "High-side and low-side sweeps require a later reversal candle.",
+          "fixture_ids": [
+            "liquidity-bearish-wick-raid-v1",
+            "liquidity-bullish-wick-raid-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "UNTOUCHED_STATE_PROXY",
+          "evidence": "Resting output is frozen as an untouched proxy, not a complete lifecycle state.",
+          "fixture_ids": [
+            "liquidity-pool-registration-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "WICK_RAID_VS_CLOSE_THROUGH",
+          "evidence": "The same sweep type carries mitigation_score 0.70 for wick-only and 0.95 for close-through; no acceptance label is emitted.",
+          "fixture_ids": [
+            "liquidity-bearish-wick-raid-v1",
+            "liquidity-bearish-close-through-v1"
+          ],
+          "status": "OBSERVED"
+        }
+      ],
+      "domain": "LIQUIDITY",
+      "events": [
+        {
+          "confirmation_or_availability_timestamp": "2025-02-04T00:20:00Z",
+          "direction": "BEARISH",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "BEARISH_SWEEP",
+          "first_downstream_eligible_timestamp": "2025-02-04T00:20:00Z",
+          "fixture_sha256": "8c5c945bec592215b8f9718bcdd4eead10614bce59b9892293637bd0b2bb6019",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-04T00:15:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-04T00:05:00Z",
+          "raw_observation": {
+            "confidence": 56,
+            "depth_atr": 2.0,
+            "mitigation_score": 0.95,
+            "pool_confirmation_index": 2,
+            "pool_registered_before_raid": true,
+            "source_index": 3,
+            "source_writes_at": "raid_index"
+          },
+          "source_fixture": "liquidity-bearish-close-through-v1",
+          "source_parameters": [
+            "tolerance_atr=0.15",
+            "lookback_sweep=5"
+          ],
+          "temporal_evidence": [
+            "the supplied pool is confirmed before the raid candle",
+            "the source requires the next candle to reverse",
+            "process writes the result at the raid row, so downstream use is delayed to confirmation"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-03T00:20:00Z",
+          "direction": "BEARISH",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "BEARISH_SWEEP",
+          "first_downstream_eligible_timestamp": "2025-02-03T00:20:00Z",
+          "fixture_sha256": "de3b4bc4debbc5474e40d5cc1383adfee361795336ab422e327f98b16c37f6fe",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-03T00:15:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-03T00:05:00Z",
+          "raw_observation": {
+            "confidence": 61,
+            "depth_atr": 1.0,
+            "mitigation_score": 0.7,
+            "pool_confirmation_index": 2,
+            "pool_registered_before_raid": true,
+            "source_index": 3,
+            "source_writes_at": "raid_index"
+          },
+          "source_fixture": "liquidity-bearish-wick-raid-v1",
+          "source_parameters": [
+            "tolerance_atr=0.15",
+            "lookback_sweep=5"
+          ],
+          "temporal_evidence": [
+            "the supplied pool is confirmed before the raid candle",
+            "the source requires the next candle to reverse",
+            "process writes the result at the raid row, so downstream use is delayed to confirmation"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-05T00:20:00Z",
+          "direction": "BULLISH",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "BULLISH_SWEEP",
+          "first_downstream_eligible_timestamp": "2025-02-05T00:20:00Z",
+          "fixture_sha256": "98c286554b4b6aa53d01146952d0665964ac30e5f20189986cd150bcc0982ac3",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-05T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-05T00:05:00Z",
+          "raw_observation": {
+            "confidence": 68,
+            "depth_atr": 1.0,
+            "mitigation_score": 0.95,
+            "pool_confirmation_index": 2,
+            "pool_registered_before_raid": true,
+            "source_index": 3,
+            "source_writes_at": "raid_index"
+          },
+          "source_fixture": "liquidity-bullish-wick-raid-v1",
+          "source_parameters": [
+            "tolerance_atr=0.15",
+            "lookback_sweep=5"
+          ],
+          "temporal_evidence": [
+            "the supplied pool is confirmed before the raid candle",
+            "the source requires the next candle to reverse",
+            "process writes the result at the raid row, so downstream use is delayed to confirmation"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-01T00:15:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "EQUAL_HIGH_CLUSTER",
+          "first_downstream_eligible_timestamp": "2025-02-01T00:15:00Z",
+          "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-01T00:15:00Z",
+          "observed_price_or_level": 100.05,
+          "origin_or_pivot_timestamp": "2025-02-01T00:00:00Z",
+          "raw_observation": {
+            "prior_match_count": 3,
+            "source_index": 3
+          },
+          "source_fixture": "liquidity-equal-levels-v1",
+          "source_parameters": [
+            "lookback=3",
+            "tolerance_atr=0.15",
+            "atr_col=atr_14"
+          ],
+          "temporal_evidence": [
+            "equal-level count uses only the configured prior lookback",
+            "registration occurs on the current third-or-later touch"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-01T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "EQUAL_LOW_CLUSTER",
+          "first_downstream_eligible_timestamp": "2025-02-01T00:15:00Z",
+          "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-01T00:15:00Z",
+          "observed_price_or_level": 90.05,
+          "origin_or_pivot_timestamp": "2025-02-01T00:00:00Z",
+          "raw_observation": {
+            "prior_match_count": 3,
+            "source_index": 3
+          },
+          "source_fixture": "liquidity-equal-levels-v1",
+          "source_parameters": [
+            "lookback=3",
+            "tolerance_atr=0.15",
+            "atr_col=atr_14"
+          ],
+          "temporal_evidence": [
+            "equal-level count uses only the configured prior lookback",
+            "registration occurs on the current third-or-later touch"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:10:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "BSL_REGISTRATION_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:10:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:10:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:05:00Z",
+          "raw_observation": {
+            "source_position": 0,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_HIGH"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:10:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "UNTOUCHED_BSL_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:10:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:10:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:05:00Z",
+          "raw_observation": {
+            "source_position": 0,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_HIGH"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "SSL_REGISTRATION_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:15:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:10:00Z",
+          "raw_observation": {
+            "source_position": 2,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_LOW"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "UNTOUCHED_SSL_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:15:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:10:00Z",
+          "raw_observation": {
+            "source_position": 2,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_LOW"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:20:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "BSL_REGISTRATION_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:20:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:20:00Z",
+          "observed_price_or_level": 105.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:15:00Z",
+          "raw_observation": {
+            "source_position": 1,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_HIGH"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:20:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "UNTOUCHED_BSL_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:20:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:20:00Z",
+          "observed_price_or_level": 105.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:15:00Z",
+          "raw_observation": {
+            "source_position": 1,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_HIGH"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:25:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "SSL_REGISTRATION_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:25:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:25:00Z",
+          "observed_price_or_level": 89.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:25:00Z",
+          "raw_observation": {
+            "source_position": 3,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_LOW"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-06T00:25:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "UNTOUCHED_SSL_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-06T00:25:00Z",
+          "fixture_sha256": "581f0ac21aeb4bffd967dbe02e4fb6d3b5e5192f4bc7cbad4af86fca703875b5",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-06T00:25:00Z",
+          "observed_price_or_level": 89.0,
+          "origin_or_pivot_timestamp": "2025-02-06T00:25:00Z",
+          "raw_observation": {
+            "source_position": 3,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_LOW"
+          },
+          "source_fixture": "liquidity-multiple-destinations-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-02T00:10:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "BSL_REGISTRATION_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-02T00:10:00Z",
+          "fixture_sha256": "c91741ff6a68a63a96d99b1677f3d43f23a1d9b87b5d6f3e76bb44012b70a17f",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-02T00:10:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-02T00:05:00Z",
+          "raw_observation": {
+            "source_position": 0,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_HIGH"
+          },
+          "source_fixture": "liquidity-pool-registration-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-02T00:10:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "UNTOUCHED_BSL_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-02T00:10:00Z",
+          "fixture_sha256": "c91741ff6a68a63a96d99b1677f3d43f23a1d9b87b5d6f3e76bb44012b70a17f",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-02T00:10:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-02T00:05:00Z",
+          "raw_observation": {
+            "source_position": 0,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_HIGH"
+          },
+          "source_fixture": "liquidity-pool-registration-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-02T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "SSL_REGISTRATION_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-02T00:15:00Z",
+          "fixture_sha256": "c91741ff6a68a63a96d99b1677f3d43f23a1d9b87b5d6f3e76bb44012b70a17f",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-02T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-02T00:10:00Z",
+          "raw_observation": {
+            "source_position": 1,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_LOW"
+          },
+          "source_fixture": "liquidity-pool-registration-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-02T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "POST_CONFIRMATION",
+          "event_type": "UNTOUCHED_SSL_PROXY",
+          "first_downstream_eligible_timestamp": "2025-02-02T00:15:00Z",
+          "fixture_sha256": "c91741ff6a68a63a96d99b1677f3d43f23a1d9b87b5d6f3e76bb44012b70a17f",
+          "implementation_identifier": "layer3-liquidity",
+          "observation_timestamp": "2025-02-02T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-02T00:10:00Z",
+          "raw_observation": {
+            "source_position": 1,
+            "source_risk_level": "MEDIUM",
+            "source_type": "RESTING_LOW"
+          },
+          "source_fixture": "liquidity-pool-registration-v1",
+          "source_parameters": [
+            "resting_match_tolerance=0.001"
+          ],
+          "temporal_evidence": [
+            "adapter maps RESTING_HIGH/RESTING_LOW to candidate BSL/SSL terminology",
+            "the source exposes resting membership only after receiving a confirmed swing",
+            "the mapping is a proxy and does not prove resting orders"
+          ]
+        }
+      ],
+      "implementation_identifier": "layer3-liquidity",
+      "repository_path": "src/layer3_liquidity_engine.py",
+      "source_sha256": "f7f8b34135bcd4e6e9badd8f2c3024fbb73c08716cf6627ad0bf5600c51ce04c",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "DESTINATION_RANKING_USES_LATER_CANDLES",
+          "evidence": "No destination ranking is implemented; later-candle use cannot be tested without inventing semantics.",
+          "fixture_ids": [
+            "liquidity-multiple-destinations-v1"
+          ],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "FUTURE_SWEEP_CONFIRMATION",
+          "evidence": "Sweep detection reads i+1 and records confirmation_index=i+1 while process writes is_sweep at i.",
+          "fixture_ids": [
+            "liquidity-bearish-wick-raid-v1",
+            "liquidity-bullish-wick-raid-v1"
+          ],
+          "source_lines": [
+            120,
+            156,
+            193
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "AST scan found no negative shift call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "POOL_OUTCOME_BEFORE_REGISTRATION",
+          "evidence": "Every synthetic sweep references a pool whose supplied confirmation index precedes the raid index.",
+          "fixture_ids": [
+            "liquidity-bearish-wick-raid-v1",
+            "liquidity-bullish-wick-raid-v1"
+          ],
+          "source_lines": [],
+          "status": "PASSED"
+        },
+        {
+          "check": "RESTING_STATE_USES_COMPLETE_SWEEP_LIST",
+          "evidence": "process derives resting levels after computing the complete-frame sweep list and emits no as-of timestamp.",
+          "fixture_ids": [],
+          "source_lines": [
+            260,
+            273,
+            279,
+            294,
+            337
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        }
+      ]
+    },
+    {
+      "capabilities": [
+        {
+          "capability": "BSL_SSL_REGISTRATION",
+          "evidence": "Cluster levels are internal inputs to scoring and are not emitted as registered pools.",
+          "fixture_ids": [],
+          "status": "NOT_EXPOSED"
+        },
+        {
+          "capability": "DESTINATION_RANKING",
+          "evidence": "No candidate ranking API, weights, ties, or as-of contract is exposed.",
+          "fixture_ids": [
+            "liquidity-multiple-destinations-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "EQUAL_LEVEL_CLUSTERING_HELPER",
+          "evidence": "The private clustering helper deterministically groups price values within the ATR gap.",
+          "fixture_ids": [
+            "liquidity-equal-levels-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "LIQUIDITY_LIFECYCLE",
+          "evidence": "No untouched/swept/reclaimed/accepted state contract is exposed.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "SWEEP_SCORE",
+          "evidence": "detect_sweeps cannot run with the committed market configuration (KeyError:liquidity); no configuration is patched by characterization.",
+          "fixture_ids": [
+            "liquidity-equal-levels-v1"
+          ],
+          "status": "BLOCKED"
+        }
+      ],
+      "domain": "LIQUIDITY",
+      "events": [
+        {
+          "confirmation_or_availability_timestamp": "2025-02-01T00:15:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "CLUSTERED_HIGH_LEVEL",
+          "first_downstream_eligible_timestamp": "2025-02-01T00:15:00Z",
+          "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+          "implementation_identifier": "legacy-liquidity",
+          "observation_timestamp": "2025-02-01T00:15:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-01T00:00:00Z",
+          "raw_observation": {
+            "input_count": 3
+          },
+          "source_fixture": "liquidity-equal-levels-v1",
+          "source_parameters": [
+            "atr=1.0",
+            "cluster_gap_atr_mult=0.2"
+          ],
+          "temporal_evidence": [
+            "direct clustering helper received only levels available through the third touch",
+            "the helper exposes a level but no pool state or registration timestamp"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-01T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "CLUSTERED_LOW_LEVEL",
+          "first_downstream_eligible_timestamp": "2025-02-01T00:15:00Z",
+          "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+          "implementation_identifier": "legacy-liquidity",
+          "observation_timestamp": "2025-02-01T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-01T00:00:00Z",
+          "raw_observation": {
+            "input_count": 3
+          },
+          "source_fixture": "liquidity-equal-levels-v1",
+          "source_parameters": [
+            "atr=1.0",
+            "cluster_gap_atr_mult=0.2"
+          ],
+          "temporal_evidence": [
+            "direct clustering helper received only levels available through the third touch",
+            "the helper exposes a level but no pool state or registration timestamp"
+          ]
+        }
+      ],
+      "implementation_identifier": "legacy-liquidity",
+      "repository_path": "pipelines/legacy/04_liquidity.py",
+      "source_sha256": "c42c1c76948f35b1091222e8ea3f1d46d7517a934c5dca26554c67bd3c4c5679",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "DESTINATION_RANKING_USES_LATER_CANDLES",
+          "evidence": "No destination ranking exists, so an as-of temporal audit cannot be performed.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "AST scan found no negative shift call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "POOL_OUTCOME_BEFORE_REGISTRATION",
+          "evidence": "The source does not emit auditable pool-registration evidence before sweep scoring.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_REDUCTION",
+          "evidence": "Sweep threshold calculation reads the complete ATR series mean.",
+          "fixture_ids": [],
+          "source_lines": [
+            57
+          ],
+          "status": "DETECTED"
+        }
+      ]
+    },
+    {
+      "capabilities": [
+        {
+          "capability": "BULLISH_BEARISH_BOS",
+          "evidence": "Both directions are exposed through is_bos, with close displacement and full-frame final-swing selection.",
+          "fixture_ids": [
+            "structure-simple-bos-v1",
+            "structure-future-level-selection-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "CHOCH",
+          "evidence": "No CHoCH API or output is exposed.",
+          "fixture_ids": [],
+          "status": "NOT_EXPOSED"
+        },
+        {
+          "capability": "CONFIRMED_SWING_HIGH_LOW",
+          "evidence": "Swing columns are emitted at pivot rows; normalized events retain the later evidence horizon.",
+          "fixture_ids": [
+            "structure-confirmed-pivots-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "MSS_INCOMPLETE_SEQUENCE",
+          "evidence": "The implementation cannot distinguish incomplete MSS from absence.",
+          "fixture_ids": [
+            "structure-mss-incomplete-sequence-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "MSS_VALID_SEQUENCE",
+          "evidence": "The implementation exposes no MSS sequence or confirmation contract.",
+          "fixture_ids": [
+            "structure-mss-valid-sequence-v1"
+          ],
+          "status": "BLOCKED"
+        }
+      ],
+      "domain": "STRUCTURE",
+      "events": [
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:25:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "legacy-structure",
+          "observation_timestamp": "2025-01-01T00:15:00Z",
+          "observed_price_or_level": 16.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:15:00Z",
+          "raw_observation": {
+            "source_column": "swing_high",
+            "source_index": 3
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_high on the historical pivot row",
+            "right-side evidence is observed through index+2",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:35:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_LOW",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "legacy-structure",
+          "observation_timestamp": "2025-01-01T00:25:00Z",
+          "observed_price_or_level": 7.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:25:00Z",
+          "raw_observation": {
+            "source_column": "swing_low",
+            "source_index": 5
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_low on the historical pivot row",
+            "right-side evidence is observed through index+2",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-03T00:25:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "df39964478a1f32a514296745878a080833cafa4427dea667244bc43624cf7cc",
+          "implementation_identifier": "legacy-structure",
+          "observation_timestamp": "2025-01-03T00:15:00Z",
+          "observed_price_or_level": 11.0,
+          "origin_or_pivot_timestamp": "2025-01-03T00:15:00Z",
+          "raw_observation": {
+            "source_column": "swing_high",
+            "source_index": 3
+          },
+          "source_fixture": "structure-future-atr-leakage-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_high on the historical pivot row",
+            "right-side evidence is observed through index+2",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-04T00:15:00Z",
+          "direction": "BULLISH",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "BOS",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "a8727dbbd84201e41f9aaae75631516eacbf632568d7ece944d31422c2184125",
+          "implementation_identifier": "legacy-structure",
+          "observation_timestamp": "2025-01-04T00:15:00Z",
+          "observed_price_or_level": 160.0,
+          "origin_or_pivot_timestamp": "2025-01-04T00:00:00Z",
+          "raw_observation": {
+            "break_basis": "close",
+            "evaluation_index": 3,
+            "source_result": true
+          },
+          "source_fixture": "structure-simple-bos-v1",
+          "source_parameters": [
+            "market_name=XAUUSD",
+            "bos_min_displacement=0.5"
+          ],
+          "temporal_evidence": [
+            "BOS is evaluated from close displacement",
+            "the selected level is the final non-null swing in the complete frame",
+            "a later swing can change an earlier BOS result"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-04T00:20:00Z",
+          "direction": "BEARISH",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "BOS",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "a8727dbbd84201e41f9aaae75631516eacbf632568d7ece944d31422c2184125",
+          "implementation_identifier": "legacy-structure",
+          "observation_timestamp": "2025-01-04T00:20:00Z",
+          "observed_price_or_level": 40.0,
+          "origin_or_pivot_timestamp": "2025-01-04T00:05:00Z",
+          "raw_observation": {
+            "break_basis": "close",
+            "evaluation_index": 4,
+            "source_result": true
+          },
+          "source_fixture": "structure-simple-bos-v1",
+          "source_parameters": [
+            "market_name=XAUUSD",
+            "bos_min_displacement=0.5"
+          ],
+          "temporal_evidence": [
+            "BOS is evaluated from close displacement",
+            "the selected level is the final non-null swing in the complete frame",
+            "a later swing can change an earlier BOS result"
+          ]
+        }
+      ],
+      "implementation_identifier": "legacy-structure",
+      "repository_path": "pipelines/legacy/03_structure.py",
+      "source_sha256": "da7fcd74639dd6f08dc7db2031bae99ff614e1304b752353894b28a8581cb435",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "FUTURE_PIVOT_CONFIRMATION",
+          "evidence": "The pivot uses right-side candle evidence through index+2 but is written at the pivot row.",
+          "fixture_ids": [
+            "structure-confirmed-pivots-v1",
+            "structure-insufficient-right-confirmation-v1"
+          ],
+          "source_lines": [
+            53,
+            54,
+            58,
+            59
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "AST scan found no negative shift call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "PREFIX_INVARIANCE",
+          "evidence": "Full-frame future ATR values create a pivot that is absent when truncated at the nominal confirmation horizon.",
+          "fixture_ids": [
+            "structure-future-atr-leakage-v1"
+          ],
+          "source_lines": [],
+          "status": "DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_LEVEL_SELECTION",
+          "evidence": "is_bos selects the final non-null swing from the complete frame, including swings after the evaluated candle.",
+          "fixture_ids": [
+            "structure-future-level-selection-v1"
+          ],
+          "source_lines": [
+            68,
+            76
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_REDUCTION",
+          "evidence": "The adaptive threshold uses a mean over the complete ATR series.",
+          "fixture_ids": [
+            "structure-future-atr-leakage-v1"
+          ],
+          "source_lines": [
+            28
+          ],
+          "status": "DETECTED"
+        }
+      ]
+    },
+    {
+      "capabilities": [
+        {
+          "capability": "BSL_SSL_REGISTRATION",
+          "evidence": "Cluster levels are internal inputs to scoring and are not emitted as registered pools.",
+          "fixture_ids": [],
+          "status": "NOT_EXPOSED"
+        },
+        {
+          "capability": "DESTINATION_RANKING",
+          "evidence": "No candidate ranking API, weights, ties, or as-of contract is exposed.",
+          "fixture_ids": [
+            "liquidity-multiple-destinations-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "EQUAL_LEVEL_CLUSTERING_HELPER",
+          "evidence": "The private clustering helper deterministically groups price values within the ATR gap.",
+          "fixture_ids": [
+            "liquidity-equal-levels-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "LIQUIDITY_LIFECYCLE",
+          "evidence": "No untouched/swept/reclaimed/accepted state contract is exposed.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "SWEEP_SCORE",
+          "evidence": "detect_sweeps cannot run with the committed market configuration (KeyError:liquidity); no configuration is patched by characterization.",
+          "fixture_ids": [
+            "liquidity-equal-levels-v1"
+          ],
+          "status": "BLOCKED"
+        }
+      ],
+      "domain": "LIQUIDITY",
+      "events": [
+        {
+          "confirmation_or_availability_timestamp": "2025-02-01T00:15:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "CLUSTERED_HIGH_LEVEL",
+          "first_downstream_eligible_timestamp": "2025-02-01T00:15:00Z",
+          "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+          "implementation_identifier": "vector-liquidity",
+          "observation_timestamp": "2025-02-01T00:15:00Z",
+          "observed_price_or_level": 100.0,
+          "origin_or_pivot_timestamp": "2025-02-01T00:00:00Z",
+          "raw_observation": {
+            "input_count": 3
+          },
+          "source_fixture": "liquidity-equal-levels-v1",
+          "source_parameters": [
+            "atr=1.0",
+            "cluster_gap_atr_mult=0.2"
+          ],
+          "temporal_evidence": [
+            "direct clustering helper received only levels available through the third touch",
+            "the helper exposes a level but no pool state or registration timestamp"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-02-01T00:15:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "REALTIME_ELIGIBLE",
+          "event_type": "CLUSTERED_LOW_LEVEL",
+          "first_downstream_eligible_timestamp": "2025-02-01T00:15:00Z",
+          "fixture_sha256": "fa57145f0ddf73d66cdad6555d29bb5391861f4ca942ae89623bd5944d68fc06",
+          "implementation_identifier": "vector-liquidity",
+          "observation_timestamp": "2025-02-01T00:15:00Z",
+          "observed_price_or_level": 90.0,
+          "origin_or_pivot_timestamp": "2025-02-01T00:00:00Z",
+          "raw_observation": {
+            "input_count": 3
+          },
+          "source_fixture": "liquidity-equal-levels-v1",
+          "source_parameters": [
+            "atr=1.0",
+            "cluster_gap_atr_mult=0.2"
+          ],
+          "temporal_evidence": [
+            "direct clustering helper received only levels available through the third touch",
+            "the helper exposes a level but no pool state or registration timestamp"
+          ]
+        }
+      ],
+      "implementation_identifier": "vector-liquidity",
+      "repository_path": "src/liquidity_engine.py",
+      "source_sha256": "c42c1c76948f35b1091222e8ea3f1d46d7517a934c5dca26554c67bd3c4c5679",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "DESTINATION_RANKING_USES_LATER_CANDLES",
+          "evidence": "No destination ranking exists, so an as-of temporal audit cannot be performed.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "AST scan found no negative shift call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "POOL_OUTCOME_BEFORE_REGISTRATION",
+          "evidence": "The source does not emit auditable pool-registration evidence before sweep scoring.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_REDUCTION",
+          "evidence": "Sweep threshold calculation reads the complete ATR series mean.",
+          "fixture_ids": [],
+          "source_lines": [
+            57
+          ],
+          "status": "DETECTED"
+        }
+      ]
+    },
+    {
+      "capabilities": [
+        {
+          "capability": "BULLISH_BEARISH_BOS",
+          "evidence": "The vector structure implementation exposes swing detection only.",
+          "fixture_ids": [],
+          "status": "NOT_EXPOSED"
+        },
+        {
+          "capability": "CHOCH",
+          "evidence": "No CHoCH API or output is exposed.",
+          "fixture_ids": [],
+          "status": "NOT_EXPOSED"
+        },
+        {
+          "capability": "CONFIRMED_SWING_HIGH_LOW",
+          "evidence": "Swing columns are emitted at pivot rows; normalized events retain the later evidence horizon.",
+          "fixture_ids": [
+            "structure-confirmed-pivots-v1"
+          ],
+          "status": "OBSERVED"
+        },
+        {
+          "capability": "MSS_INCOMPLETE_SEQUENCE",
+          "evidence": "The implementation cannot distinguish incomplete MSS from absence.",
+          "fixture_ids": [
+            "structure-mss-incomplete-sequence-v1"
+          ],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "MSS_VALID_SEQUENCE",
+          "evidence": "The implementation exposes no MSS sequence or confirmation contract.",
+          "fixture_ids": [
+            "structure-mss-valid-sequence-v1"
+          ],
+          "status": "BLOCKED"
+        }
+      ],
+      "domain": "STRUCTURE",
+      "events": [
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:20:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "vector-structure",
+          "observation_timestamp": "2025-01-01T00:15:00Z",
+          "observed_price_or_level": 16.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:15:00Z",
+          "raw_observation": {
+            "source_column": "swing_high",
+            "source_index": 3
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_high on the historical pivot row",
+            "right-side evidence is observed through index+1",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:25:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "vector-structure",
+          "observation_timestamp": "2025-01-01T00:20:00Z",
+          "observed_price_or_level": 13.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:20:00Z",
+          "raw_observation": {
+            "source_column": "swing_high",
+            "source_index": 4
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_high on the historical pivot row",
+            "right-side evidence is observed through index+1",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:30:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_LOW",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "vector-structure",
+          "observation_timestamp": "2025-01-01T00:25:00Z",
+          "observed_price_or_level": 7.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:25:00Z",
+          "raw_observation": {
+            "source_column": "swing_low",
+            "source_index": 5
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_low on the historical pivot row",
+            "right-side evidence is observed through index+1",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-01T00:35:00Z",
+          "direction": "BELOW",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_LOW",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "1aef865893916d18b4bbb4c8e42d92d2ba8f86d135f66b589dacc05ac7f74039",
+          "implementation_identifier": "vector-structure",
+          "observation_timestamp": "2025-01-01T00:30:00Z",
+          "observed_price_or_level": 9.0,
+          "origin_or_pivot_timestamp": "2025-01-01T00:30:00Z",
+          "raw_observation": {
+            "source_column": "swing_low",
+            "source_index": 6
+          },
+          "source_fixture": "structure-confirmed-pivots-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_low on the historical pivot row",
+            "right-side evidence is observed through index+1",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-03T00:20:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "df39964478a1f32a514296745878a080833cafa4427dea667244bc43624cf7cc",
+          "implementation_identifier": "vector-structure",
+          "observation_timestamp": "2025-01-03T00:15:00Z",
+          "observed_price_or_level": 11.0,
+          "origin_or_pivot_timestamp": "2025-01-03T00:15:00Z",
+          "raw_observation": {
+            "source_column": "swing_high",
+            "source_index": 3
+          },
+          "source_fixture": "structure-future-atr-leakage-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_high on the historical pivot row",
+            "right-side evidence is observed through index+1",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        },
+        {
+          "confirmation_or_availability_timestamp": "2025-01-02T00:25:00Z",
+          "direction": "ABOVE",
+          "eligibility_classification": "INELIGIBLE",
+          "event_type": "SWING_HIGH",
+          "first_downstream_eligible_timestamp": null,
+          "fixture_sha256": "7cd7c1d59ec7afb0d7f1583a023fdf433775082524fd354b377653480902640e",
+          "implementation_identifier": "vector-structure",
+          "observation_timestamp": "2025-01-02T00:20:00Z",
+          "observed_price_or_level": 16.0,
+          "origin_or_pivot_timestamp": "2025-01-02T00:20:00Z",
+          "raw_observation": {
+            "source_column": "swing_high",
+            "source_index": 4
+          },
+          "source_fixture": "structure-insufficient-right-confirmation-v1",
+          "source_parameters": [
+            "window=2"
+          ],
+          "temporal_evidence": [
+            "source writes swing_high on the historical pivot row",
+            "right-side evidence is observed through index+1",
+            "whole-series ATR mean can change the result after that confirmation horizon"
+          ]
+        }
+      ],
+      "implementation_identifier": "vector-structure",
+      "repository_path": "src/structure_engine.py",
+      "source_sha256": "9244891f9caf9100b255b1f7f410b3f3a3d5b53ce8272151c496261953709a3e",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "FUTURE_PIVOT_CONFIRMATION",
+          "evidence": "The pivot uses right-side candle evidence through index+1 but is written at the pivot row.",
+          "fixture_ids": [
+            "structure-confirmed-pivots-v1",
+            "structure-insufficient-right-confirmation-v1"
+          ],
+          "source_lines": [
+            30,
+            32
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "Negative shifts participate in vector pivot detection.",
+          "fixture_ids": [],
+          "source_lines": [
+            30,
+            32
+          ],
+          "status": "DETECTED"
+        },
+        {
+          "check": "PREFIX_INVARIANCE",
+          "evidence": "Full-frame future ATR values create a pivot that is absent when truncated at the nominal confirmation horizon.",
+          "fixture_ids": [
+            "structure-future-atr-leakage-v1"
+          ],
+          "source_lines": [],
+          "status": "DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "WHOLE_SERIES_REDUCTION",
+          "evidence": "The adaptive threshold uses a mean over the complete ATR series.",
+          "fixture_ids": [
+            "structure-future-atr-leakage-v1"
+          ],
+          "source_lines": [
+            22
+          ],
+          "status": "DETECTED"
+        }
+      ]
+    },
+    {
+      "capabilities": [
+        {
+          "capability": "BSL_SSL_REGISTRATION",
+          "evidence": "ZoneEngine exposes FVG/order-block scores, not this liquidity contract.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "DESTINATION_RANKING",
+          "evidence": "ZoneEngine exposes FVG/order-block scores, not this liquidity contract.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "EQUAL_HIGH_EQUAL_LOW",
+          "evidence": "ZoneEngine exposes FVG/order-block scores, not this liquidity contract.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "LIQUIDITY_LIFECYCLE",
+          "evidence": "ZoneEngine exposes FVG/order-block scores, not this liquidity contract.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        },
+        {
+          "capability": "SWEEP",
+          "evidence": "ZoneEngine exposes FVG/order-block scores, not this liquidity contract.",
+          "fixture_ids": [],
+          "status": "BLOCKED"
+        }
+      ],
+      "domain": "LIQUIDITY",
+      "events": [],
+      "implementation_identifier": "zone-engine",
+      "repository_path": "src/zone_engine.py",
+      "source_sha256": "fde09c7776f2e0b449c06f3b9191f35e5ddf7b0362ddb32ba659d55fbb9e8e37",
+      "temporal_checks": [
+        {
+          "check": "BACKWARD_FILL",
+          "evidence": "AST scan found no bfill/backfill operation.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "CENTERED_ROLLING_WINDOW",
+          "evidence": "AST scan found no rolling call with center=True.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "DESTINATION_RANKING_USES_LATER_CANDLES",
+          "evidence": "No destination ranking API exists on ZoneEngine.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "NEGATIVE_SHIFT",
+          "evidence": "AST scan found no negative shift call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        },
+        {
+          "check": "POOL_OUTCOME_BEFORE_REGISTRATION",
+          "evidence": "No liquidity pool registration or outcome API exists on ZoneEngine.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "BLOCKED"
+        },
+        {
+          "check": "WHOLE_SERIES_EXTREMA",
+          "evidence": "AST scan found no direct whole-series min/max call.",
+          "fixture_ids": [],
+          "source_lines": [],
+          "status": "NOT_DETECTED"
+        }
+      ]
+    }
+  ],
+  "jira_key": "KAN-11",
+  "limitations": [
+    "Characterization freezes observed software behavior on synthetic fixtures; it does not prove universal equivalence or market validity.",
+    "MSS, reclaimed/accepted lifecycle states, and destination ranking remain BLOCKED_BY_MISSING_SEMANTICS.",
+    "Simple structure and liquidity thresholds use complete-frame ATR means and are not real-time eligible.",
+    "Layer2 BOS/CHoCH uses wick penetration, which diverges from the governed close-based definition.",
+    "Layer3 sweeps require the next candle but are written at the raid row; downstream eligibility begins at confirmation.",
+    "Resting liquidity is derived from a complete sweep list without an as-of timestamp and cannot be promoted to a historical lifecycle state.",
+    "OHLCV-based BSL/SSL labels are deterministic proxies and do not evidence actual resting orders.",
+    "G6-G9 remain NOT_EVALUATED; this artifact does not establish analytical, statistical, or execution readiness."
+  ],
+  "schema_version": "1.0.0"
+}
