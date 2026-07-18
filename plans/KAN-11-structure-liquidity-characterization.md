@@ -354,6 +354,7 @@ no history rewrite, force push, dataset rebuild, or compatibility migration is i
 | 2026-07-18 | Review-fix research selection | Passed: 1 test in 0.04 seconds. |
 | 2026-07-18 | Review-fix manifest, hygiene, dependency, and diff checks | Passed: manifest verified; hygiene skip mode found no violations; pip check clean; git diff check clean. |
 | 2026-07-18 | Review-fix preservation audit | Passed: 56 CSVs, 90,960,790 bytes, protected aggregate/manifest hashes unchanged; all seven engine hashes, 11 comparisons, five classifications, limitations, and G6-G9 status unchanged. |
+| 2026-07-18 | Review-fix publication | Commit `d781802539478621503ec1306297e4a7e2f4e203` pushed to the existing KAN-11 branch; push run `29656883034` and pull-request run `29656884448` passed on that exact head. PR #28 remained draft, open, and unmerged. |
 
 ## 12. Completion Evidence
 
@@ -364,7 +365,7 @@ documents every required pairwise classification. All seven analytical source fi
 protected datasets, the committed manifest, canonical G0-G5 behavior, and G6-G9 status are
 unchanged.
 
-The initial implementation is committed and published as draft PR #28. The temporal
-contract review fix is locally complete and verified; its commit, push, and replacement
-push/pull-request Actions results are pending at this point in the log. PR #28 remains
-draft, open, and unmerged for human review.
+The initial implementation and temporal contract review fix are committed and published
+on the existing KAN-11 branch and draft PR #28. Both review-fix Actions events passed on
+the exact implementation head. The existing PR remains draft, open, and unmerged for
+human review; its checks and body retain the latest-head publication evidence.
