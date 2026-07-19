@@ -1,0 +1,68 @@
+{
+  "bundle_version": "abshodeh-historical-labeling-v1",
+  "dataset": {
+    "canonical_request_version": "abshodeh-canonical-request-v1",
+    "dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+    "dataset_path": "data_clean/abshodeNaghdi-1.csv",
+    "diagnostic_timeframe": "H1",
+    "event_timeframe": "M5",
+    "market": "ABSHODEH",
+    "reconciliation_path": "data_clean/abshodeNaghdi-5.csv",
+    "source_timeframe": "M1",
+    "symbol": "abshodeNaghdi"
+  },
+  "event_source": {
+    "allowed_event_types": [
+      "SWING_HIGH",
+      "SWING_LOW"
+    ],
+    "implementation_identifier": "layer2-structure",
+    "event_bar_seconds": 300,
+    "lookback": 2,
+    "min_strength": "0.6",
+    "policy_version": "layer2-confirmed-swings-v1",
+    "repository_path": "src/layer2_structural_engine.py",
+    "source_sha256": "74406477903916ababd4db7ce25b4e459e576e4bcce15bf52ff4a6ebb44d2310"
+  },
+  "features": {
+    "approach_lookback_bars": 3,
+    "atr_lookback_bars": 14,
+    "compression_lookback_bars": 5,
+    "event_bar_seconds": 300,
+    "htf_timeframe": "H1",
+    "htf_bar_seconds": 3600,
+    "policy_version": "asof-features-v1",
+    "prior_touch_lookback_bars": 50,
+    "prior_touch_tolerance_atr": "0.10",
+    "range_expansion_lookback_bars": 14
+  },
+  "labels": {
+    "acceptance_close_atr": "0.10",
+    "acceptance_consecutive_closes": 2,
+    "continuation_atr": "1.00",
+    "expected_bar_seconds": 300,
+    "maximum_horizon_bars": 12,
+    "maximum_horizon_seconds": 3600,
+    "penetration_atr": "0.10",
+    "policy_version": "abshodeh-level-outcome-v1",
+    "qualifying_pullback_atr": "0.25",
+    "reentry_close_atr": "0.00",
+    "reversal_atr": "1.00"
+  },
+  "session": {
+    "allow_cross_session_outcomes": false,
+    "evidence_status": "HYPOTHESIS",
+    "holiday_calendar_status": "UNKNOWN",
+    "neutral_buckets": [
+      "09:00-12:00",
+      "12:00-15:00",
+      "15:00-18:00",
+      "18:00-22:00"
+    ],
+    "policy_version": "abshodeh-research-session-v1",
+    "session_end": "22:00:00",
+    "session_start": "09:00:00",
+    "timestamp_period_semantics": "PERIOD_START",
+    "timezone": "Asia/Tehran"
+  }
+}
