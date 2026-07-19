@@ -1,0 +1,274 @@
+{
+  "artifact_id": "KAN-13-market-event-labeling-fixture",
+  "eligible_extraction": {
+    "censoring_count": 0,
+    "event_count": 2,
+    "extraction_sha256": "4ddc8ec58c7c1c2b3067b475bc143a0cec14566c13d71649723814ec72f9a9e9",
+    "feature_count": 2,
+    "gate_statuses": [
+      "G0_PROVENANCE:PASS",
+      "G1_SCHEMA_PARSING:PASS",
+      "G2_TEMPORAL_INTEGRITY:PASS",
+      "G3_OHLC_NUMERIC:PASS",
+      "G4_CALENDAR_COVERAGE:PASS",
+      "G5_MTF_RECONCILIATION:PASS",
+      "G6_FEATURE_REPRODUCTION:NOT_EVALUATED",
+      "G7_ANALYTICAL_ELIGIBILITY:NOT_EVALUATED",
+      "G8_STATISTICAL_ELIGIBILITY:NOT_EVALUATED",
+      "G9_EXECUTION_BACKTEST_ELIGIBILITY:NOT_EVALUATED"
+    ],
+    "label_count": 2,
+    "outcome_classes": [
+      "FULL_RANGE_REVERSAL",
+      "FULL_RANGE_REVERSAL"
+    ]
+  },
+  "fixture_results": [
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": null,
+      "expected_outcome": "ACCEPTANCE_THEN_EXPANSION",
+      "fixture_id": "above-acceptance_then_expansion-v1",
+      "fixture_sha256": "a83f60c9a96401ac522423783be3a65303f30d9ecd985f86199de3c264a65a7c",
+      "observed_censor_reason": null,
+      "observed_outcome": "ACCEPTANCE_THEN_EXPANSION"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": null,
+      "expected_outcome": "DIRECT_CONTINUATION",
+      "fixture_id": "above-direct_continuation-v1",
+      "fixture_sha256": "b06c17b4c1645ebe87bd28aee38652748c0f53e0e653549fe3e659e7e09b0848",
+      "observed_censor_reason": null,
+      "observed_outcome": "DIRECT_CONTINUATION"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": null,
+      "expected_outcome": "FALSE_BREAK_REENTRY",
+      "fixture_id": "above-false_break_reentry-v1",
+      "fixture_sha256": "2e215b881feed5007cbff7112ade4ef815abced8c716d9556ba011e66532c778",
+      "observed_censor_reason": null,
+      "observed_outcome": "FALSE_BREAK_REENTRY"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": null,
+      "expected_outcome": "FULL_RANGE_REVERSAL",
+      "fixture_id": "above-full_range_reversal-v1",
+      "fixture_sha256": "3cfa2845c660dce681c484953c7cb63fa5f0319f73c6736e45d96f5342855d6e",
+      "observed_censor_reason": null,
+      "observed_outcome": "FULL_RANGE_REVERSAL"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": null,
+      "expected_outcome": "NO_RESOLUTION",
+      "fixture_id": "above-no_resolution-v1",
+      "fixture_sha256": "0a771ee7bc7e7cfb1bd1cd354907ffd5ff2a2fa300364d5382c3db9d4054cba9",
+      "observed_censor_reason": null,
+      "observed_outcome": "NO_RESOLUTION"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": null,
+      "expected_outcome": "SWEEP_PULLBACK_CONTINUATION",
+      "fixture_id": "above-sweep_pullback_continuation-v1",
+      "fixture_sha256": "039af0dd96184a048fbcf4c072af9f7ba6329a8e5f6d91cae9f5834935ea3f00",
+      "observed_censor_reason": null,
+      "observed_outcome": "SWEEP_PULLBACK_CONTINUATION"
+    },
+    {
+      "direction": "BELOW",
+      "event_id": "evt_91c0faed811094c050467649e770da825decc11322c23c76f8bf67903c40590a",
+      "expected_censor_reason": null,
+      "expected_outcome": "ACCEPTANCE_THEN_EXPANSION",
+      "fixture_id": "below-acceptance_then_expansion-v1",
+      "fixture_sha256": "c1ceed5a7c1a428a290d40f8da35360bbb05be1b9e2dae8b25a34ca68f1343d6",
+      "observed_censor_reason": null,
+      "observed_outcome": "ACCEPTANCE_THEN_EXPANSION"
+    },
+    {
+      "direction": "BELOW",
+      "event_id": "evt_91c0faed811094c050467649e770da825decc11322c23c76f8bf67903c40590a",
+      "expected_censor_reason": null,
+      "expected_outcome": "DIRECT_CONTINUATION",
+      "fixture_id": "below-direct_continuation-v1",
+      "fixture_sha256": "3cfa2845c660dce681c484953c7cb63fa5f0319f73c6736e45d96f5342855d6e",
+      "observed_censor_reason": null,
+      "observed_outcome": "DIRECT_CONTINUATION"
+    },
+    {
+      "direction": "BELOW",
+      "event_id": "evt_91c0faed811094c050467649e770da825decc11322c23c76f8bf67903c40590a",
+      "expected_censor_reason": null,
+      "expected_outcome": "FALSE_BREAK_REENTRY",
+      "fixture_id": "below-false_break_reentry-v1",
+      "fixture_sha256": "c2b862ed321963a4880b6cc9ee69572a741f267b984216a2cf7c28259f1a9efb",
+      "observed_censor_reason": null,
+      "observed_outcome": "FALSE_BREAK_REENTRY"
+    },
+    {
+      "direction": "BELOW",
+      "event_id": "evt_91c0faed811094c050467649e770da825decc11322c23c76f8bf67903c40590a",
+      "expected_censor_reason": null,
+      "expected_outcome": "FULL_RANGE_REVERSAL",
+      "fixture_id": "below-full_range_reversal-v1",
+      "fixture_sha256": "b06c17b4c1645ebe87bd28aee38652748c0f53e0e653549fe3e659e7e09b0848",
+      "observed_censor_reason": null,
+      "observed_outcome": "FULL_RANGE_REVERSAL"
+    },
+    {
+      "direction": "BELOW",
+      "event_id": "evt_91c0faed811094c050467649e770da825decc11322c23c76f8bf67903c40590a",
+      "expected_censor_reason": null,
+      "expected_outcome": "NO_RESOLUTION",
+      "fixture_id": "below-no_resolution-v1",
+      "fixture_sha256": "0a771ee7bc7e7cfb1bd1cd354907ffd5ff2a2fa300364d5382c3db9d4054cba9",
+      "observed_censor_reason": null,
+      "observed_outcome": "NO_RESOLUTION"
+    },
+    {
+      "direction": "BELOW",
+      "event_id": "evt_91c0faed811094c050467649e770da825decc11322c23c76f8bf67903c40590a",
+      "expected_censor_reason": null,
+      "expected_outcome": "SWEEP_PULLBACK_CONTINUATION",
+      "fixture_id": "below-sweep_pullback_continuation-v1",
+      "fixture_sha256": "34a0742c6c8c78382b4ff57620a24be3b7351bcb160959deec98fd16fc3b51c0",
+      "observed_censor_reason": null,
+      "observed_outcome": "SWEEP_PULLBACK_CONTINUATION"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "DATASET_END",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-dataset_end-v1",
+      "fixture_sha256": "ad87d89bc5f316262c05663d9cdaebb5c37efe38c442d09f90ba7c6c3cd2632e",
+      "observed_censor_reason": "DATASET_END",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "FAILED_ELIGIBILITY",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-failed_eligibility-v1",
+      "fixture_sha256": "0a771ee7bc7e7cfb1bd1cd354907ffd5ff2a2fa300364d5382c3db9d4054cba9",
+      "observed_censor_reason": "FAILED_ELIGIBILITY",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "INSUFFICIENT_FUTURE_HORIZON",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-insufficient_future_horizon-v1",
+      "fixture_sha256": "39bcf8be38b1fbaef13a8647dc733b40d23edfbaeff4f8c6fa73e7c517269648",
+      "observed_censor_reason": "INSUFFICIENT_FUTURE_HORIZON",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "INTRABAR_PATH_AMBIGUOUS",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-intrabar_path_ambiguous-v1",
+      "fixture_sha256": "dfb7a72f4d04b4d776467f0b1f50ea0f9869be6f1f26c4ce3d89b57e6aad5713",
+      "observed_censor_reason": "INTRABAR_PATH_AMBIGUOUS",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "MISSING_BARS",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-missing_bars-v1",
+      "fixture_sha256": "31cb87310bb6bcd44d6044f2dabba3aad1aba62e2843e918fc61b90bc5858f5d",
+      "observed_censor_reason": "MISSING_BARS",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "OTHER",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-other-v1",
+      "fixture_sha256": "0a771ee7bc7e7cfb1bd1cd354907ffd5ff2a2fa300364d5382c3db9d4054cba9",
+      "observed_censor_reason": "OTHER",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_ba5835a5d60cfad9924d039b919f707d95f891d5c88b42188fab6157c7029634",
+      "expected_censor_reason": "SESSION_BOUNDARY",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-session_boundary-v1",
+      "fixture_sha256": "43d8f209a3adddd90b3dd43de918cc44fb0a6b2a7f76df26cd99bd221a114b9d",
+      "observed_censor_reason": "SESSION_BOUNDARY",
+      "observed_outcome": "CENSORED"
+    },
+    {
+      "direction": "ABOVE",
+      "event_id": "evt_f9b57794212e32b21452fb0f3a35f8ee834561ea069d44def10a97447f9dac0f",
+      "expected_censor_reason": "UNAVAILABLE_CALENDAR_SEMANTICS",
+      "expected_outcome": "CENSORED",
+      "fixture_id": "censor-unavailable_calendar_semantics-v1",
+      "fixture_sha256": "0a771ee7bc7e7cfb1bd1cd354907ffd5ff2a2fa300364d5382c3db9d4054cba9",
+      "observed_censor_reason": "UNAVAILABLE_CALENDAR_SEMANTICS",
+      "observed_outcome": "CENSORED"
+    }
+  ],
+  "fixture_scope": "SYNTHETIC_ONLY",
+  "jira_key": "KAN-13",
+  "limitations": [
+    "Fixtures prove deterministic policy implementation, not market validity.",
+    "Thresholds are provisional research parameters and are not optimized.",
+    "Herat and XAUUSD are NOT_EVALUATED.",
+    "G6-G9 remain NOT_EVALUATED.",
+    "No probability, model, entry, invalidation, target, or trading decision is emitted."
+  ],
+  "policy_bundle_version": "abshodeh-historical-labeling-v1",
+  "policy_sha256": "689c5dbc1b2271ef6d854f26e3d5d93e29a8faaf8e6d839068febbf2d63a90a0",
+  "schema_evidence": [
+    {
+      "contract_name": "MarketEventIdentity",
+      "json_schema_sha256": "c39b0c09c61a80b7b814ba4e90325c39e6b23c3be0da141a16918047a6c44c30"
+    },
+    {
+      "contract_name": "AsOfFeatureSnapshot",
+      "json_schema_sha256": "b440e6ee4058cef2bf9c3b65b89039bb4389bd1e2c227ca4036d60c2ab79ec11"
+    },
+    {
+      "contract_name": "HistoricalOutcomeLabel",
+      "json_schema_sha256": "483c3c5e976c846344ee3ea2d10d3860dc02194110e92c602483036a6f8e9702"
+    },
+    {
+      "contract_name": "CensoringRecord",
+      "json_schema_sha256": "ff66165fa98d70a5b3fe0c2bf4c01fcc3389bb194aee9806c1181cf66b89a595"
+    },
+    {
+      "contract_name": "LineageRecord",
+      "json_schema_sha256": "3a0f267b8d7163feb8689087685f8ce98b257a585b90a6314fdfdbd98cfa7c80"
+    },
+    {
+      "contract_name": "HistoricalExtractionResult",
+      "json_schema_sha256": "0dbfe8875990c7e8ed38ec1dcdc42901251945e1f6af8b016ca3e91a185ace02"
+    },
+    {
+      "contract_name": "LabelingEvidence",
+      "json_schema_sha256": "7f5287c05d43f2c0bbe71bc0dbc8661591c49ff7275d4f5cbd64751c609590ab"
+    },
+    {
+      "contract_name": "CalendarSemanticsEvidence",
+      "json_schema_sha256": "8099af0eadeedd1e0f71629c3023d8275270b958c4d4373ca79e1f694524a150"
+    }
+  ],
+  "schema_version": "1.0.0"
+}

@@ -1,0 +1,152 @@
+{
+  "artifact_id": "KAN-13-abshodeh-pilot-summary",
+  "byte_size": 2910574,
+  "catalog_generated": false,
+  "coverage_end": "2026-05-18 22:00:00",
+  "coverage_start": "2026-02-18 10:22:00",
+  "dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+  "dataset_path": "data_clean/abshodeNaghdi-1.csv",
+  "eligible_event_count": 0,
+  "eligible_feature_count": 0,
+  "eligible_label_count": 0,
+  "g6_g9_status": {
+    "G6_FEATURE_REPRODUCTION": "NOT_EVALUATED",
+    "G7_ANALYTICAL_ELIGIBILITY": "NOT_EVALUATED",
+    "G8_STATISTICAL_ELIGIBILITY": "NOT_EVALUATED",
+    "G9_EXECUTION_BACKTEST_ELIGIBILITY": "NOT_EVALUATED"
+  },
+  "gate_audit": [
+    {
+      "findings": [],
+      "gate_id": "G0_PROVENANCE",
+      "limitations": [],
+      "message": "Dataset identity matches one complete manifest record.",
+      "reason_code": "G0_PROVENANCE_OK",
+      "status": "PASS"
+    },
+    {
+      "findings": [],
+      "gate_id": "G1_SCHEMA_PARSING",
+      "limitations": [],
+      "message": "Canonical columns and parser evidence are valid.",
+      "reason_code": "G1_SCHEMA_PARSING_OK",
+      "status": "PASS"
+    },
+    {
+      "findings": [
+        "TIMEZONE_EVIDENCE_UNKNOWN",
+        "TIMESTAMP_PERIOD_SEMANTICS_UNKNOWN"
+      ],
+      "gate_id": "G2_TEMPORAL_INTEGRITY",
+      "limitations": [],
+      "message": "Required timestamp semantics or configured resolution evidence is unavailable.",
+      "reason_code": "G2_TEMPORAL_EVIDENCE_BLOCKED",
+      "status": "BLOCKED"
+    },
+    {
+      "findings": [],
+      "gate_id": "G3_OHLC_NUMERIC",
+      "limitations": [],
+      "message": "OHLC geometry and configured numeric policies are valid.",
+      "reason_code": "G3_OHLC_NUMERIC_OK",
+      "status": "PASS"
+    },
+    {
+      "findings": [],
+      "gate_id": "G4_CALENDAR_COVERAGE",
+      "limitations": [
+        "G1-G3 did not produce canonical UTC rows."
+      ],
+      "message": "Calendar checks require valid canonical rows.",
+      "reason_code": "G4_CANONICAL_DEPENDENCY_BLOCKED",
+      "status": "BLOCKED"
+    },
+    {
+      "findings": [],
+      "gate_id": "G5_MTF_RECONCILIATION",
+      "limitations": [
+        "No supplied higher-timeframe bars were provided for reconciliation."
+      ],
+      "message": "No evaluator result is available.",
+      "reason_code": "G5_MTF_RECONCILIATION_NOT_EVALUATED",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "findings": [],
+      "gate_id": "G6_FEATURE_REPRODUCTION",
+      "limitations": [
+        "KAN-10 defines the contract but no evaluator is implemented."
+      ],
+      "message": "No evaluator result is available.",
+      "reason_code": "G6_FEATURE_REPRODUCTION_NOT_EVALUATED",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "findings": [],
+      "gate_id": "G7_ANALYTICAL_ELIGIBILITY",
+      "limitations": [
+        "KAN-10 defines the contract but no evaluator is implemented."
+      ],
+      "message": "No evaluator result is available.",
+      "reason_code": "G7_ANALYTICAL_ELIGIBILITY_NOT_EVALUATED",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "findings": [],
+      "gate_id": "G8_STATISTICAL_ELIGIBILITY",
+      "limitations": [
+        "KAN-10 defines the contract but no evaluator is implemented."
+      ],
+      "message": "No evaluator result is available.",
+      "reason_code": "G8_STATISTICAL_ELIGIBILITY_NOT_EVALUATED",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "findings": [],
+      "gate_id": "G9_EXECUTION_BACKTEST_ELIGIBILITY",
+      "limitations": [
+        "KAN-10 defines the contract but no evaluator is implemented."
+      ],
+      "message": "No evaluator result is available.",
+      "reason_code": "G9_EXECUTION_BACKTEST_ELIGIBILITY_NOT_EVALUATED",
+      "status": "NOT_EVALUATED"
+    }
+  ],
+  "herat_status": "NOT_EVALUATED",
+  "jira_key": "KAN-13",
+  "limitations": [
+    "KAN-10 G2 and G4 block the selected source.",
+    "No historical engine, feature, or label execution occurred.",
+    "The pilot demonstrates the acceptance boundary, not statistical sufficiency.",
+    "Behavioral Fingerprint modeling is outside KAN-13."
+  ],
+  "requested_configuration": {
+    "bundle_version": "abshodeh-historical-labeling-v1",
+    "calendar_evidence": "UNKNOWN",
+    "canonical_request_version": "abshodeh-canonical-request-v1",
+    "diagnostic_timeframe": "H1",
+    "event_policy_version": "layer2-confirmed-swings-v1",
+    "event_timeframe": "M5",
+    "feature_policy_version": "asof-features-v1",
+    "label_policy_version": "abshodeh-level-outcome-v1",
+    "policy_sha256": "689c5dbc1b2271ef6d854f26e3d5d93e29a8faaf8e6d839068febbf2d63a90a0",
+    "reconciliation_path": "data_clean/abshodeNaghdi-5.csv",
+    "session": "09:00:00-22:00:00",
+    "session_policy_version": "abshodeh-research-session-v1",
+    "source_timeframe": "M1",
+    "timestamp_period_semantics": "PERIOD_START",
+    "timezone": "Asia/Tehran",
+    "timezone_period_evidence": "HYPOTHESIS"
+  },
+  "row_count": 50000,
+  "schema_version": "1.0.0",
+  "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+  "status": "BLOCKED_BY_SOURCE_SEMANTICS",
+  "unresolved_evidence": [
+    "source timezone evidence is UNKNOWN in the committed manifest",
+    "source timestamp-period semantics are UNKNOWN in the committed manifest",
+    "holiday and trading-day completeness lacks an authoritative calendar",
+    "requested Asia/Tehran PERIOD_START semantics remain HYPOTHESIS"
+  ],
+  "xauusd_status": "NOT_EVALUATED"
+}
