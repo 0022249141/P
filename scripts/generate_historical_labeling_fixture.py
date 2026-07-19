@@ -34,7 +34,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     config = args.config if args.config.is_absolute() else REPOSITORY_ROOT / args.config
     output = args.output if args.output.is_absolute() else REPOSITORY_ROOT / args.output
-    content = build_fixture_artifact(load_policy(config)).to_json_bytes()
+    content = build_fixture_artifact(
+        load_policy(config),
+        REPOSITORY_ROOT,
+    ).to_json_bytes()
     if args.check:
         if not output.is_file() or output.read_bytes() != content:
             print("KAN-13 fixture artifact is missing or stale.")

@@ -87,6 +87,21 @@ def test_artifact_matrix_is_complete_and_contains_only_stable_evidence() -> None
         assert forbidden not in decoded
 
 
+def test_artifact_records_g0_g5_eligible_end_to_end_extraction() -> None:
+    evidence = artifact().eligible_extraction
+
+    assert evidence.event_count > 0
+    assert evidence.event_count == evidence.feature_count == evidence.label_count
+    for index in range(6):
+        matching = [
+            status
+            for status in evidence.gate_statuses
+            if status.startswith(f"G{index}_")
+        ]
+        assert len(matching) == 1
+        assert matching[0].endswith(":PASS")
+
+
 def test_feature_and_label_modules_have_one_way_namespace_separation() -> None:
     feature_source = (
         REPOSITORY_ROOT / "pipelines/historical_labeling/features.py"
@@ -106,6 +121,7 @@ def test_historical_labeling_imports_have_no_application_io_side_effects() -> No
         "pipelines.historical_labeling.fixtures",
         "pipelines.historical_labeling.artifact",
         "pipelines.historical_labeling.event_source",
+        "pipelines.historical_labeling.extraction",
         "pipelines.historical_labeling.features",
         "pipelines.historical_labeling.labels",
         "pipelines.historical_labeling.pilot",

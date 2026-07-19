@@ -7,12 +7,15 @@ import pytest
 
 from pipelines.historical_labeling.contracts import (
     CensorReason,
+    EligibilityEvidenceState,
     EventDirection,
+    MetricScope,
     OutcomeClass,
 )
 from pipelines.historical_labeling.fixtures import (
     synthetic_censor_frame,
     synthetic_event,
+    synthetic_labeling_evidence,
     synthetic_outcome_frame,
     synthetic_snapshot,
 )
@@ -43,6 +46,7 @@ def test_every_outcome_is_covered_with_high_low_symmetry(
         synthetic_snapshot(policy(), event),
         label_policy=policy().labels,
         session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
     )
 
     assert result.label.outcome_class is outcome
@@ -62,6 +66,7 @@ def test_high_low_symmetric_cases_have_identical_metrics() -> None:
                     synthetic_snapshot(policy(), event),
                     label_policy=policy().labels,
                     session_policy=policy().session,
+                    evidence=synthetic_labeling_evidence(),
                 ).label
             )
         fields = (
@@ -112,6 +117,7 @@ def test_precedence_distinguishes_acceptance_sweep_direct_and_false_break() -> N
                 snapshot,
                 label_policy=policy().labels,
                 session_policy=policy().session,
+                evidence=synthetic_labeling_evidence(),
             ).label.outcome_class
         )
     assert observed == expected
@@ -126,6 +132,7 @@ def test_intrabar_terminal_conflict_is_censored() -> None:
         synthetic_snapshot(policy(), event),
         label_policy=policy().labels,
         session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
     )
 
     assert result.label.outcome_class is OutcomeClass.CENSORED
@@ -146,6 +153,7 @@ def test_session_boundary_censors_before_outcome_resolution() -> None:
         synthetic_snapshot(policy(), event),
         label_policy=policy().labels,
         session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
     )
 
     assert result.label.outcome_class is OutcomeClass.CENSORED
@@ -169,6 +177,7 @@ def test_label_is_bounded_and_ignores_candles_after_the_horizon() -> None:
         synthetic_snapshot(policy(), event),
         label_policy=policy().labels,
         session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
     )
     mutated = label_historical_outcome(
         extended,
@@ -176,6 +185,131 @@ def test_label_is_bounded_and_ignores_candles_after_the_horizon() -> None:
         synthetic_snapshot(policy(), event),
         label_policy=policy().labels,
         session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
     )
 
     assert base == mutated
+
+
+def test_direct_call_cannot_resolve_without_explicit_typed_evidence() -> None:
+    event = synthetic_event(policy(), EventDirection.ABOVE)
+    arguments = (
+        synthetic_outcome_frame(event, OutcomeClass.DIRECT_CONTINUATION),
+        event,
+        synthetic_snapshot(policy(), event),
+    )
+    with pytest.raises(TypeError, match="evidence"):
+        label_historical_outcome(
+            *arguments,
+            label_policy=policy().labels,
+            session_policy=policy().session,
+        )
+    with pytest.raises(TypeError, match="typed labeling evidence"):
+        label_historical_outcome(
+            *arguments,
+            label_policy=policy().labels,
+            session_policy=policy().session,
+            evidence=None,
+        )
+
+
+@pytest.mark.parametrize(
+    "status",
+    (
+        EligibilityEvidenceState.FAIL,
+        EligibilityEvidenceState.BLOCKED,
+        EligibilityEvidenceState.UNKNOWN,
+        EligibilityEvidenceState.NOT_EVALUATED,
+    ),
+)
+def test_nonpass_source_evidence_censors(status: EligibilityEvidenceState) -> None:
+    event = synthetic_event(policy(), EventDirection.ABOVE)
+    result = label_historical_outcome(
+        synthetic_outcome_frame(event, OutcomeClass.DIRECT_CONTINUATION),
+        event,
+        synthetic_snapshot(policy(), event),
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(source_status=status),
+    )
+
+    assert result.label.outcome_class is OutcomeClass.CENSORED
+    assert result.censoring is not None
+    assert result.censoring.primary_reason is CensorReason.FAILED_ELIGIBILITY
+
+
+@pytest.mark.parametrize(
+    "status",
+    (
+        EligibilityEvidenceState.FAIL,
+        EligibilityEvidenceState.BLOCKED,
+        EligibilityEvidenceState.UNKNOWN,
+        EligibilityEvidenceState.NOT_EVALUATED,
+    ),
+)
+def test_nonpass_calendar_evidence_censors(status: EligibilityEvidenceState) -> None:
+    event = synthetic_event(policy(), EventDirection.ABOVE)
+    result = label_historical_outcome(
+        synthetic_outcome_frame(event, OutcomeClass.DIRECT_CONTINUATION),
+        event,
+        synthetic_snapshot(policy(), event),
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(calendar_status=status),
+    )
+
+    assert result.label.outcome_class is OutcomeClass.CENSORED
+    assert result.censoring is not None
+    assert result.censoring.primary_reason is CensorReason.UNAVAILABLE_CALENDAR_SEMANTICS
+
+
+def test_post_terminal_candles_cannot_change_outcome_or_metrics() -> None:
+    event = synthetic_event(policy(), EventDirection.ABOVE)
+    frame = synthetic_outcome_frame(event, OutcomeClass.DIRECT_CONTINUATION)
+    snapshot = synthetic_snapshot(policy(), event)
+    base = label_historical_outcome(
+        frame,
+        event,
+        snapshot,
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
+    )
+    assert base.label.metric_scope is MetricScope.PRE_TERMINAL_INCLUSIVE
+    assert base.label.metric_end_timestamp is not None
+
+    availability = frame["timestamp"] + pd.Timedelta(minutes=5)
+    post_terminal = availability > pd.Timestamp(base.label.metric_end_timestamp)
+    mutated = frame.copy(deep=True)
+    mutated.loc[post_terminal, ["high", "low", "close"]] = [10000.0, 1.0, 5000.0]
+    truncated = frame.loc[~post_terminal].copy(deep=True)
+    duplicate_after_terminal = pd.concat(
+        [mutated, mutated.loc[post_terminal].iloc[[0]]],
+        ignore_index=True,
+    )
+    mutated_result = label_historical_outcome(
+        mutated,
+        event,
+        snapshot,
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
+    )
+    truncated_result = label_historical_outcome(
+        truncated,
+        event,
+        snapshot,
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
+    )
+    duplicate_result = label_historical_outcome(
+        duplicate_after_terminal,
+        event,
+        snapshot,
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
+    )
+
+    assert base == mutated_result == truncated_result == duplicate_result

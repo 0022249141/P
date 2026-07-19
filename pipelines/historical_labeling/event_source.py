@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import hashlib
-import importlib
+import importlib.util
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -36,13 +36,44 @@ def require_kan11_eligible(observation: Any) -> None:
         raise EventSourceEligibilityError("KAN-11 eligibility evidence is unavailable")
 
 
-def _verify_source(root: Path, policy: EventSourcePolicy) -> None:
-    source = root.resolve() / policy.repository_path
+def _approved_source(root: Path, policy: EventSourcePolicy) -> Path:
+    resolved_root = root.resolve()
+    package_root = Path(__file__).resolve().parents[2]
+    if resolved_root != package_root:
+        raise EventSourceEligibilityError(
+            "repository_root must match the checkout that loaded KAN-13"
+        )
+    source = (resolved_root / policy.repository_path).resolve()
+    expected = resolved_root.joinpath(*policy.repository_path.split("/")).resolve()
+    if source != expected or not source.is_file():
+        raise EventSourceEligibilityError("approved layer-2 source path is unavailable")
     digest = hashlib.sha256(source.read_bytes()).hexdigest()
     if digest != policy.source_sha256:
         raise EventSourceEligibilityError(
             "layer-2 source hash differs from the approved characterization evidence"
         )
+    return source
+
+
+def _load_approved_engine(root: Path, policy: EventSourcePolicy) -> type[Any]:
+    source = _approved_source(root, policy)
+    spec = importlib.util.spec_from_file_location(
+        "_kan13_hash_pinned_layer2_structural_engine",
+        source,
+    )
+    if spec is None or spec.loader is None:
+        raise EventSourceEligibilityError("approved layer-2 source cannot be loaded")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    loaded_path = Path(str(module.__file__)).resolve()
+    if loaded_path != source:
+        raise EventSourceEligibilityError(
+            "loaded layer-2 module does not match the approved source path"
+        )
+    engine = getattr(module, "StructuralEngine", None)
+    if engine is None:
+        raise EventSourceEligibilityError("approved layer-2 engine class is unavailable")
+    return engine
 
 
 def _prepared_frame(frame: pd.DataFrame) -> pd.DataFrame:
@@ -74,10 +105,9 @@ def generate_confirmed_swing_events(
 ) -> tuple[MarketEventIdentity, ...]:
     """Map unchanged layer-2 pivots to explicitly delayed event identities."""
 
-    _verify_source(repository_root, policy)
     prepared = _prepared_frame(frame)
-    module = importlib.import_module("src.layer2_structural_engine")
-    engine = module.StructuralEngine(min_strength=float(policy.min_strength))
+    engine_type = _load_approved_engine(repository_root, policy)
+    engine = engine_type(min_strength=float(policy.min_strength))
     parameters = policy.parameter_strings()
     parameter_hash = policy.parameter_sha256()
     events: list[MarketEventIdentity] = []

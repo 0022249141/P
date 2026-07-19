@@ -7,15 +7,37 @@ from decimal import Decimal
 
 import pandas as pd
 
+from core.dataset_manifest import MANIFEST_SCHEMA_VERSION, PARSER_SCHEMA_VERSION, RECORD_KEYS
+from pipelines.canonical import (
+    BoundaryConvention,
+    CalendarBehavior,
+    CalendarPolicy,
+    CanonicalizationPolicy,
+    EvidenceStatus as CanonicalEvidenceStatus,
+    IncompleteBinPolicy,
+    PeriodSemantics,
+    ResamplingPolicy,
+    TimestampSemantics,
+    VolumeAggregation,
+)
 from pipelines.historical_labeling.contracts import (
     AsOfFeatureSnapshot,
+    CalendarSemanticsEvidence,
     CensorReason,
+    EligibilityEvidenceState,
     EventDirection,
     EventType,
+    LabelingEvidence,
     MarketEventIdentity,
     OutcomeClass,
 )
-from pipelines.historical_labeling.policies import ResearchPolicyBundle
+from pipelines.historical_labeling.policies import (
+    PilotDatasetPolicy,
+    ResearchPolicyBundle,
+)
+
+
+SYNTHETIC_SOURCE_SHA256 = "a" * 64
 
 
 def synthetic_event(
@@ -84,6 +106,159 @@ def synthetic_snapshot(
         neutral_session_bucket="15:00-18:00",
         htf_location=None,
         source_bar_count=20,
+    )
+
+
+def synthetic_labeling_evidence(
+    *,
+    source_status: EligibilityEvidenceState = EligibilityEvidenceState.PASS,
+    calendar_status: EligibilityEvidenceState = EligibilityEvidenceState.PASS,
+) -> LabelingEvidence:
+    return LabelingEvidence(
+        source_status=source_status,
+        source_profile="SYNTHETIC_G0_G5_V1",
+        source_reason_code=f"SYNTHETIC_SOURCE_{source_status.value}",
+        calendar_status=calendar_status,
+        calendar_policy_version="synthetic-complete-session-v1",
+        calendar_reason_code=f"SYNTHETIC_CALENDAR_{calendar_status.value}",
+    )
+
+
+def synthetic_calendar_evidence() -> CalendarSemanticsEvidence:
+    return CalendarSemanticsEvidence(
+        status=EligibilityEvidenceState.PASS,
+        policy_version="synthetic-complete-session-v1",
+        reason_code="SYNTHETIC_SESSION_AND_CALENDAR_COMPLETE",
+    )
+
+
+def synthetic_eligible_m5_frame() -> pd.DataFrame:
+    count = 100
+    timestamps = pd.date_range(
+        "2025-01-06T05:30:00Z",
+        periods=count,
+        freq="5min",
+        tz="UTC",
+    )
+    rows = [
+        {
+            "timestamp": timestamp,
+            "open": 100.0,
+            "high": 101.0,
+            "low": 99.0,
+            "close": 100.0,
+            "volume": 100.0,
+        }
+        for timestamp in timestamps
+    ]
+    rows[60].update(open=100.0, high=110.0, low=99.0, close=106.0)
+    rows[80].update(open=100.0, high=101.0, low=90.0, close=94.0)
+    return pd.DataFrame(rows)
+
+
+def synthetic_eligible_m1_frame() -> pd.DataFrame:
+    rows = []
+    for target in synthetic_eligible_m5_frame().itertuples(index=False):
+        for minute in range(5):
+            close = float(target.close) if minute == 4 else float(target.open)
+            high = (
+                float(target.high)
+                if minute == 0
+                else max(float(target.open), close)
+            )
+            low = (
+                float(target.low)
+                if minute == 0
+                else min(float(target.open), close)
+            )
+            rows.append(
+                {
+                    "timestamp": target.timestamp + pd.Timedelta(minutes=minute),
+                    "open": float(target.open),
+                    "high": high,
+                    "low": low,
+                    "close": close,
+                    "volume": float(target.volume) / 5.0,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def synthetic_eligible_policy(
+    policy: ResearchPolicyBundle,
+) -> ResearchPolicyBundle:
+    dataset = PilotDatasetPolicy(
+        dataset_id="synthetic-kan13-eligible-m1-v1",
+        dataset_path="tests/fixtures/synthetic-kan13-eligible-m1.csv",
+        source_timeframe="M1",
+        event_timeframe="M5",
+        reconciliation_path="tests/fixtures/synthetic-kan13-reconciliation-m5.csv",
+        diagnostic_timeframe="H1",
+        market="ABSHODEH_FIXTURE",
+        symbol="SYNTHETIC",
+    )
+    return policy.model_copy(update={"dataset": dataset})
+
+
+def synthetic_eligible_manifest(
+    policy: ResearchPolicyBundle,
+) -> tuple[dict[str, object], dict[str, object]]:
+    frame = synthetic_eligible_m1_frame()
+    record = {key: "evidence" for key in RECORD_KEYS}
+    record.update(
+        {
+            "path": policy.dataset.dataset_path,
+            "sha256": SYNTHETIC_SOURCE_SHA256,
+            "bytes": 12345,
+            "row_count": len(frame),
+            "first_timestamp": str(frame["timestamp"].iloc[0]),
+            "last_timestamp": str(frame["timestamp"].iloc[-1]),
+            "parser_schema_version": PARSER_SCHEMA_VERSION,
+            "parser_decision": {
+                "value": "IN_MEMORY_DATAFRAME",
+                "evidence_status": "DECLARED",
+            },
+        }
+    )
+    manifest = {
+        "manifest_schema_version": MANIFEST_SCHEMA_VERSION,
+        "parser_schema_version": PARSER_SCHEMA_VERSION,
+        "datasets": [record],
+    }
+    return manifest, record
+
+
+def synthetic_canonical_policy() -> CanonicalizationPolicy:
+    return CanonicalizationPolicy(
+        timestamp=TimestampSemantics(
+            timezone="UTC",
+            timezone_evidence=CanonicalEvidenceStatus.DECLARED,
+            period_semantics=PeriodSemantics.PERIOD_START,
+            period_evidence=CanonicalEvidenceStatus.DECLARED,
+        ),
+        calendar=CalendarPolicy(
+            policy_version="synthetic-continuous-utc-v1",
+            behavior=CalendarBehavior.CONTINUOUS,
+            expected_interval_seconds=60,
+            timezone="UTC",
+        ),
+    )
+
+
+def synthetic_resampling_policy() -> ResamplingPolicy:
+    return ResamplingPolicy(
+        policy_version="synthetic-m1-to-m5-v1",
+        source_timeframe="M1",
+        target_timeframe="M5",
+        source_period_semantics=PeriodSemantics.PERIOD_START,
+        timestamp_label=BoundaryConvention.LEFT,
+        closed_boundary=BoundaryConvention.LEFT,
+        origin="epoch",
+        timezone="UTC",
+        calendar_behavior=CalendarBehavior.CONTINUOUS,
+        calendar_version="synthetic-continuous-utc-v1",
+        incomplete_bin_policy=IncompleteBinPolicy.REJECT,
+        volume_aggregation=VolumeAggregation.SUM,
     )
 
 
@@ -179,7 +354,15 @@ def synthetic_censor_frame(
 
 __all__ = [
     "synthetic_censor_frame",
+    "synthetic_calendar_evidence",
+    "synthetic_canonical_policy",
+    "synthetic_eligible_m1_frame",
+    "synthetic_eligible_m5_frame",
+    "synthetic_eligible_manifest",
+    "synthetic_eligible_policy",
     "synthetic_event",
+    "synthetic_labeling_evidence",
     "synthetic_outcome_frame",
+    "synthetic_resampling_policy",
     "synthetic_snapshot",
 ]

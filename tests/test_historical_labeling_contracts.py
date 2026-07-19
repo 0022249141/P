@@ -15,6 +15,7 @@ from pipelines.historical_labeling.contracts import (
 )
 from pipelines.historical_labeling.fixtures import (
     synthetic_event,
+    synthetic_labeling_evidence,
     synthetic_outcome_frame,
     synthetic_snapshot,
 )
@@ -103,6 +104,7 @@ def test_label_contract_rejects_inconsistent_outcome_state() -> None:
         synthetic_snapshot(policy(), event),
         label_policy=policy().labels,
         session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
     )
     payload = result.label.model_dump(mode="python")
     payload["horizon_status"] = "CENSORED"

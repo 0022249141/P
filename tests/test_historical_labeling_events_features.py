@@ -120,6 +120,21 @@ def test_event_source_rejects_insufficient_confirmation_and_hash_drift() -> None
         )
 
 
+def test_event_source_rejects_a_different_checkout_or_editable_root(tmp_path) -> None:
+    with pytest.raises(EventSourceEligibilityError, match="checkout that loaded KAN-13"):
+        generate_confirmed_swing_events(
+            _source_frame(),
+            repository_root=tmp_path,
+            policy=policy().event_source,
+            market="ABSHODEH_FIXTURE",
+            symbol="SYNTHETIC",
+            timeframe="M5",
+            source_timeframe="M1",
+            source_dataset_id="synthetic-source-v1",
+            source_sha256="a" * 64,
+        )
+
+
 def test_kan11_ineligible_observation_is_rejected() -> None:
     with pytest.raises(EventSourceEligibilityError, match="INELIGIBLE"):
         require_kan11_eligible(

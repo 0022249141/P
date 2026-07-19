@@ -2,17 +2,24 @@
 
 from __future__ import annotations
 
+import hashlib
 from datetime import datetime, timezone
+from pathlib import Path
 
 from pydantic import Field
 
+from pipelines.canonical import ReconciliationTolerance
 from pipelines.historical_labeling.contracts import (
     AsOfFeatureSnapshot,
+    CalendarSemanticsEvidence,
     CensorReason,
     CensoringRecord,
     EventDirection,
+    EligibilityEvidenceState,
     FrozenContract,
+    HistoricalExtractionResult,
     HistoricalOutcomeLabel,
+    LabelingEvidence,
     LineageRecord,
     MarketEventIdentity,
     OutcomeClass,
@@ -21,11 +28,20 @@ from pipelines.historical_labeling.contracts import (
 )
 from pipelines.historical_labeling.fixtures import (
     synthetic_censor_frame,
+    synthetic_calendar_evidence,
+    synthetic_canonical_policy,
+    synthetic_eligible_m1_frame,
+    synthetic_eligible_m5_frame,
+    synthetic_eligible_manifest,
+    synthetic_eligible_policy,
     synthetic_event,
+    synthetic_labeling_evidence,
     synthetic_outcome_frame,
+    synthetic_resampling_policy,
     synthetic_snapshot,
 )
 from pipelines.historical_labeling.labels import label_historical_outcome
+from pipelines.historical_labeling.pilot import run_gated_pilot
 from pipelines.historical_labeling.policies import ResearchPolicyBundle
 
 
@@ -45,6 +61,16 @@ class FixtureResult(FrozenContract):
     event_id: str = Field(pattern=r"^evt_[0-9a-f]{64}$")
 
 
+class EligibleExtractionEvidence(FrozenContract):
+    extraction_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    event_count: int = Field(gt=0)
+    feature_count: int = Field(gt=0)
+    label_count: int = Field(gt=0)
+    censoring_count: int = Field(ge=0)
+    gate_statuses: tuple[str, ...]
+    outcome_classes: tuple[OutcomeClass, ...]
+
+
 class HistoricalLabelingFixtureArtifact(FrozenContract):
     artifact_id: str = "KAN-13-market-event-labeling-fixture"
     jira_key: str = "KAN-13"
@@ -54,6 +80,7 @@ class HistoricalLabelingFixtureArtifact(FrozenContract):
     policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     schema_evidence: tuple[SchemaEvidence, ...]
     fixture_results: tuple[FixtureResult, ...]
+    eligible_extraction: EligibleExtractionEvidence
     limitations: tuple[str, ...] = Field(min_length=1)
 
 
@@ -80,6 +107,9 @@ def _schema_evidence() -> tuple[SchemaEvidence, ...]:
         HistoricalOutcomeLabel,
         CensoringRecord,
         LineageRecord,
+        HistoricalExtractionResult,
+        LabelingEvidence,
+        CalendarSemanticsEvidence,
     )
     return tuple(
         SchemaEvidence(
@@ -92,6 +122,7 @@ def _schema_evidence() -> tuple[SchemaEvidence, ...]:
 
 def build_fixture_artifact(
     policy: ResearchPolicyBundle,
+    repository_root: Path,
 ) -> HistoricalLabelingFixtureArtifact:
     results: list[FixtureResult] = []
     resolved = (
@@ -113,6 +144,7 @@ def build_fixture_artifact(
                 snapshot,
                 label_policy=policy.labels,
                 session_policy=policy.session,
+                evidence=synthetic_labeling_evidence(),
             )
             results.append(
                 FixtureResult(
@@ -135,11 +167,16 @@ def build_fixture_artifact(
             frame = synthetic_outcome_frame(event, OutcomeClass.NO_RESOLUTION)
         else:
             frame = synthetic_censor_frame(event, reason)
+        evidence = synthetic_labeling_evidence()
         kwargs = {}
         if reason is CensorReason.FAILED_ELIGIBILITY:
-            kwargs["source_eligible"] = False
+            evidence = synthetic_labeling_evidence(
+                source_status=EligibilityEvidenceState.BLOCKED
+            )
         elif reason is CensorReason.UNAVAILABLE_CALENDAR_SEMANTICS:
-            kwargs["calendar_semantics_available"] = False
+            evidence = synthetic_labeling_evidence(
+                calendar_status=EligibilityEvidenceState.NOT_EVALUATED
+            )
         elif reason is CensorReason.OTHER:
             kwargs["upstream_censor_reason"] = CensorReason.OTHER
         labeled = label_historical_outcome(
@@ -148,6 +185,7 @@ def build_fixture_artifact(
             snapshot,
             label_policy=policy.labels,
             session_policy=policy.session,
+            evidence=evidence,
             **kwargs,
         )
         observed_reason = (
@@ -166,11 +204,40 @@ def build_fixture_artifact(
             )
         )
 
+    eligible_policy = synthetic_eligible_policy(policy)
+    manifest, manifest_record = synthetic_eligible_manifest(eligible_policy)
+    extraction = run_gated_pilot(
+        synthetic_eligible_m1_frame(),
+        reconciliation_table=synthetic_eligible_m5_frame(),
+        manifest=manifest,
+        manifest_record=manifest_record,
+        policy=eligible_policy,
+        canonical_policy=synthetic_canonical_policy(),
+        resampling_policy=synthetic_resampling_policy(),
+        reconciliation_tolerance=ReconciliationTolerance(),
+        repository_root=repository_root,
+        calendar_evidence=synthetic_calendar_evidence(),
+    )
+    if extraction.eligible_output is None:
+        raise AssertionError("synthetic eligible extraction did not execute")
+    extracted = extraction.eligible_output
+
     return HistoricalLabelingFixtureArtifact(
         policy_bundle_version=policy.bundle_version,
         policy_sha256=policy.policy_sha256(),
         schema_evidence=_schema_evidence(),
         fixture_results=tuple(sorted(results, key=lambda result: result.fixture_id)),
+        eligible_extraction=EligibleExtractionEvidence(
+            extraction_sha256=hashlib.sha256(extracted.to_json_bytes()).hexdigest(),
+            event_count=extracted.event_count,
+            feature_count=extracted.feature_count,
+            label_count=extracted.label_count,
+            censoring_count=extracted.censoring_count,
+            gate_statuses=tuple(
+                f"{gate.gate_id}:{gate.status}" for gate in extracted.gate_audit
+            ),
+            outcome_classes=tuple(label.outcome_class for label in extracted.labels),
+        ),
         limitations=(
             "Fixtures prove deterministic policy implementation, not market validity.",
             "Thresholds are provisional research parameters and are not optimized.",
@@ -183,6 +250,7 @@ def build_fixture_artifact(
 
 __all__ = [
     "FixtureResult",
+    "EligibleExtractionEvidence",
     "HistoricalLabelingFixtureArtifact",
     "SchemaEvidence",
     "build_fixture_artifact",

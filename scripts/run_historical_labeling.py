@@ -17,6 +17,14 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from pipelines.historical_labeling.pilot import run_gated_pilot  # noqa: E402
+from pipelines.historical_labeling.contracts import (  # noqa: E402
+    CalendarSemanticsEvidence,
+    EligibilityEvidenceState,
+)
+from pipelines.canonical import (  # noqa: E402
+    CanonicalizationPolicy,
+    ReconciliationTolerance,
+)
 from pipelines.historical_labeling.policies import load_policy  # noqa: E402
 
 
@@ -82,17 +90,21 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     table = pd.read_csv(dataset_path)
 
-    def forbidden_eligible_path() -> None:
-        raise AssertionError(
-            "selected pilot unexpectedly passed KAN-10; reviewed eligible extraction is absent"
-        )
-
     execution = run_gated_pilot(
         table,
+        reconciliation_table=None,
         manifest=manifest,
         manifest_record=record,
         policy=policy,
-        on_eligible=forbidden_eligible_path,
+        canonical_policy=CanonicalizationPolicy(),
+        resampling_policy=None,
+        reconciliation_tolerance=ReconciliationTolerance(),
+        repository_root=REPOSITORY_ROOT,
+        calendar_evidence=CalendarSemanticsEvidence(
+            status=EligibilityEvidenceState.NOT_EVALUATED,
+            policy_version=policy.session.policy_version,
+            reason_code="PROTECTED_SOURCE_CALENDAR_EVIDENCE_UNAVAILABLE",
+        ),
     )
     content = execution.summary.to_json_bytes()
     output = (

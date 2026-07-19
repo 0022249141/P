@@ -8,7 +8,7 @@ not produce a historical event catalog or eligible historical labels.
 
 ## Governed Boundary
 
-The immutable schema version is `1.0.0` and separates five record types:
+The immutable schema version is `1.0.0` and separates the historical records:
 
 - `MarketEventIdentity` identifies one confirmed level event and records its origin,
   observation, confirmation, and first feature-eligible timestamps.
@@ -17,6 +17,10 @@ The immutable schema version is `1.0.0` and separates five record types:
 - `CensoringRecord` explains why a bounded outcome could not be assigned.
 - `LineageRecord` identifies source data, policies, code, and deterministic dirty-tree
   evidence without absolute paths or machine identity.
+- `HistoricalExtractionResult` contains the deterministic in-memory event, feature,
+  label, censoring, gate, policy, and count evidence from one eligible extraction.
+- `LabelingEvidence` and `CalendarSemanticsEvidence` carry explicit PASS, FAIL, BLOCKED,
+  UNKNOWN, or NOT_EVALUATED evidence into the label boundary.
 
 Feature and label models are distinct, immutable namespaces joined only by `event_id`.
 IDs are SHA-256 hashes of canonical, sorted material inputs. Serialization is sorted,
@@ -40,6 +44,10 @@ The event adapter is pinned to `src/layer2_structural_engine.py` at SHA-256
 swing-low surfaces. BOS, CHoCH, MSS, liquidity lifecycle, reclaim, acceptance,
 destination ranking, and trading decisions are excluded.
 
+The adapter resolves `repository_root` against the checkout that loaded KAN-13, hashes
+the exact approved source path, and loads that file directly with `importlib`. It does
+not trust a same-named module from `sys.path`, another checkout, or an editable install.
+
 Because timestamps are `PERIOD_START`, the adapter records confirmation and first
 feature eligibility at the end of the confirming M5 period. M5 feature rows and H1
 diagnostic rows are likewise filtered by period-end availability before use.
@@ -60,6 +68,11 @@ eligible event or its feature snapshot. No centered rolling window, negative shi
 backward fill, complete-series normalization, percentile, or extremum is used.
 
 ## Outcome Policy
+
+Labeling is fail-closed. A direct caller must supply a typed `LabelingEvidence`; there
+are no boolean or PASS defaults. Source and calendar statuses must both be explicit
+`PASS` to produce a resolved label. Missing evidence is rejected, while FAIL, BLOCKED,
+UNKNOWN, or NOT_EVALUATED evidence produces the corresponding censoring record.
 
 `R` is the past-only ATR(14) stored in the feature snapshot. ABOVE and BELOW events use
 an exactly mirrored outward coordinate. The external policy fixes penetration at
@@ -84,6 +97,22 @@ acceptance outranks sweep/pullback, which outranks direct continuation. When a r
 terminal is first, false-break/reentry outranks full-range reversal. A bar spanning both
 terminal barriers is censored because OHLC data cannot establish intrabar order.
 
+### Metric scope
+
+All existing penetration, pullback, MAE, MFE, outside-bar, and outside-time fields are
+terminal-scoped; no separate full-horizon copies are retained:
+
+- for a terminal outcome, `metric_scope=PRE_TERMINAL_INCLUSIVE`, and every metric uses
+  bars from the first post-eligibility bar through the first terminal bar, inclusive;
+- for `NO_RESOLUTION`, `metric_scope=COMPLETE_HORIZON_NO_TERMINAL`, and metrics use all
+  12 bounded bars;
+- for a censored label, `metric_scope=NOT_EVALUATED`, metric timestamps are null, the
+  metric bar count is zero, and numeric excursion fields are null;
+- `metric_end_timestamp`, `metric_bar_count`, and Pydantic field descriptions make this
+  scope machine-readable in the committed JSON schema;
+- session, gap, ambiguity, or candle evidence after the first terminal cannot change
+  classification, terminal timestamps, or scoped metrics.
+
 These thresholds are provisional research parameters. They are not market truth,
 optimized values, calibrated probabilities, or final Behavioral Fingerprint settings.
 
@@ -92,7 +121,14 @@ optimized values, calibrated probabilities, or final Behavioral Fingerprint sett
 `docs/audits/artifacts/KAN-13-market-event-labeling-fixture.json` contains schemas and
 20 deterministic synthetic cases: all six resolved outcomes in both ABOVE and BELOW
 directions, plus all eight censoring reasons. Every expected result matches the observed
-result. The artifact contains synthetic data only and can be reproduced with:
+result. The artifact contains synthetic data only.
+
+The same artifact also records one complete synthetic M1-to-M5 extraction: G0-G5 all
+PASS, the supplied M5 bars exactly reconcile with governed resampling, and the result
+contains two confirmed events, two as-of features, two bounded labels, and zero
+censoring records. This proves the executable path, not market or statistical validity.
+
+Reproduce it with:
 
 ```text
 python scripts/generate_historical_labeling_fixture.py
@@ -108,7 +144,9 @@ It contains 50,000 rows and covers displayed timestamps from
 `2026-02-18 10:22:00` through `2026-05-18 22:00:00`.
 
 The extractor calls the KAN-10 evaluator with committed manifest semantics before any
-resampling, structure engine, feature, or label operation. The result is:
+resampling, structure engine, feature, or label operation. G0-G4 must pass before M5
+resampling/reconciliation, and G0-G5 must all pass before analytical extraction. The
+protected result is:
 
 | Gate | Status | Reason |
 | --- | --- | --- |

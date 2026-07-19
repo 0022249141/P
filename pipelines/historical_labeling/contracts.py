@@ -25,6 +25,14 @@ class EvidenceStatus(str, Enum):
     NOT_EVALUATED = "NOT_EVALUATED"
 
 
+class EligibilityEvidenceState(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+    BLOCKED = "BLOCKED"
+    UNKNOWN = "UNKNOWN"
+    NOT_EVALUATED = "NOT_EVALUATED"
+
+
 class EventDirection(str, Enum):
     ABOVE = "ABOVE"
     BELOW = "BELOW"
@@ -51,6 +59,12 @@ class HorizonStatus(str, Enum):
     INSUFFICIENT_HORIZON = "INSUFFICIENT_HORIZON"
 
 
+class MetricScope(str, Enum):
+    PRE_TERMINAL_INCLUSIVE = "PRE_TERMINAL_INCLUSIVE"
+    COMPLETE_HORIZON_NO_TERMINAL = "COMPLETE_HORIZON_NO_TERMINAL"
+    NOT_EVALUATED = "NOT_EVALUATED"
+
+
 class CensorReason(str, Enum):
     INSUFFICIENT_FUTURE_HORIZON = "INSUFFICIENT_FUTURE_HORIZON"
     SESSION_BOUNDARY = "SESSION_BOUNDARY"
@@ -71,6 +85,8 @@ class DestinationClass(str, Enum):
 
 class PilotStatus(str, Enum):
     BLOCKED_BY_SOURCE_SEMANTICS = "BLOCKED_BY_SOURCE_SEMANTICS"
+    BLOCKED_BY_CANONICAL_GATES = "BLOCKED_BY_CANONICAL_GATES"
+    BLOCKED_BY_RECONCILIATION = "BLOCKED_BY_RECONCILIATION"
     ELIGIBLE = "ELIGIBLE"
 
 
@@ -87,6 +103,21 @@ class FrozenContract(BaseModel):
             sort_keys=True,
         )
         return f"{rendered}\n".encode("ascii")
+
+
+class CalendarSemanticsEvidence(FrozenContract):
+    status: EligibilityEvidenceState
+    policy_version: str = Field(min_length=1)
+    reason_code: str = Field(min_length=1)
+
+
+class LabelingEvidence(FrozenContract):
+    source_status: EligibilityEvidenceState
+    source_profile: str = Field(min_length=1)
+    source_reason_code: str = Field(min_length=1)
+    calendar_status: EligibilityEvidenceState
+    calendar_policy_version: str = Field(min_length=1)
+    calendar_reason_code: str = Field(min_length=1)
 
 
 def _utc(value: datetime, field_name: str) -> datetime:
@@ -257,12 +288,29 @@ class HistoricalOutcomeLabel(FrozenContract):
     maximum_horizon_bars: int = Field(gt=0)
     maximum_horizon_seconds: int = Field(gt=0)
     outcome_class: OutcomeClass
-    penetration_depth_atr: Decimal | None
-    pullback_depth_atr: Decimal | None
-    mae_atr: Decimal | None
-    mfe_atr: Decimal | None
-    bars_outside_level: int = Field(ge=0)
-    seconds_outside_level: int = Field(ge=0)
+    metric_scope: MetricScope
+    metric_end_timestamp: datetime | None
+    metric_bar_count: int = Field(ge=0)
+    penetration_depth_atr: Decimal | None = Field(
+        description="Maximum outward wick distance through the metric end, inclusive."
+    )
+    pullback_depth_atr: Decimal | None = Field(
+        description="Maximum inward close distance through the metric end, inclusive."
+    )
+    mae_atr: Decimal | None = Field(
+        description="Maximum inward wick excursion through the metric end, inclusive."
+    )
+    mfe_atr: Decimal | None = Field(
+        description="Maximum outward wick excursion through the metric end, inclusive."
+    )
+    bars_outside_level: int = Field(
+        ge=0,
+        description="Completed closes outside the level through the metric end, inclusive.",
+    )
+    seconds_outside_level: int = Field(
+        ge=0,
+        description="Outside-bar count times the declared bar duration within metric scope.",
+    )
     reentry_timestamp: datetime | None
     acceptance_timestamp: datetime | None
     time_to_destination_seconds: int | None = Field(default=None, ge=0)
@@ -273,6 +321,7 @@ class HistoricalOutcomeLabel(FrozenContract):
     @field_validator(
         "horizon_start_timestamp",
         "horizon_end_timestamp",
+        "metric_end_timestamp",
         "reentry_timestamp",
         "acceptance_timestamp",
     )
@@ -303,6 +352,12 @@ class HistoricalOutcomeLabel(FrozenContract):
                 raise ValueError("censored labels require a censored destination")
             if self.horizon_status is HorizonStatus.COMPLETE:
                 raise ValueError("censored labels cannot have a complete horizon")
+            if (
+                self.metric_scope is not MetricScope.NOT_EVALUATED
+                or self.metric_end_timestamp is not None
+                or self.metric_bar_count != 0
+            ):
+                raise ValueError("censored labels cannot claim evaluated metrics")
         else:
             if self.horizon_end_timestamp is None:
                 raise ValueError("resolved labels require a horizon end")
@@ -310,6 +365,15 @@ class HistoricalOutcomeLabel(FrozenContract):
                 raise ValueError("resolved labels require a complete horizon")
             if self.final_destination_class is DestinationClass.CENSORED:
                 raise ValueError("resolved labels cannot have a censored destination")
+            if self.metric_end_timestamp != self.horizon_end_timestamp:
+                raise ValueError("resolved label metrics must end with outcome evidence")
+            if self.metric_bar_count <= 0:
+                raise ValueError("resolved labels require at least one metric bar")
+            if self.outcome_class is OutcomeClass.NO_RESOLUTION:
+                if self.metric_scope is not MetricScope.COMPLETE_HORIZON_NO_TERMINAL:
+                    raise ValueError("no-resolution metrics require the complete horizon")
+            elif self.metric_scope is not MetricScope.PRE_TERMINAL_INCLUSIVE:
+                raise ValueError("terminal outcomes require pre-terminal-inclusive metrics")
         return self
 
 
@@ -395,6 +459,86 @@ class GateAudit(FrozenContract):
     limitations: tuple[str, ...] = ()
 
 
+class HistoricalExtractionResult(FrozenContract):
+    extraction_id: str = Field(pattern=r"^xtr_[0-9a-f]{64}$")
+    schema_version: str = SCHEMA_VERSION
+    source_dataset_id: str = Field(min_length=1)
+    source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    policy_bundle_version: str = Field(min_length=1)
+    policy_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    eligibility_profile: str = Field(min_length=1)
+    gate_audit: tuple[GateAudit, ...]
+    labeling_evidence: LabelingEvidence
+    events: tuple[MarketEventIdentity, ...]
+    features: tuple[AsOfFeatureSnapshot, ...]
+    labels: tuple[HistoricalOutcomeLabel, ...]
+    censoring: tuple[CensoringRecord, ...]
+    catalog_generated: bool = True
+    event_count: int = Field(ge=0)
+    feature_count: int = Field(ge=0)
+    label_count: int = Field(ge=0)
+    censoring_count: int = Field(ge=0)
+
+    def identity_material(self) -> dict[str, Any]:
+        return self.model_dump(mode="python", exclude={"extraction_id"})
+
+    @model_validator(mode="after")
+    def validate_extraction(self) -> "HistoricalExtractionResult":
+        if self.extraction_id != f"xtr_{canonical_hash(self.identity_material())}":
+            raise ValueError("extraction_id does not match deterministic result material")
+        if not self.catalog_generated:
+            raise ValueError("an extraction result represents a generated in-memory catalog")
+        if self.event_count != len(self.events):
+            raise ValueError("event_count does not match events")
+        if self.feature_count != len(self.features):
+            raise ValueError("feature_count does not match features")
+        if self.label_count != len(self.labels):
+            raise ValueError("label_count does not match labels")
+        if self.censoring_count != len(self.censoring):
+            raise ValueError("censoring_count does not match censoring")
+        event_ids = {event.event_id for event in self.events}
+        if len(event_ids) != len(self.events):
+            raise ValueError("historical extraction events must be unique")
+        if len(self.features) != len(self.events):
+            raise ValueError("every event requires exactly one feature snapshot")
+        if event_ids != {feature.event_id for feature in self.features}:
+            raise ValueError("every event requires exactly one feature snapshot")
+        if len(self.labels) != len(self.events):
+            raise ValueError("every event requires exactly one historical label")
+        if event_ids != {label.event_id for label in self.labels}:
+            raise ValueError("every event requires exactly one historical label")
+        censored_ids = {
+            label.event_id
+            for label in self.labels
+            if label.outcome_class is OutcomeClass.CENSORED
+        }
+        if censored_ids != {record.event_id for record in self.censoring}:
+            raise ValueError("censoring records must match censored labels")
+        if len(self.censoring) != len(censored_ids):
+            raise ValueError("every censored label requires exactly one censoring record")
+        by_gate = {gate.gate_id: gate.status for gate in self.gate_audit}
+        required = tuple(f"G{index}_" for index in range(6))
+        for prefix in required:
+            matches = [status for gate_id, status in by_gate.items() if gate_id.startswith(prefix)]
+            if matches != ["PASS"]:
+                raise ValueError("historical extraction requires one PASS for every G0-G5 gate")
+        return self
+
+    @classmethod
+    def create(cls, **material: Any) -> "HistoricalExtractionResult":
+        material.setdefault("schema_version", SCHEMA_VERSION)
+        material["events"] = tuple(material.get("events", ()))
+        material["features"] = tuple(material.get("features", ()))
+        material["labels"] = tuple(material.get("labels", ()))
+        material["censoring"] = tuple(material.get("censoring", ()))
+        material["event_count"] = len(material["events"])
+        material["feature_count"] = len(material["features"])
+        material["label_count"] = len(material["labels"])
+        material["censoring_count"] = len(material["censoring"])
+        extraction_id = f"xtr_{canonical_hash(material)}"
+        return cls(extraction_id=extraction_id, **material)
+
+
 class BlockedPilotAuditSummary(FrozenContract):
     artifact_id: str = "KAN-13-abshodeh-pilot-summary"
     jira_key: str = "KAN-13"
@@ -409,7 +553,7 @@ class BlockedPilotAuditSummary(FrozenContract):
     coverage_end: str = Field(min_length=1)
     requested_configuration: dict[str, str]
     gate_audit: tuple[GateAudit, ...]
-    unresolved_evidence: tuple[str, ...] = Field(min_length=1)
+    unresolved_evidence: tuple[str, ...] = ()
     catalog_generated: bool = False
     eligible_event_count: int = 0
     eligible_feature_count: int = 0
@@ -435,7 +579,7 @@ class BlockedPilotAuditSummary(FrozenContract):
 
     @model_validator(mode="after")
     def require_blocked_output_boundary(self) -> "BlockedPilotAuditSummary":
-        if self.status is PilotStatus.BLOCKED_BY_SOURCE_SEMANTICS:
+        if self.status is not PilotStatus.ELIGIBLE:
             if (
                 self.catalog_generated
                 or self.eligible_event_count
@@ -443,6 +587,8 @@ class BlockedPilotAuditSummary(FrozenContract):
                 or self.eligible_label_count
             ):
                 raise ValueError("blocked pilot cannot emit eligible historical records")
+        elif not self.catalog_generated:
+            raise ValueError("eligible pilot summaries require generated output")
         if self.herat_status is not EvidenceStatus.NOT_EVALUATED:
             raise ValueError("Herat remains NOT_EVALUATED")
         if self.xauusd_status is not EvidenceStatus.NOT_EVALUATED:
@@ -453,17 +599,22 @@ class BlockedPilotAuditSummary(FrozenContract):
 __all__ = [
     "AsOfFeatureSnapshot",
     "BlockedPilotAuditSummary",
+    "CalendarSemanticsEvidence",
     "CensorReason",
     "CensoringRecord",
     "DestinationClass",
     "EventDirection",
     "EventType",
     "EvidenceStatus",
+    "EligibilityEvidenceState",
     "GateAudit",
+    "HistoricalExtractionResult",
     "HistoricalOutcomeLabel",
     "HorizonStatus",
     "LineageRecord",
+    "LabelingEvidence",
     "MarketEventIdentity",
+    "MetricScope",
     "OutcomeClass",
     "PilotStatus",
     "SCHEMA_VERSION",

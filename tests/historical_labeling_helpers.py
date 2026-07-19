@@ -33,4 +33,4 @@ def policy() -> ResearchPolicyBundle:
 
 @lru_cache(maxsize=1)
 def artifact() -> HistoricalLabelingFixtureArtifact:
-    return build_fixture_artifact(policy())
+    return build_fixture_artifact(policy(), REPOSITORY_ROOT)

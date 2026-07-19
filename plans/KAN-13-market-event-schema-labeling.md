@@ -1,8 +1,9 @@
 # KAN-13 Market Event Schema and Historical Labeling
 
-Status: implementation and local verification complete; publication to the existing
-branch and one draft pull request is pending. No analytical engine, protected dataset,
-manifest, original checkout, Jira issue, or branch has been changed or created.
+Status: draft PR #29 review remediation implemented and locally verified on the
+existing branch/worktree; publication and latest-head Actions evidence are pending.
+No analytical engine, protected dataset, manifest, original checkout, Jira issue,
+branch, or pull request will be changed or created outside this existing KAN-13 scope.
 
 ## 1. Objective
 
@@ -211,8 +212,8 @@ parameters. High-side/low-side symmetry and deterministic precedence are invaria
 - Hypothetical `Asia/Tehran` and `PERIOD_START` requests are recorded as requested
   configuration only. They must not convert committed-manifest `UNKNOWN` evidence into
   G2 or G4 `PASS`.
-- The historical extractor rejects any source that does not pass its required KAN-10
-  G0-G4 profile.
+- G0-G4 must pass before governed M1-to-M5 resampling and reconciliation. The historical
+  extractor rejects any source that does not pass the complete KAN-10 G0-G5 profile.
 - The selected M1 source is currently blocked by unknown timezone and period semantics,
   so the full-corpus pilot result is exactly `BLOCKED_BY_SOURCE_SEMANTICS`.
 - In the blocked state, no canonical historical frame is promoted, no analytical engine
@@ -245,8 +246,9 @@ approval requires a new policy version and regenerated research evidence.
 
 ```text
 committed manifest + explicit Abshodeh research config
-    -> pipelines.canonical G0-G5 evaluation and guarded M1 normalization
-    -> deterministic M1-to-M5 resampling
+    -> pipelines.canonical G0-G4 normalization gate
+    -> deterministic M1-to-M5 resampling + supplied-M5 G5 reconciliation
+    -> guarded G0-G5 eligibility decision
     -> research-only layer-2 confirmed-pivot adapter
     -> MarketEventIdentity records
     -> past-only AsOfFeatureSnapshot records
@@ -427,8 +429,10 @@ Within a continuation terminal, acceptance outranks sweep/pullback, which outran
 continuation. Within a reversal terminal, false-break/reentry outranks full-range
 reversal. A close cannot be simultaneously `+1.00 R` and `-1.00 R`; duplicate timestamps,
 invalid OHLC, or any remaining same-bar sequence ambiguity are censored rather than
-resolved by an invented intrabar path. Penetration/pullback/MAE/MFE metrics may use
-high/low extrema inside the bounded horizon, but terminal ordering uses completed closes.
+resolved by an invented intrabar path. Penetration, pullback, MAE, MFE, outside-bar, and
+outside-time metrics end at the first terminal bar, inclusive. `NO_RESOLUTION` uses the
+complete 12-bar horizon; censored records have no evaluated metrics. Later bars cannot
+alter classification or metrics. Terminal ordering uses completed closes.
 
 Destination in KAN-13 means only the policy's symmetric continuation/reversal barrier.
 It is not the blocked KAN-11 liquidity-destination ranking concept. The final destination
@@ -445,6 +449,8 @@ Create:
   contracts and policy hashing.
 - `pipelines/historical_labeling/event_source.py` - research-only layer-2 confirmed-pivot
   adapter with source hash guard and explicit confirmation availability.
+- `pipelines/historical_labeling/extraction.py` - deterministic eligible G0-G5 event,
+  feature, label, and censoring extraction result.
 - `pipelines/historical_labeling/features.py` - past-only feature snapshots.
 - `pipelines/historical_labeling/labels.py` - bounded future outcomes and censoring.
 - `pipelines/historical_labeling/pilot.py` - KAN-10-gated pilot and compact audit
@@ -507,16 +513,17 @@ or full-catalog commit is proposed.
 
 | Area | Required evidence |
 | --- | --- |
-| Contract validation | Required fields, enums, UTC timestamps, timestamp order, decimal normalization, unknown/not-evaluated representation |
+| Contract validation | Required fields, enums, UTC timestamps, timestamp order, decimal normalization, fail-closed evidence, unknown/not-evaluated representation |
 | Event identity | identical rerun stability; sensitivity to market, timeframe, source hash, origin, availability, level, source parameters, and policy version; absence of path/host/user/time |
 | Event source | exact layer-2 source hash/defaults; high/low symmetry; insufficient right confirmation; no event before confirmation; prefix/truncation invariance |
 | Feature leakage | mutation of any post-cutoff candle cannot change features; declared trailing lookbacks; no centered windows, bfill, negative shift, whole-series reductions, or later HTF joins |
-| Label policy | ABOVE and BELOW fixture for every outcome; first-terminal precedence; acceptance vs sweep vs direct; false-break vs reversal; no-resolution; same-bar/invalid conflict censoring |
+| Label policy | explicit PASS evidence; ABOVE and BELOW fixture for every outcome; first-terminal precedence; acceptance vs sweep vs direct; false-break vs reversal; no-resolution; same-bar/invalid conflict censoring |
 | Horizon/censoring | dataset end, missing bars, failed eligibility, session boundary, unavailable calendar, partial day, and complete horizon |
 | Separation | feature records contain no future outcome fields; label code does not mutate features; joins use only event ID |
 | Session | timezone conversion, neutral buckets, full-interval containment, 22:00 boundary, no cross-session labels, holiday limitation |
 | HTF/cross-market | completed H1 as-of join only; absent HTF explicit; Herat/XAUUSD always NOT_EVALUATED |
 | Determinism | sorted records and canonical bytes; generator twice; `--check`; compact artifact hash stable |
+| Eligible extraction | synthetic canonical M1 -> governed M5 -> exact G5 reconciliation -> confirmed events -> as-of features -> bounded labels/censoring; deterministic typed result |
 | Import safety | no protected/local file read, output write, engine execution, broker, network, or current-time capture on import |
 | Ordinary-test policy | synthetic/tiny fixtures only; protected-path guard passes; research tests excluded by default |
 | Research pilot | explicit research selection reads the approved M1 source, stops at KAN-10 G2/G4, and writes only a compact blocked summary; M5/H1 and catalogs are not read or produced |
@@ -627,28 +634,43 @@ dataset rebuild, or schema migration is required.
 | 2026-07-19 | Manifest, hygiene, dependencies, and whitespace | Passed manifest verification, hygiene `--skip-dataset-integrity`, `pip check`, staged/unstaged `git diff --check`, and submodule status. |
 | 2026-07-19 | Final protected/source preservation | 56 CSVs, 90,960,790 bytes, aggregate/manifest hashes unchanged; protected paths, all seven characterized engines, and the KAN-11 artifact have zero diff from `origin/main`. |
 | 2026-07-19 | Diagnostic command failures | One `rg` search returned exit 1 for no matches and another used unsupported Windows wildcard path syntax; explicit paths were used for the successful reruns. One patch application missed a documentation context line and was reapplied in smaller verified hunks. |
+| 2026-07-19 | Draft PR #29 human review | Four blockers accepted: fail-closed label evidence, a real eligible synthetic extractor, mandatory G0-G5 gating/reconciliation, and explicit terminal-scoped metrics. The same branch/worktree/PR will be updated; no merge is permitted. |
+| 2026-07-19 | Review-thread helper | Bundled helper failed before reading comments because numeric owner `0022249141` was coerced to GraphQL numeric input. Manual GraphQL with string owner succeeded and found no inline review threads; the supplied top-level blocker list is authoritative. |
+| 2026-07-19 | Review remediation design | Require typed PASS evidence for source/calendar labels; add deterministic `HistoricalExtractionResult`; require G0-G5 and real M1-to-M5 reconciliation before callback; load/verify layer-2 from the approved worktree path; compute metrics only through first terminal and test later-candle invariance. |
+| 2026-07-19 | First remediation-focused pytest | Failed: 28 tests failed and 20 passed because helper insertion accidentally displaced `synthetic_snapshot`'s return statement. Restored the fixture helper; no analytical engine behavior changed. |
+| 2026-07-19 | Fail-closed evidence remediation | Removed source/calendar boolean defaults. Labeling now requires immutable typed evidence, and every absent, unknown, blocked, failed, or not-evaluated state rejects or censors before a resolved outcome. |
+| 2026-07-19 | Eligible extraction remediation | Added typed deterministic `HistoricalExtractionResult` and a synthetic M1 -> G0-G4 -> M5 -> G5 -> confirmed swing -> as-of feature -> bounded label/censoring path. It emits 2 events, 2 features, 2 labels, and 0 censoring records; cardinality validators require exactly one feature and label per unique event. |
+| 2026-07-19 | Canonical gate remediation | The analytical callback now requires explicit PASS for G0-G5. Focused tests prove G5 `FAIL`, `BLOCKED`, and `NOT_EVALUATED` all hold event/feature/label counts at zero and never invoke extraction. |
+| 2026-07-19 | Terminal metric remediation | Declared terminal-inclusive metric scope and end/count evidence. Later valid values, truncation, and duplicate rows strictly after the first terminal destination cannot alter classification or metrics. |
+| 2026-07-19 | Exact source remediation | Layer-2 is loaded from the hash-pinned file under the supplied repository root, its module `__file__` is verified, and a different checkout/editable-install root is rejected. Approved SHA-256 remains `74406477903916ababd4db7ce25b4e459e576e4bcce15bf52ff4a6ebb44d2310`. |
+| 2026-07-19 | Search diagnostics | Windows wildcard syntax in one `rg` command failed, and a corrected no-match search returned exit 1; explicit files/source inspection identified and ran the import-safety test successfully. |
+| 2026-07-19 | Final remediation-focused pytest | Passed: 55 tests in 24.20 seconds after final result-cardinality hardening. |
+| 2026-07-19 | Final remediation ordinary/research pytest | Passed: 208 ordinary tests with 2 research tests deselected in 74.15 seconds; explicit research selection passed 2 tests in 5.85 seconds. |
+| 2026-07-19 | Final deterministic generation | Synthetic fixture and protected blocked summary each ran twice unchanged and passed `--check`; fixture SHA-256 is `ffceaa107e96367f337aed5ac4b39b5364ccf31e1349880dd881015e44918b4e`, blocked summary SHA-256 remains `1d1c66b684ca8ec058bdf6851626d584857f1c47597536fdb4c8680d7287c24c`. |
+| 2026-07-19 | Final governance checks | Manifest verification, full and skip-dataset hygiene, import-safety test, `pip check`, and `git diff --check` passed. |
+| 2026-07-19 | Final protected/source evidence | Unchanged: 56 CSVs, 90,960,790 bytes, aggregate `781d03bc4763b8654d9eaa5843d40a77ff1123a6d17db0b24179b2bb89c68543`, manifest `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`; protected paths, seven KAN-11 engines, and the KAN-11 artifact have zero diff from `origin/main`. |
 
 ## 12. Completion Evidence
 
-Implementation is locally complete. Changed interfaces are additive under
-`pipelines.historical_labeling`: five immutable contracts, versioned policy models,
+The four review blockers are locally complete. Changed interfaces remain additive under
+`pipelines.historical_labeling`: immutable evidence/result contracts, the hash-pinned
 confirmed-swing adapter, past-only feature builder, bounded label state machine,
-KAN-10-gated pilot, deterministic fixtures, and import-safe public exports. The external
-bundle is `abshodeh-historical-labeling-v1`; schema is `1.0.0`; event, feature, label,
-and session policies are `layer2-confirmed-swings-v1`, `asof-features-v1`,
+G0-G5-gated pilot, deterministic fixtures, and import-safe public exports. The external
+bundle remains `abshodeh-historical-labeling-v1`; schema remains `1.0.0`; event, feature,
+label, and session policies remain `layer2-confirmed-swings-v1`, `asof-features-v1`,
 `abshodeh-level-outcome-v1`, and `abshodeh-research-session-v1`.
 
 Exact final local commands and results:
 
 ```text
 .venv/Scripts/python.exe -m pytest -q tests/test_historical_labeling_contracts.py tests/test_historical_labeling_events_features.py tests/test_historical_labeling_labels.py tests/test_historical_labeling_pilot.py tests/test_historical_labeling_artifact.py
-39 passed in 12.08s
+55 passed in 24.20s
 
 .venv/Scripts/python.exe -m pytest -q
-192 passed, 2 deselected in 28.66s
+208 passed, 2 deselected in 74.15s
 
 .venv/Scripts/python.exe -m pytest -q -m research tests/research
-2 passed in 1.45s
+2 passed in 5.85s
 
 .venv/Scripts/python.exe scripts/generate_historical_labeling_fixture.py  # twice
 .venv/Scripts/python.exe scripts/generate_historical_labeling_fixture.py --check
@@ -665,9 +687,11 @@ git diff --check
 all passed
 ```
 
-The synthetic artifact contains 20 matching cases: six resolved outcomes in both ABOVE
-and BELOW directions plus eight censoring classes. Its SHA-256 is
-`22060ce651e1e9db7971ae9d4fabef6233fd8dd76a442e63d787eed312962c77`.
+The synthetic artifact contains 20 matching policy cases: six resolved outcomes in both
+ABOVE and BELOW directions plus eight censoring classes. It also records a deterministic
+eligible extraction with G0-G5 PASS, 2 events, 2 as-of feature snapshots, 2 resolved
+labels, and 0 censoring records. Its SHA-256 is
+`ffceaa107e96367f337aed5ac4b39b5364ccf31e1349880dd881015e44918b4e`.
 The compact pilot artifact SHA-256 is
 `1d1c66b684ca8ec058bdf6851626d584857f1c47597536fdb4c8680d7287c24c`.
 It records exact G2/G4 blockers, all policy versions and requested hypotheses, source
@@ -681,11 +705,14 @@ The committed manifest SHA-256 remains
 No protected path, manifest, analytical engine, KAN-11 artifact, broker, live surface,
 or original-checkout file changed.
 
-Acceptance is satisfied for schema immutability, namespace separation, deterministic
-IDs/serialization, external policy values, temporal availability, prefix/truncation
-invariance, bounded symmetric outcomes, precedence/conflict handling, censor coverage,
-import safety, research-test isolation, and mandatory KAN-10 rejection. Statistical
+Acceptance is satisfied for fail-closed typed evidence, deterministic eligible synthetic
+extraction, mandatory G0-G5 gating, terminal-scoped metrics, exact source-path/hash
+verification, schema immutability, namespace separation, deterministic IDs/serialization,
+external policy values, temporal availability, prefix/truncation invariance, bounded
+symmetric outcomes, precedence/conflict handling, censor coverage, import safety,
+research-test isolation, and mandatory KAN-10 rejection. Statistical
 sufficiency, source timezone/period proof, holiday completeness, native-M5
 reconciliation, H1 diagnostics, ML/probability/trading outputs, Herat, XAUUSD, and G6-G9
-remain explicitly outside scope or `NOT_EVALUATED`. Publication and GitHub Actions
-evidence will be recorded in the draft pull request.
+remain explicitly outside scope or `NOT_EVALUATED`. The real protected pilot remains
+`BLOCKED_BY_SOURCE_SEMANTICS`, with no catalog and zero event/feature/label counts.
+Publication and both latest-head GitHub Actions results will be recorded in draft PR #29.
