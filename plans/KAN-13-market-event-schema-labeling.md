@@ -1,7 +1,8 @@
 # KAN-13 Market Event Schema and Historical Labeling
 
-Status: draft PR #29 review remediation implemented and locally verified on the
-existing branch/worktree; publication and latest-head Actions evidence are pending.
+Status: draft PR #29 review remediation implemented, locally verified, and published
+on the existing branch/worktree. PR #29 is the authoritative post-commit record for
+the current head SHA and latest-head GitHub Actions evidence.
 No analytical engine, protected dataset, manifest, original checkout, Jira issue,
 branch, or pull request will be changed or created outside this existing KAN-13 scope.
 
@@ -715,4 +716,5 @@ sufficiency, source timezone/period proof, holiday completeness, native-M5
 reconciliation, H1 diagnostics, ML/probability/trading outputs, Herat, XAUUSD, and G6-G9
 remain explicitly outside scope or `NOT_EVALUATED`. The real protected pilot remains
 `BLOCKED_BY_SOURCE_SEMANTICS`, with no catalog and zero event/feature/label counts.
-Publication and both latest-head GitHub Actions results will be recorded in draft PR #29.
+Publication and both latest-head GitHub Actions results are maintained in draft PR #29
+because those are post-commit evidence.
