@@ -119,7 +119,7 @@ def _inside_session(
     local = timestamp.tz_convert(ZoneInfo(policy.timezone))
     start = time.fromisoformat(policy.session_start)
     end = time.fromisoformat(policy.session_end)
-    return local.strftime("%Y-%m-%d") == anchor_date and start <= local.time() <= end
+    return local.strftime("%Y-%m-%d") == anchor_date and start <= local.time() < end
 
 
 def _oriented_values(

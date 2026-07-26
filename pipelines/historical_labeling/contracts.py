@@ -14,6 +14,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 
 SCHEMA_VERSION = "1.0.0"
+EXTRACTION_SCHEMA_VERSION = "1.1.0"
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -459,9 +460,16 @@ class GateAudit(FrozenContract):
     limitations: tuple[str, ...] = ()
 
 
+class FeatureIneligibilityRecord(FrozenContract):
+    event_id: str = Field(pattern=r"^evt_[0-9a-f]{64}$")
+    feature_policy_version: str = Field(min_length=1)
+    reason_code: str = Field(min_length=1)
+    detail: str = Field(min_length=1)
+
+
 class HistoricalExtractionResult(FrozenContract):
     extraction_id: str = Field(pattern=r"^xtr_[0-9a-f]{64}$")
-    schema_version: str = SCHEMA_VERSION
+    schema_version: str = EXTRACTION_SCHEMA_VERSION
     source_dataset_id: str = Field(min_length=1)
     source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     policy_bundle_version: str = Field(min_length=1)
@@ -473,11 +481,13 @@ class HistoricalExtractionResult(FrozenContract):
     features: tuple[AsOfFeatureSnapshot, ...]
     labels: tuple[HistoricalOutcomeLabel, ...]
     censoring: tuple[CensoringRecord, ...]
+    feature_ineligibility: tuple[FeatureIneligibilityRecord, ...] = ()
     catalog_generated: bool = True
     event_count: int = Field(ge=0)
     feature_count: int = Field(ge=0)
     label_count: int = Field(ge=0)
     censoring_count: int = Field(ge=0)
+    feature_ineligibility_count: int = Field(default=0, ge=0)
 
     def identity_material(self) -> dict[str, Any]:
         return self.model_dump(mode="python", exclude={"extraction_id"})
@@ -496,6 +506,10 @@ class HistoricalExtractionResult(FrozenContract):
             raise ValueError("label_count does not match labels")
         if self.censoring_count != len(self.censoring):
             raise ValueError("censoring_count does not match censoring")
+        if self.feature_ineligibility_count != len(self.feature_ineligibility):
+            raise ValueError(
+                "feature_ineligibility_count does not match feature ineligibility records"
+            )
         event_ids = {event.event_id for event in self.events}
         if len(event_ids) != len(self.events):
             raise ValueError("historical extraction events must be unique")
@@ -516,6 +530,15 @@ class HistoricalExtractionResult(FrozenContract):
             raise ValueError("censoring records must match censored labels")
         if len(self.censoring) != len(censored_ids):
             raise ValueError("every censored label requires exactly one censoring record")
+        ineligible_ids = {
+            record.event_id for record in self.feature_ineligibility
+        }
+        if len(ineligible_ids) != len(self.feature_ineligibility):
+            raise ValueError("feature-ineligible event records must be unique")
+        if event_ids & ineligible_ids:
+            raise ValueError(
+                "eligible and feature-ineligible event identities must be disjoint"
+            )
         by_gate = {gate.gate_id: gate.status for gate in self.gate_audit}
         required = tuple(f"G{index}_" for index in range(6))
         for prefix in required:
@@ -526,15 +549,21 @@ class HistoricalExtractionResult(FrozenContract):
 
     @classmethod
     def create(cls, **material: Any) -> "HistoricalExtractionResult":
-        material.setdefault("schema_version", SCHEMA_VERSION)
+        material.setdefault("schema_version", EXTRACTION_SCHEMA_VERSION)
         material["events"] = tuple(material.get("events", ()))
         material["features"] = tuple(material.get("features", ()))
         material["labels"] = tuple(material.get("labels", ()))
         material["censoring"] = tuple(material.get("censoring", ()))
+        material["feature_ineligibility"] = tuple(
+            material.get("feature_ineligibility", ())
+        )
         material["event_count"] = len(material["events"])
         material["feature_count"] = len(material["features"])
         material["label_count"] = len(material["labels"])
         material["censoring_count"] = len(material["censoring"])
+        material["feature_ineligibility_count"] = len(
+            material["feature_ineligibility"]
+        )
         extraction_id = f"xtr_{canonical_hash(material)}"
         return cls(extraction_id=extraction_id, **material)
 
@@ -606,6 +635,8 @@ __all__ = [
     "EventDirection",
     "EventType",
     "EvidenceStatus",
+    "EXTRACTION_SCHEMA_VERSION",
+    "FeatureIneligibilityRecord",
     "EligibilityEvidenceState",
     "GateAudit",
     "HistoricalExtractionResult",

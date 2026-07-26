@@ -3,7 +3,7 @@
   "eligible_extraction": {
     "censoring_count": 0,
     "event_count": 2,
-    "extraction_sha256": "4ddc8ec58c7c1c2b3067b475bc143a0cec14566c13d71649723814ec72f9a9e9",
+    "extraction_sha256": "bea387a2a0613dccefa17c746ec5791d97a2fcd08ae1c40b7391e42b6cc590cd",
     "feature_count": 2,
     "gate_statuses": [
       "G0_PROVENANCE:PASS",
@@ -259,7 +259,7 @@
     },
     {
       "contract_name": "HistoricalExtractionResult",
-      "json_schema_sha256": "0dbfe8875990c7e8ed38ec1dcdc42901251945e1f6af8b016ca3e91a185ace02"
+      "json_schema_sha256": "6e774d74664b930165fbc46ab1708a01affeadec8e03b11734afaaa28a7d0843"
     },
     {
       "contract_name": "LabelingEvidence",

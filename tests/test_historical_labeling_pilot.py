@@ -234,6 +234,9 @@ def test_synthetic_g0_g5_pass_executes_deterministic_end_to_end_extraction() -> 
     assert second.eligible_output is not None
     assert first.eligible_output.to_json_bytes() == second.eligible_output.to_json_bytes()
     result = first.eligible_output
+    assert result.schema_version == "1.1.0"
+    assert result.feature_ineligibility_count == 0
+    assert result.feature_ineligibility == ()
     assert result.event_count > 0
     assert result.event_count == result.feature_count == result.label_count
     assert first.summary.catalog_generated is True

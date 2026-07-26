@@ -9,14 +9,27 @@ import pandas as pd
 from pipelines.historical_labeling.contracts import (
     CalendarSemanticsEvidence,
     EligibilityEvidenceState,
+    FeatureIneligibilityRecord,
     GateAudit,
     HistoricalExtractionResult,
     LabelingEvidence,
 )
 from pipelines.historical_labeling.event_source import generate_confirmed_swing_events
-from pipelines.historical_labeling.features import build_asof_feature_snapshot
+from pipelines.historical_labeling.features import (
+    FeatureEligibilityError,
+    build_asof_feature_snapshot,
+)
 from pipelines.historical_labeling.labels import label_historical_outcome
 from pipelines.historical_labeling.policies import ResearchPolicyBundle
+
+
+_EXPECTED_FEATURE_INELIGIBILITY = {
+    "insufficient past-only history for feature policy": (
+        "INSUFFICIENT_PAST_ONLY_HISTORY"
+    ),
+    "past-only ATR is unavailable at eligibility": "PAST_ONLY_ATR_UNAVAILABLE",
+    "range features require positive bar ranges": "NON_POSITIVE_RANGE_FEATURE",
+}
 
 
 def extract_eligible_historical(
@@ -50,16 +63,32 @@ def extract_eligible_historical(
         source_dataset_id=policy.dataset.dataset_id,
         source_sha256=source_sha256,
     )
+    eligible_events = []
     features = []
     labels = []
     censoring = []
+    feature_ineligibility = []
     for event in events:
-        snapshot = build_asof_feature_snapshot(
-            event_frame,
-            event,
-            feature_policy=policy.features,
-            session_policy=policy.session,
-        )
+        try:
+            snapshot = build_asof_feature_snapshot(
+                event_frame,
+                event,
+                feature_policy=policy.features,
+                session_policy=policy.session,
+            )
+        except FeatureEligibilityError as exc:
+            detail = str(exc)
+            if detail not in _EXPECTED_FEATURE_INELIGIBILITY:
+                raise
+            feature_ineligibility.append(
+                FeatureIneligibilityRecord(
+                    event_id=event.event_id,
+                    feature_policy_version=policy.features.policy_version,
+                    reason_code=_EXPECTED_FEATURE_INELIGIBILITY[detail],
+                    detail=detail,
+                )
+            )
+            continue
         labeled = label_historical_outcome(
             event_frame,
             event,
@@ -68,6 +97,7 @@ def extract_eligible_historical(
             session_policy=policy.session,
             evidence=labeling_evidence,
         )
+        eligible_events.append(event)
         features.append(snapshot)
         labels.append(labeled.label)
         if labeled.censoring is not None:
@@ -81,10 +111,11 @@ def extract_eligible_historical(
         eligibility_profile=eligibility_profile,
         gate_audit=gate_audit,
         labeling_evidence=labeling_evidence,
-        events=events,
+        events=tuple(eligible_events),
         features=tuple(features),
         labels=tuple(labels),
         censoring=tuple(censoring),
+        feature_ineligibility=tuple(feature_ineligibility),
         catalog_generated=True,
     )
 

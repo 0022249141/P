@@ -81,7 +81,7 @@ def _session_bucket(local: pd.Timestamp, policy: SessionPolicy) -> str:
     current = local.strftime("%H:%M")
     for bucket in policy.neutral_buckets:
         start, end = bucket.split("-")
-        if start <= current < end or (current == end and end == "22:00"):
+        if start <= current < end:
             return bucket
     return "OUT_OF_SESSION"
 

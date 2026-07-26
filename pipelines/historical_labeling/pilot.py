@@ -147,10 +147,10 @@ def run_gated_pilot(
         and resampling_policy is not None
         and reconciliation_table is not None
     ):
-        if evaluation.canonicalization.frame is None:
-            raise ValueError("eligible canonical report did not provide canonical rows")
+        if evaluation.analytical_frame is None:
+            raise ValueError("eligible canonical report did not provide analytical rows")
         generated_m5 = resample_bars(
-            evaluation.canonicalization.frame,
+            evaluation.analytical_frame,
             resampling_policy,
         ).frame
         reconciliation = reconcile_bars(

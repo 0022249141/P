@@ -27,7 +27,9 @@ from .contracts import (
     GateResult,
     GateStatus,
     GapPolicy,
+    OutOfSessionPolicy,
     PeriodSemantics,
+    SessionEndConvention,
 )
 from .normalization import CanonicalInput, CanonicalizationResult, canonicalize
 
@@ -37,6 +39,8 @@ class QualityEvaluation:
     """Canonicalization output paired with a stable G0-G9 report."""
 
     canonicalization: CanonicalizationResult
+    analytical_frame: pd.DataFrame | None
+    excluded_out_of_session_rows: tuple[int, ...]
     report: GateReport
 
 
@@ -53,7 +57,12 @@ def evaluate_quality(
     normalized = canonicalize(value, policy)
     g0 = evaluate_provenance(dataset, manifest)
     g1, g2, g3 = normalized.gate_results
-    g4 = evaluate_calendar_coverage(normalized.frame, policy)
+    analytical_frame, excluded_rows = _partition_analytical_frame(normalized, policy)
+    g4 = evaluate_calendar_coverage(
+        analytical_frame,
+        policy,
+        excluded_out_of_session_rows=excluded_rows,
+    )
     if reconciliation_gate is None:
         g5 = not_evaluated_gate(
             GateId.G5_MTF_RECONCILIATION,
@@ -80,7 +89,7 @@ def evaluate_quality(
             "No analytical, statistical, backtest, or live engine is wired to this report.",
         ),
     )
-    return QualityEvaluation(normalized, report)
+    return QualityEvaluation(normalized, analytical_frame, excluded_rows, report)
 
 
 def evaluate_provenance(
@@ -227,9 +236,62 @@ def evaluate_provenance(
     return _provenance_result(dataset, findings, status)
 
 
+def _partition_analytical_frame(
+    normalized: CanonicalizationResult,
+    policy: CanonicalizationPolicy,
+) -> tuple[pd.DataFrame | None, tuple[int, ...]]:
+    """Retain canonical evidence while explicitly excluding non-session analytics."""
+
+    frame = normalized.frame
+    calendar = policy.calendar
+    if (
+        frame is None
+        or calendar is None
+        or calendar.behavior is not CalendarBehavior.VERSIONED_SESSION
+        or calendar.out_of_session_policy is OutOfSessionPolicy.REJECT
+    ):
+        return frame, ()
+
+    try:
+        local = pd.DatetimeIndex(frame["timestamp"]).tz_convert(
+            ZoneInfo(calendar.timezone)
+        )
+    except (KeyError, TypeError, ZoneInfoNotFoundError):
+        return frame, ()
+
+    start = time.fromisoformat(calendar.session_start or "00:00:00")
+    end = time.fromisoformat(calendar.session_end or "00:00:00")
+    included = np.array(
+        [
+            _session_anchor(
+                timestamp,
+                start,
+                end,
+                calendar.session_end_convention,
+            )
+            is not None
+            for timestamp in local
+        ],
+        dtype=bool,
+    )
+    excluded_source_rows = tuple(
+        sorted(
+            {
+                source_row
+                for output_position in np.flatnonzero(~included)
+                for source_row in normalized.source_rows[int(output_position)]
+            }
+        )
+    )
+    analytical = frame.loc[included].reset_index(drop=True)
+    return analytical, excluded_source_rows
+
+
 def evaluate_calendar_coverage(
     frame: pd.DataFrame | None,
     policy: CanonicalizationPolicy,
+    *,
+    excluded_out_of_session_rows: tuple[int, ...] = (),
 ) -> GateResult:
     """Evaluate explicit interval, coverage, and optional session diagnostics."""
 
@@ -293,7 +355,15 @@ def evaluate_calendar_coverage(
         else:
             start = time.fromisoformat(calendar.session_start or "00:00:00")
             end = time.fromisoformat(calendar.session_end or "00:00:00")
-            anchors = tuple(_session_anchor(timestamp, start, end) for timestamp in local)
+            anchors = tuple(
+                _session_anchor(
+                    timestamp,
+                    start,
+                    end,
+                    calendar.session_end_convention,
+                )
+                for timestamp in local
+            )
             out_of_session = [index for index, anchor in enumerate(anchors) if anchor is None]
             if out_of_session:
                 findings.append(
@@ -311,8 +381,20 @@ def evaluate_calendar_coverage(
                 (
                     f"session-timezone:{calendar.timezone}",
                     f"session-bounds:{calendar.session_start}-{calendar.session_end}",
+                    f"session-end:{calendar.session_end_convention.value}",
+                    f"out-of-session-policy:{calendar.out_of_session_policy.value}",
                 )
             )
+            if excluded_out_of_session_rows:
+                findings.append(
+                    _finding(
+                        "OUT_OF_SESSION_BARS_EXCLUDED",
+                        "Source bars outside the analytical session were retained in "
+                        "canonical evidence and excluded from the analytical frame.",
+                        excluded_out_of_session_rows,
+                        affected=len(excluded_out_of_session_rows),
+                    )
+                )
         limitations.append(
             "Holiday and trading-day completeness was not evaluated because no "
             "trading-day calendar evidence was supplied."
@@ -371,7 +453,7 @@ def evaluate_calendar_coverage(
         status=status,
         reason_code=reason,
         message=message,
-        checked_record_count=len(frame),
+        checked_record_count=len(frame) + len(excluded_out_of_session_rows),
         affected_record_count=sum(finding.affected_record_count for finding in findings),
         examples=examples,
         evidence_references=tuple(evidence),
@@ -452,15 +534,26 @@ def _finding(
     )
 
 
-def _time_in_session(value: time, start: time, end: time) -> bool:
+def _time_in_session(
+    value: time,
+    start: time,
+    end: time,
+    end_convention: SessionEndConvention,
+) -> bool:
+    include_end = end_convention is SessionEndConvention.INCLUSIVE
     if start <= end:
-        return start <= value <= end
-    return value >= start or value <= end
+        return start <= value <= end if include_end else start <= value < end
+    return value >= start or (value <= end if include_end else value < end)
 
 
-def _session_anchor(timestamp: pd.Timestamp, start: time, end: time) -> date | None:
+def _session_anchor(
+    timestamp: pd.Timestamp,
+    start: time,
+    end: time,
+    end_convention: SessionEndConvention = SessionEndConvention.INCLUSIVE,
+) -> date | None:
     value = timestamp.time()
-    if not _time_in_session(value, start, end):
+    if not _time_in_session(value, start, end, end_convention):
         return None
     if start <= end or value >= start:
         return timestamp.date()

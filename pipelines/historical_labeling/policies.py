@@ -115,8 +115,13 @@ class SessionPolicy(FrozenContract):
             raise ValueError("KAN-13 pilot requests PERIOD_START semantics")
         if self.session_start != "09:00:00" or self.session_end != "22:00:00":
             raise ValueError("KAN-13 pilot session request is 09:00-22:00")
-        if self.evidence_status is not EvidenceStatus.HYPOTHESIS:
-            raise ValueError("requested source semantics remain a hypothesis")
+        if self.evidence_status not in {
+            EvidenceStatus.HYPOTHESIS,
+            EvidenceStatus.DERIVED,
+        }:
+            raise ValueError(
+                "source semantics must remain HYPOTHESIS or use KAN-14 DERIVED evidence"
+            )
         if self.holiday_calendar_status not in {
             EvidenceStatus.UNKNOWN,
             EvidenceStatus.NOT_EVALUATED,

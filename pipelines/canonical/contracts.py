@@ -92,9 +92,24 @@ class IncompleteBinPolicy(str, Enum):
     KEEP = "KEEP"
 
 
+class CoverageBoundaryPolicy(str, Enum):
+    KEEP = "KEEP"
+    DROP_PARTIAL_FIRST = "DROP_PARTIAL_FIRST"
+
+
 class CalendarBehavior(str, Enum):
     CONTINUOUS = "CONTINUOUS"
     VERSIONED_SESSION = "VERSIONED_SESSION"
+
+
+class SessionEndConvention(str, Enum):
+    INCLUSIVE = "INCLUSIVE"
+    EXCLUSIVE = "EXCLUSIVE"
+
+
+class OutOfSessionPolicy(str, Enum):
+    REJECT = "REJECT"
+    EXCLUDE_AND_REPORT = "EXCLUDE_AND_REPORT"
 
 
 class GateId(str, Enum):
@@ -212,6 +227,8 @@ class CalendarPolicy(FrozenContract):
     timezone: str = "UTC"
     session_start: str | None = None
     session_end: str | None = None
+    session_end_convention: SessionEndConvention = SessionEndConvention.INCLUSIVE
+    out_of_session_policy: OutOfSessionPolicy = OutOfSessionPolicy.REJECT
     coverage_end_utc: datetime | None = None
 
     @model_validator(mode="after")
@@ -270,6 +287,11 @@ class ResamplingPolicy(FrozenContract):
     timezone: str
     calendar_behavior: CalendarBehavior
     calendar_version: str = Field(min_length=1)
+    session_start: str | None = None
+    session_end: str | None = None
+    session_end_convention: SessionEndConvention = SessionEndConvention.INCLUSIVE
+    source_gap_policy: GapPolicy = GapPolicy.REJECT
+    coverage_boundary_policy: CoverageBoundaryPolicy = CoverageBoundaryPolicy.KEEP
     incomplete_bin_policy: IncompleteBinPolicy
     volume_aggregation: VolumeAggregation
 
@@ -293,6 +315,31 @@ class ResamplingPolicy(FrozenContract):
             )
         if self.volume_aggregation is VolumeAggregation.UNKNOWN:
             raise ValueError("volume aggregation must be explicitly declared")
+        has_session_start = self.session_start is not None
+        has_session_end = self.session_end is not None
+        if has_session_start != has_session_end:
+            raise ValueError("resampling session bounds must be declared together")
+        if self.calendar_behavior is CalendarBehavior.VERSIONED_SESSION:
+            if self.target_timeframe != "M5":
+                raise ValueError(
+                    "KAN-14 versioned-session resampling is validated only for M1-to-M5"
+                )
+            if not has_session_start:
+                raise ValueError("versioned-session resampling requires session bounds")
+            for value in (self.session_start, self.session_end):
+                try:
+                    datetime.strptime(value or "", "%H:%M:%S")
+                except ValueError as exc:
+                    raise ValueError("resampling session bounds must use HH:MM:SS") from exc
+            if (
+                self.source_gap_policy is not GapPolicy.REJECT
+                and self.incomplete_bin_policy is not IncompleteBinPolicy.KEEP
+            ):
+                raise ValueError(
+                    "sparse versioned-session input requires KEEP incomplete-bin policy"
+                )
+        elif has_session_start:
+            raise ValueError("continuous resampling cannot declare session bounds")
         return self
 
 
