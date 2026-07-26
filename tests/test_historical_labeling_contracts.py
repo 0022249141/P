@@ -12,6 +12,7 @@ from pipelines.historical_labeling.contracts import (
     HistoricalOutcomeLabel,
     MarketEventIdentity,
     OutcomeClass,
+    SCHEMA_VERSION,
     build_event_id,
 )
 from pipelines.historical_labeling.fixtures import (
@@ -44,6 +45,7 @@ def test_approved_policy_values_are_externalized_and_exact() -> None:
     )
     assert configured.features.event_bar_seconds == 300
     assert configured.features.htf_bar_seconds == 3600
+    assert SCHEMA_VERSION == "1.1.0"
 
 
 def test_event_id_is_stable_and_sensitive_to_every_material_source_dimension() -> None:

@@ -13,7 +13,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 EXTRACTION_SCHEMA_VERSION = "1.2.0"
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 

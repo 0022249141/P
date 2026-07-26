@@ -265,6 +265,10 @@ Leave untouched:
    - reject all continuous-calendar session bounds;
    - bump the canonical contract and evaluator version to `1.1.0`;
    - prove repeated generation is byte-identical.
+12. Address the three final edge/version findings:
+   - reject output symlinks before Artifact construction;
+   - derive the coverage group edge from `timestamp_label` before source offsets;
+   - bump the historical evidence schema to `1.1.0` and regenerate dependent audits.
 
 ## 8. Verification
 
@@ -318,6 +322,10 @@ Review-regression safety:
 - G4, canonical partitioning, and resampling share interval-start membership for
   `PERIOD_END`;
 - canonical contract and evaluator output identify the new behavior as `1.1.0`;
+- output symlinks are rejected and cannot feed prior bytes into provenance;
+- mixed source/target label conventions cannot convert an interior gap into a dropped
+  coverage boundary;
+- historical contracts that publish `EvidenceStatus.DECLARED` identify schema `1.1.0`;
 - feature-ineligibility records expose the rejected event's pivot and confirmation
   identity;
 - requested configuration reports timezone and period evidence independently.
@@ -398,6 +406,10 @@ Rollback:
 - 2026-07-27: the five consistency gaps were remediated with input-only Git provenance,
   shared interval-start membership, fail-closed calendar validation, canonical version
   `1.1.0`, and a byte-stability regression.
+- 2026-07-27: the next re-review found three final edge/version gaps in output symlink
+  handling, mixed target-label coverage boundaries, and historical schema versioning.
+- 2026-07-27: all three were remediated; KAN-13 dependent audit artifacts were
+  deterministically regenerated under historical schema `1.1.0`.
 
 ## 12. Completion evidence
 
@@ -415,8 +427,8 @@ Implemented surfaces:
 
 Verification:
 
-- ordinary suite: `230 passed, 3 deselected`;
-- research suite: `3 passed, 230 deselected`;
+- ordinary suite: `232 passed, 3 deselected`;
+- research suite: `3 passed, 232 deselected`;
 - G0-G5: all `PASS`;
 - protected M1-to-M5 reconciliation: 12,317/12,317 exact OHLCV;
 - canonical/source rows: 50,000 retained;

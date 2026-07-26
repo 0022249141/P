@@ -151,9 +151,15 @@ def _first_expected_source_label(
     target_minutes: int,
     policy: ResamplingPolicy,
 ) -> pd.Timestamp:
+    target_delta = pd.Timedelta(minutes=target_minutes)
+    group_start = (
+        target_label
+        if policy.timestamp_label.value == "left"
+        else target_label - target_delta
+    )
     if policy.source_period_semantics.value == "PERIOD_START":
-        return target_label
-    return target_label - pd.Timedelta(minutes=target_minutes - 1)
+        return group_start
+    return group_start + pd.Timedelta(minutes=1)
 
 
 def _validate_source(frame: pd.DataFrame, policy: ResamplingPolicy) -> None:

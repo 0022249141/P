@@ -45,6 +45,7 @@ def _policy(
     label: BoundaryConvention | None = None,
     closed: BoundaryConvention | None = None,
     coverage: CoverageBoundaryPolicy = CoverageBoundaryPolicy.KEEP,
+    gap: GapPolicy = GapPolicy.REJECT,
 ) -> ResamplingPolicy:
     default_boundary = (
         BoundaryConvention.LEFT
@@ -62,6 +63,7 @@ def _policy(
         timezone="UTC",
         calendar_behavior=CalendarBehavior.CONTINUOUS,
         calendar_version="continuous-utc-v1",
+        source_gap_policy=gap,
         coverage_boundary_policy=coverage,
         incomplete_bin_policy=incomplete,
         volume_aggregation=VolumeAggregation.SUM,
@@ -204,6 +206,21 @@ def test_period_end_partial_coverage_boundary_is_dropped_before_rejection() -> N
     assert accepted.incomplete_bin_count == 1
     assert accepted.dropped_coverage_boundary_bin_count == 1
     assert accepted.source_rows == (tuple(range(3, 8)),)
+
+
+def test_coverage_boundary_uses_target_label_edge_before_source_offset() -> None:
+    policy = _policy(
+        "M5",
+        period=PeriodSemantics.PERIOD_END,
+        label=BoundaryConvention.LEFT,
+        incomplete=IncompleteBinPolicy.REJECT,
+        coverage=CoverageBoundaryPolicy.DROP_PARTIAL_FIRST,
+        gap=GapPolicy.REPORT,
+    )
+    interior_gap = _m1_bars(5, start="2024-01-01T00:01:00Z").drop(index=2)
+
+    with pytest.raises(ResamplingError, match="2024-01-01T00:00:00"):
+        resample_bars(interior_gap.reset_index(drop=True), policy)
 
 
 def test_period_end_versioned_session_accepts_complete_final_bin() -> None:

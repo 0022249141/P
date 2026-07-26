@@ -140,7 +140,7 @@
     "timezone_evidence": "HYPOTHESIS"
   },
   "row_count": 50000,
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
   "status": "BLOCKED_BY_SOURCE_SEMANTICS",
   "unresolved_evidence": [

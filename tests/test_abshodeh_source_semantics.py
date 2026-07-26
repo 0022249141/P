@@ -317,6 +317,26 @@ def test_runner_rejects_existing_hard_link_to_protected_input_before_writing(
         alias.unlink(missing_ok=True)
 
 
+def test_runner_rejects_symbolic_link_output_before_writing(
+    tmp_path: Path,
+    capsys,
+    monkeypatch,
+) -> None:
+    target = tmp_path / "target.json"
+    target.write_text("existing", encoding="utf-8")
+    alias = tmp_path / "output-link.json"
+    alias.symlink_to(target)
+
+    def forbidden_build(**_kwargs):
+        raise AssertionError("artifact construction must not start")
+
+    monkeypatch.setattr(runner, "build_artifact", forbidden_build)
+
+    assert runner.main(["--research", "--output", str(alias)]) == 2
+    assert "must not be a symbolic link" in capsys.readouterr().err
+    assert target.read_text(encoding="utf-8") == "existing"
+
+
 def test_policy_model_is_immutable() -> None:
     policy = _policy()
     copied = copy.deepcopy(policy)

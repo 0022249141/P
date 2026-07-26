@@ -211,6 +211,8 @@ def _protected_input_paths(config_path: Path) -> frozenset[Path]:
 
 
 def _validate_output_path(output: Path, config_path: Path) -> None:
+    if output.is_symlink():
+        raise ValueError("KAN-14 output must not be a symbolic link.")
     protected_inputs = _protected_input_paths(config_path)
     aliases_protected_input = output.exists() and any(
         protected_input.exists() and output.samefile(protected_input)

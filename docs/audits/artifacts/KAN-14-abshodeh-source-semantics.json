@@ -44,7 +44,7 @@
       "event": {
         "confirmation_or_availability_timestamp": "2026-02-18T07:45:00Z",
         "direction": "ABOVE",
-        "event_id": "evt_e05b9e2527f9c2fab958469e0e72d14ab5f40617f1658b0915a0a8321bb896ae",
+        "event_id": "evt_35df27aa3f1e71fb3dff2ee88aac97c6e6338201c23c5b221739250fdee1b4ee",
         "event_policy_version": "layer2-confirmed-swings-v1",
         "event_type": "SWING_HIGH",
         "first_feature_eligible_timestamp": "2026-02-18T07:45:00Z",
@@ -54,7 +54,7 @@
         "level_type": "SWING_HIGH",
         "market": "ABSHODEH",
         "observation_timestamp": "2026-02-18T07:30:00Z",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "source_dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
         "source_parameter_sha256": "b1cfdef3a36f05d978998d860870d7cc1b19d36d4f9be4cf66065321d5197e38",
         "source_parameters": [
@@ -67,7 +67,7 @@
         "symbol": "abshodeNaghdi",
         "timeframe": "M5"
       },
-      "event_id": "evt_e05b9e2527f9c2fab958469e0e72d14ab5f40617f1658b0915a0a8321bb896ae",
+      "event_id": "evt_35df27aa3f1e71fb3dff2ee88aac97c6e6338201c23c5b221739250fdee1b4ee",
       "feature_policy_version": "asof-features-v1",
       "reason_code": "INSUFFICIENT_PAST_ONLY_HISTORY"
     },
@@ -76,7 +76,7 @@
       "event": {
         "confirmation_or_availability_timestamp": "2026-03-22T08:50:00Z",
         "direction": "ABOVE",
-        "event_id": "evt_41ef751bbe7427bb7a857129c0a030db7c17be40198997083f2c33c0af346fde",
+        "event_id": "evt_df3ff20edc85a73ff11be39dafac47d70de0af2ed4b7ee8cb47f6ed29c4d8256",
         "event_policy_version": "layer2-confirmed-swings-v1",
         "event_type": "SWING_HIGH",
         "first_feature_eligible_timestamp": "2026-03-22T08:50:00Z",
@@ -86,7 +86,7 @@
         "level_type": "SWING_HIGH",
         "market": "ABSHODEH",
         "observation_timestamp": "2026-03-22T08:35:00Z",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "source_dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
         "source_parameter_sha256": "b1cfdef3a36f05d978998d860870d7cc1b19d36d4f9be4cf66065321d5197e38",
         "source_parameters": [
@@ -99,7 +99,7 @@
         "symbol": "abshodeNaghdi",
         "timeframe": "M5"
       },
-      "event_id": "evt_41ef751bbe7427bb7a857129c0a030db7c17be40198997083f2c33c0af346fde",
+      "event_id": "evt_df3ff20edc85a73ff11be39dafac47d70de0af2ed4b7ee8cb47f6ed29c4d8256",
       "feature_policy_version": "asof-features-v1",
       "reason_code": "NON_POSITIVE_RANGE_FEATURE"
     }
@@ -1735,7 +1735,7 @@
       "timezone_evidence": "DECLARED"
     },
     "row_count": 50000,
-    "schema_version": "1.0.0",
+    "schema_version": "1.1.0",
     "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
     "status": "ELIGIBLE",
     "unresolved_evidence": [],
@@ -1874,7 +1874,7 @@
     "cli_arguments": [
       "--research"
     ],
-    "code_revision": "786b5f99ed2f49eb2db26a62a21b1f76b949c530",
+    "code_revision": "139a0e15c39ad48ababd6f864edc866385b10bfd",
     "configuration_snapshot_path": "configs/research/abshodeh-source-semantics-v1.json",
     "configuration_snapshot_sha256": "c4552024e0c2a60fe4cf14608cb50c0736120bd80b6569aeaf1ea322f0a93de2",
     "entrypoint": "scripts/run_abshodeh_source_semantics.py",
@@ -1886,7 +1886,7 @@
       "numpy_geterr_over": "warn",
       "numpy_geterr_under": "ignore"
     },
-    "git_diff_sha256": "6a175a6c29ab61b1739fc2065d7b30003ad21536f6ada380353c8c80d471235c",
+    "git_diff_sha256": "34a37a0dce984c2d642792da68ae6ee4194946435a47da48e3f6127b735067f0",
     "git_dirty": true,
     "locale": "LC_CTYPE=C.UTF-8;LC_NUMERIC=C;LC_TIME=C;LC_COLLATE=C;LC_MONETARY=C;LC_MESSAGES=C;LC_PAPER=C;LC_NAME=C;LC_ADDRESS=C;LC_TELEPHONE=C;LC_MEASUREMENT=C;LC_IDENTIFICATION=C",
     "numpy_version": "2.5.1",

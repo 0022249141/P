@@ -165,5 +165,11 @@ generated Artifact path. Repeating the same command against the same input state
 therefore emits byte-identical output instead of feeding the previous Artifact bytes
 back into its own provenance hash.
 
+Output symlinks are rejected before Artifact construction so a lexical alias cannot
+re-enter the provenance hash through its target. Coverage-boundary detection first
+derives the target group's left edge from `timestamp_label`, then applies the
+`PERIOD_START`/`PERIOD_END` source offset. The historical evidence schema is also
+versioned as `1.1.0` after adding `DECLARED` to its published evidence enum.
+
 The run also verifies that all protected CSV hashes and
 `data/manifests/committed_datasets.json` remain byte-identical.
