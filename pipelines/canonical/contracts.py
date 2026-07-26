@@ -11,8 +11,8 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
-CONTRACT_SCHEMA_VERSION = "1.0.0"
-EVALUATOR_VERSION = "1.0.0"
+CONTRACT_SCHEMA_VERSION = "1.1.0"
+EVALUATOR_VERSION = "1.1.0"
 MAX_EXAMPLES = 10
 MAX_FINDINGS = 50
 CANONICAL_COLUMNS = ("timestamp", "open", "high", "low", "close", "volume")
@@ -239,6 +239,10 @@ class CalendarPolicy(FrozenContract):
             raise ValueError("session_start and session_end must be declared together")
         if self.behavior is CalendarBehavior.VERSIONED_SESSION and not has_start:
             raise ValueError("versioned session behavior requires explicit session bounds")
+        if self.behavior is CalendarBehavior.CONTINUOUS and has_start:
+            raise ValueError(
+                "CONTINUOUS calendar behavior cannot declare session bounds"
+            )
         if (
             self.behavior is CalendarBehavior.CONTINUOUS
             and self.out_of_session_policy is OutOfSessionPolicy.EXCLUDE_AND_REPORT

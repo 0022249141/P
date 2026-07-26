@@ -118,8 +118,11 @@ no-resolution horizon.
 
 The canonical session partition uses the same interval rule. A `PERIOD_START` source
 uses `[09:00, 22:00)`, while an equivalent `PERIOD_END` source uses `(09:00, 22:00]`.
-Continuous-calendar policies cannot request session exclusion; that contradictory
-combination is rejected at contract validation instead of silently retaining rows.
+Canonical partitioning, G4 audit, and session-local resampling all derive membership
+from the interval start. Continuous-calendar policies cannot declare session bounds or
+request session exclusion; those contradictory combinations are rejected at contract
+validation instead of silently retaining rows. The changed canonical evidence contract
+and evaluator identify themselves as version `1.1.0`.
 
 Two additional source events are explicitly recorded as feature-ineligible: one lacks
 sufficient past-only history and one has a non-positive range feature. They are not
@@ -156,6 +159,11 @@ locale and runtime/analytical timezones, calendar and bar-builder versions, Pyth
 pandas, numpy and floating-point settings, and explicit null seeds under the
 no-randomness policy. `--check` reproduces the analytical payload while preserving the
 recorded provenance of the run that wrote the artifact.
+
+Git dirty/diff provenance is computed over the input tree and explicitly excludes the
+generated Artifact path. Repeating the same command against the same input state
+therefore emits byte-identical output instead of feeding the previous Artifact bytes
+back into its own provenance hash.
 
 The run also verifies that all protected CSV hashes and
 `data/manifests/committed_datasets.json` remain byte-identical.

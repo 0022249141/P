@@ -91,25 +91,37 @@ def _git_output(*args: str) -> bytes:
     )
 
 
-def _git_provenance() -> tuple[str, bool, str | None]:
+def _git_provenance(
+    *,
+    excluded_outputs: Sequence[Path],
+) -> tuple[str, bool, str | None]:
     revision = _git_output("rev-parse", "HEAD").decode("ascii").strip()
-    status = _git_output(
-        "status",
-        "--porcelain=v1",
-        "--untracked-files=all",
-    )
-    if not status:
-        return revision, False, None
+    repository_root = REPOSITORY_ROOT.resolve()
+    excluded_relative = {
+        _repository_relative(path)
+        for path in excluded_outputs
+        if path.resolve().is_relative_to(repository_root)
+    }
+    pathspecs = (".", *(f":(exclude){path}" for path in sorted(excluded_relative)))
+    tracked_diff = _git_output("diff", "--binary", "HEAD", "--", *pathspecs)
 
-    digest = hashlib.sha256()
-    digest.update(_git_output("diff", "--binary", "HEAD", "--", "."))
     untracked = _git_output(
         "ls-files",
         "--others",
         "--exclude-standard",
         "-z",
     )
-    for raw_path in sorted(item for item in untracked.split(b"\0") if item):
+    untracked_paths = tuple(
+        raw_path
+        for raw_path in sorted(item for item in untracked.split(b"\0") if item)
+        if raw_path.decode("utf-8") not in excluded_relative
+    )
+    if not tracked_diff and not untracked_paths:
+        return revision, False, None
+
+    digest = hashlib.sha256()
+    digest.update(tracked_diff)
+    for raw_path in untracked_paths:
         path = REPOSITORY_ROOT / raw_path.decode("utf-8")
         digest.update(b"\0UNTRACKED\0")
         digest.update(raw_path)
@@ -123,10 +135,13 @@ def _build_run_manifest(
     *,
     cli_arguments: Sequence[str],
     config_path: Path,
+    output_path: Path,
     semantics: object,
     manifest: Mapping[str, object],
 ) -> AnalyticalRunManifest:
-    revision, dirty, diff_sha256 = _git_provenance()
+    revision, dirty, diff_sha256 = _git_provenance(
+        excluded_outputs=(_path(DEFAULT_OUTPUT), output_path),
+    )
     source_inputs = tuple(
         RunInputEvidence(
             path=str(record["path"]),
@@ -256,8 +271,10 @@ def build_artifact(
     *,
     cli_arguments: Sequence[str] = ("--research",),
     config_path: Path | None = None,
+    output_path: Path | None = None,
 ) -> SourceSemanticsArtifact:
     resolved_config = _path(DEFAULT_CONFIG) if config_path is None else config_path
+    resolved_output = _path(DEFAULT_OUTPUT) if output_path is None else output_path
     semantics = load_policy(resolved_config)
     manifest_path = _path(semantics.manifest_path)
     manifest_before = _sha256(manifest_path)
@@ -268,6 +285,7 @@ def build_artifact(
     run_manifest = _build_run_manifest(
         cli_arguments=cli_arguments,
         config_path=resolved_config,
+        output_path=resolved_output,
         semantics=semantics,
         manifest=manifest,
     )
@@ -482,6 +500,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     artifact = build_artifact(
         cli_arguments=cli_arguments,
         config_path=config_path,
+        output_path=output,
     )
     content = artifact.to_json_bytes()
     if args.check:

@@ -260,9 +260,21 @@ def test_continuous_calendar_rejects_session_exclusion_policy() -> None:
             policy_version="invalid-continuous-exclusion-v1",
             behavior=CalendarBehavior.CONTINUOUS,
             expected_interval_seconds=60,
+            out_of_session_policy=OutOfSessionPolicy.EXCLUDE_AND_REPORT,
+        )
+
+
+def test_continuous_calendar_rejects_session_bounds_with_reject_policy() -> None:
+    with pytest.raises(
+        ValueError,
+        match="CONTINUOUS calendar behavior cannot declare session bounds",
+    ):
+        CalendarPolicy(
+            policy_version="invalid-continuous-bounds-v1",
+            behavior=CalendarBehavior.CONTINUOUS,
+            expected_interval_seconds=60,
             session_start="09:00:00",
             session_end="22:00:00",
-            out_of_session_policy=OutOfSessionPolicy.EXCLUDE_AND_REPORT,
         )
 
 
@@ -274,6 +286,7 @@ def test_period_end_session_partition_uses_interval_start_membership() -> None:
             period_semantics=PeriodSemantics.PERIOD_END,
             period_evidence=EvidenceStatus.DECLARED,
         ),
+        gap_policy=GapPolicy.REPORT,
         calendar=CalendarPolicy(
             policy_version="period-end-session-v1",
             behavior=CalendarBehavior.VERSIONED_SESSION,
@@ -305,6 +318,11 @@ def test_period_end_session_partition_uses_interval_start_membership() -> None:
         pd.Timestamp("2024-01-01T22:00:00Z"),
     ]
     assert evaluation.excluded_out_of_session_rows == (0, 3)
+    g4 = evaluation.report.results[4]
+    assert g4.status is GateStatus.PASS
+    assert "OUT_OF_SESSION_BARS" not in {
+        finding.reason_code for finding in g4.findings
+    }
 
 
 def test_g4_reports_missing_and_irregular_intervals() -> None:

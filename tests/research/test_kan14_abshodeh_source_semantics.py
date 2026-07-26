@@ -34,6 +34,18 @@ def test_real_abshodeh_semantics_and_pilot_are_reproducible(tmp_path: Path) -> N
         )
         == 0
     )
+    first_bytes = output.read_bytes()
+    assert (
+        main(
+            [
+                "--research",
+                "--output",
+                str(output),
+            ]
+        )
+        == 0
+    )
+    assert output.read_bytes() == first_bytes
     payload = json.loads(output.read_text(encoding="ascii"))
     committed = json.loads(COMMITTED_ARTIFACT.read_text(encoding="ascii"))
     run_manifest = payload.pop("run_manifest")

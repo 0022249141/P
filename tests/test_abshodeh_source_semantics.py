@@ -331,6 +331,7 @@ def test_run_manifest_records_mandatory_reproducibility_provenance() -> None:
     run = runner._build_run_manifest(
         cli_arguments=("--research",),
         config_path=POLICY_PATH,
+        output_path=runner._path(runner.DEFAULT_OUTPUT),
         semantics=semantics,
         manifest=manifest,
     )

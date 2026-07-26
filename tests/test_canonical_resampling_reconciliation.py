@@ -8,12 +8,14 @@ from pipelines.canonical import (
     BoundaryConvention,
     CalendarBehavior,
     CoverageBoundaryPolicy,
+    GapPolicy,
     GateStatus,
     IncompleteBinPolicy,
     PeriodSemantics,
     ReconciliationTolerance,
     ResamplingError,
     ResamplingPolicy,
+    SessionEndConvention,
     VolumeAggregation,
     reconcile_bars,
     resample_bars,
@@ -202,6 +204,37 @@ def test_period_end_partial_coverage_boundary_is_dropped_before_rejection() -> N
     assert accepted.incomplete_bin_count == 1
     assert accepted.dropped_coverage_boundary_bin_count == 1
     assert accepted.source_rows == (tuple(range(3, 8)),)
+
+
+def test_period_end_versioned_session_accepts_complete_final_bin() -> None:
+    policy = ResamplingPolicy(
+        policy_version="period-end-session-m1-to-m5-v1",
+        source_timeframe="M1",
+        target_timeframe="M5",
+        source_period_semantics=PeriodSemantics.PERIOD_END,
+        timestamp_label=BoundaryConvention.RIGHT,
+        closed_boundary=BoundaryConvention.RIGHT,
+        origin="start_day",
+        timezone="UTC",
+        calendar_behavior=CalendarBehavior.VERSIONED_SESSION,
+        calendar_version="period-end-session-v1",
+        session_start="09:00:00",
+        session_end="22:00:00",
+        session_end_convention=SessionEndConvention.EXCLUSIVE,
+        source_gap_policy=GapPolicy.REJECT,
+        incomplete_bin_policy=IncompleteBinPolicy.REJECT,
+        volume_aggregation=VolumeAggregation.SUM,
+    )
+
+    accepted = resample_bars(
+        _m1_bars(5, start="2024-01-01T21:56:00Z"),
+        policy,
+    )
+
+    assert accepted.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T22:00:00Z")
+    ]
+    assert accepted.source_rows == (tuple(range(5)),)
 
 
 def test_empty_source_and_zero_output_after_drop_are_rejected() -> None:

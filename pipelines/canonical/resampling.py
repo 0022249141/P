@@ -216,7 +216,14 @@ def _group_source(
     start = time.fromisoformat(policy.session_start or "00:00:00")
     end = time.fromisoformat(policy.session_end or "00:00:00")
     anchors = [
-        _session_anchor(timestamp, start, end, policy.session_end_convention)
+        _session_anchor(
+            timestamp
+            if policy.source_period_semantics.value == "PERIOD_START"
+            else timestamp - pd.Timedelta(minutes=1),
+            start,
+            end,
+            policy.session_end_convention,
+        )
         for timestamp in local.index
     ]
     if any(anchor is None for anchor in anchors):

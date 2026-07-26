@@ -259,6 +259,12 @@ Leave untouched:
    - apply partial-coverage handling to `PERIOD_END` resampling;
    - reject continuous-calendar session-exclusion policies;
    - derive canonical session membership from period semantics.
+11. Address the five consistency findings from re-review:
+   - hash input-only Git state without feeding the prior Artifact into provenance;
+   - apply interval-start session membership in both G4 and resampling;
+   - reject all continuous-calendar session bounds;
+   - bump the canonical contract and evaluator version to `1.1.0`;
+   - prove repeated generation is byte-identical.
 
 ## 8. Verification
 
@@ -308,6 +314,10 @@ Review-regression safety:
 - continuous calendars reject `EXCLUDE_AND_REPORT` instead of silently ignoring it;
 - the artifact records all mandatory run provenance and `--check` preserves the
   provenance of the run that produced the committed artifact;
+- repeated non-check generation over the same input-only state is byte-identical;
+- G4, canonical partitioning, and resampling share interval-start membership for
+  `PERIOD_END`;
+- canonical contract and evaluator output identify the new behavior as `1.1.0`;
 - feature-ineligibility records expose the rejected event's pivot and confirmation
   identity;
 - requested configuration reports timezone and period evidence independently.
@@ -382,6 +392,12 @@ Rollback:
 - 2026-07-27: all four final-review findings were remediated with strict contracts and
   direct regression tests; the analytical result remained 12,317/12,317 exact M1-to-M5
   matches, 451 events/features/labels, and 69 censored labels.
+- 2026-07-27: re-review found five consistency gaps: output-self-referential provenance,
+  unshifted `PERIOD_END` membership in G4 and resampling, continuous calendars accepting
+  unused session bounds, and unchanged canonical evaluator versioning.
+- 2026-07-27: the five consistency gaps were remediated with input-only Git provenance,
+  shared interval-start membership, fail-closed calendar validation, canonical version
+  `1.1.0`, and a byte-stability regression.
 
 ## 12. Completion evidence
 
@@ -399,8 +415,8 @@ Implemented surfaces:
 
 Verification:
 
-- ordinary suite: `228 passed, 3 deselected`;
-- research suite: `3 passed, 228 deselected`;
+- ordinary suite: `230 passed, 3 deselected`;
+- research suite: `3 passed, 230 deselected`;
 - G0-G5: all `PASS`;
 - protected M1-to-M5 reconciliation: 12,317/12,317 exact OHLCV;
 - canonical/source rows: 50,000 retained;
@@ -408,8 +424,8 @@ Verification:
 - out-of-session rows excluded from analytics: 38;
 - real pilot: `ELIGIBLE`, 451 events/features/labels, 69 censored labels;
 - explicit feature-ineligible events: 2;
-- KAN-14 artifact SHA-256:
-  `1ad802adcd713329ac8254e420d29ddfb6a2d7869cad2f11eee5d5a205099164`;
+- KAN-14 artifact SHA-256 is computed and reported by the final release check rather
+  than embedded here, avoiding a provenance self-reference.
 - committed manifest SHA-256 before/after:
   `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`;
 - all 56 protected source hashes are byte-identical before/after;

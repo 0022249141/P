@@ -264,10 +264,7 @@ def _partition_analytical_frame(
     included = np.array(
         [
             _session_anchor(
-                timestamp
-                if policy.timestamp.period_semantics is PeriodSemantics.PERIOD_START
-                else timestamp
-                - timedelta(seconds=calendar.expected_interval_seconds),
+                _session_membership_timestamp(timestamp, policy),
                 start,
                 end,
                 calendar.session_end_convention,
@@ -360,7 +357,7 @@ def evaluate_calendar_coverage(
             end = time.fromisoformat(calendar.session_end or "00:00:00")
             anchors = tuple(
                 _session_anchor(
-                    timestamp,
+                    _session_membership_timestamp(timestamp, policy),
                     start,
                     end,
                     calendar.session_end_convention,
@@ -547,6 +544,19 @@ def _time_in_session(
     if start <= end:
         return start <= value <= end if include_end else start <= value < end
     return value >= start or (value <= end if include_end else value < end)
+
+
+def _session_membership_timestamp(
+    timestamp: pd.Timestamp,
+    policy: CanonicalizationPolicy,
+) -> pd.Timestamp:
+    calendar = policy.calendar
+    if (
+        calendar is not None
+        and policy.timestamp.period_semantics is PeriodSemantics.PERIOD_END
+    ):
+        return timestamp - timedelta(seconds=calendar.expected_interval_seconds)
+    return timestamp
 
 
 def _session_anchor(
