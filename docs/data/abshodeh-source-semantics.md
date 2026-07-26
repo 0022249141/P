@@ -36,13 +36,14 @@ explicit platform-setting evidence.
 
 | Evidence | Dates | PERIOD_START | PERIOD_END |
 |---|---:|---:|---:|
-| Protected M1 → native M5 | 89 | 12,317/12,317 exact OHLCV | 192/11,923 exact OHLCV |
+| Protected M1 → native M5 | 89 | 12,317/12,317 exact OHLCV | 192/11,922 exact OHLCV |
 | External M5 → native M15 | 88 | 4,287/4,287 exact OHLC; 4,283 exact OHLCV | 25/4,257 exact OHLC; 9 exact OHLCV |
 
 The four external start-label mismatches are volume-only differences of 1-2 units.
-Price membership remains exact. The protected M1/M5 overlap is exact after excluding one
-global partial coverage-boundary bin whose source begins at `10:22` inside the `10:20`
-M5 interval.
+Price membership remains exact. Each candidate applies the partial-coverage policy in
+its own timestamp convention. Under the promoted start-label convention, the protected
+M1/M5 overlap is exact after excluding the one global partial coverage-boundary bin
+whose source begins at `10:22` inside the `10:20` M5 interval.
 
 Therefore:
 

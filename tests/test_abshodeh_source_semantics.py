@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -165,6 +166,7 @@ def test_period_start_is_uniquely_promoted_on_non_adjacent_dates() -> None:
     assert start.distinct_date_count == 3
     assert end.disposition is CandidateDisposition.REJECTED
     assert end.exact_ohlcv_count < end.common_count
+    assert end.dropped_coverage_boundary_count == 1
 
 
 def test_candidate_session_membership_respects_each_timestamp_convention() -> None:
@@ -289,6 +291,29 @@ def test_runner_rejects_output_aliases_to_protected_inputs_before_writing(
 
     assert runner.main(["--research", "--output", protected_output]) == 2
     assert "must not overwrite" in capsys.readouterr().err
+
+
+def test_runner_rejects_existing_hard_link_to_protected_input_before_writing(
+    capsys,
+    monkeypatch,
+) -> None:
+    alias = POLICY_PATH.with_name(
+        f".{POLICY_PATH.name}.{os.getpid()}.hard-link-test"
+    )
+    protected_before = POLICY_PATH.read_bytes()
+
+    def forbidden_build():
+        raise AssertionError("artifact construction must not start")
+
+    monkeypatch.setattr(runner, "build_artifact", forbidden_build)
+
+    alias.hardlink_to(POLICY_PATH)
+    try:
+        assert runner.main(["--research", "--output", str(alias)]) == 2
+        assert "must not overwrite" in capsys.readouterr().err
+        assert POLICY_PATH.read_bytes() == protected_before
+    finally:
+        alias.unlink(missing_ok=True)
 
 
 def test_policy_model_is_immutable() -> None:

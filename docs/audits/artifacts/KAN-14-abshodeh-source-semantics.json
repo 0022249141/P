@@ -865,10 +865,10 @@
       "volume_only_mismatch_count": 0
     },
     {
-      "common_count": 11923,
+      "common_count": 11922,
       "daily_evidence": [
         {
-          "common_count": 139,
+          "common_count": 138,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
@@ -1582,14 +1582,14 @@
       ],
       "disposition": "REJECTED",
       "distinct_date_count": 89,
-      "dropped_coverage_boundary_count": 0,
+      "dropped_coverage_boundary_count": 1,
       "exact_ohlc_count": 445,
       "exact_ohlcv_count": 192,
-      "generated_count": 12319,
+      "generated_count": 12318,
       "generated_only_count": 396,
       "maximum_volume_absolute_difference": "320",
       "period_semantics": "PERIOD_END",
-      "supplied_count": 12299,
+      "supplied_count": 12298,
       "supplied_only_count": 376,
       "volume_only_mismatch_count": 253
     }

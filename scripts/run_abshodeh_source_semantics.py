@@ -89,7 +89,12 @@ def _protected_input_paths(config_path: Path) -> frozenset[Path]:
 
 
 def _validate_output_path(output: Path, config_path: Path) -> None:
-    if output.resolve() in _protected_input_paths(config_path):
+    protected_inputs = _protected_input_paths(config_path)
+    aliases_protected_input = output.exists() and any(
+        protected_input.exists() and output.samefile(protected_input)
+        for protected_input in protected_inputs
+    )
+    if output.resolve() in protected_inputs or aliases_protected_input:
         raise ValueError(
             "KAN-14 output must not overwrite a protected dataset, manifest, "
             "or configuration input."

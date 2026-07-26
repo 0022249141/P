@@ -102,7 +102,7 @@ global coverage-boundary M5 bin:
 
 - 12,317 common M5 bars across 89 dates;
 - `PERIOD_START`: 12,317/12,317 exact OHLCV matches;
-- `PERIOD_END`: 445/11,923 OHLC and 192/11,923 OHLCV matches, with hundreds of timestamp
+- `PERIOD_END`: 445/11,922 OHLC and 192/11,922 OHLCV matches, with hundreds of timestamp
   membership differences;
 - 38 M1 rows occur at or after 22:00 and must be retained as source evidence but excluded
   from the analytical frame.
@@ -295,6 +295,9 @@ Review-regression safety:
   membership rule;
 - the KAN-14 runner rejects output aliases to every protected/configuration input before
   reading market data or writing an artifact;
+- existing hard-link aliases are rejected by file identity, not only by resolved path;
+- `DROP_PARTIAL_FIRST` evaluates the candidate interval start for both `PERIOD_START`
+  and `PERIOD_END`;
 - feature-ineligibility records expose the rejected event's pivot and confirmation
   identity;
 - requested configuration reports timezone and period evidence independently.
@@ -357,6 +360,12 @@ Rollback:
 - 2026-07-26: review-remediated verification passed: 223 ordinary tests, 3 real-data
   research tests, manifest verification, git-hygiene verification, dependency check,
   deterministic artifact checks, and protected-source hash equality.
+- 2026-07-27: second Codex review found two additional boundary-safety defects: existing
+  hard-link aliases could bypass path-only output protection, and the partial global
+  coverage bin was not dropped for the `PERIOD_END` candidate.
+- 2026-07-27: both second-review findings were remediated with real inode-identity and
+  candidate-interval regression tests; verification passed with 224 ordinary tests and
+  3 research tests, while G0-G5 and the 451-event pilot remained unchanged.
 
 ## 12. Completion evidence
 
@@ -374,8 +383,8 @@ Implemented surfaces:
 
 Verification:
 
-- ordinary suite: `223 passed, 3 deselected`;
-- research suite: `3 passed, 223 deselected`;
+- ordinary suite: `224 passed, 3 deselected`;
+- research suite: `3 passed, 224 deselected`;
 - G0-G5: all `PASS`;
 - protected M1-to-M5 reconciliation: 12,317/12,317 exact OHLCV;
 - canonical/source rows: 50,000 retained;
@@ -384,7 +393,7 @@ Verification:
 - real pilot: `ELIGIBLE`, 451 events/features/labels, 69 censored labels;
 - explicit feature-ineligible events: 2;
 - KAN-14 artifact SHA-256:
-  `dd5f3865c3d72a19ea982d4d8dab3e34a1f8f02105897f3ba6fcac2ce9502d35`;
+  `6e149358d0a21aef2c08726e7dfaca3d332a7c8807b83469e657b8a27e24530f`;
 - committed manifest SHA-256 before/after:
   `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`;
 - all 56 protected source hashes are byte-identical before/after;

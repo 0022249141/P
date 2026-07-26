@@ -15,6 +15,7 @@ from pipelines.canonical import (
     CalendarBehavior,
     CalendarPolicy,
     CanonicalizationPolicy,
+    CoverageBoundaryPolicy,
     EvidenceStatus,
     PeriodSemantics,
     ResamplingPolicy,
@@ -93,10 +94,13 @@ def evaluate_period_candidates(
     supplied: pd.DataFrame,
     *,
     policy: SourceSemanticsPolicy,
+    source_minutes: int = 1,
     target_minutes: int = 5,
 ) -> tuple[ReconciliationCandidateEvidence, ...]:
     """Evaluate start/end membership without silently adopting either candidate."""
 
+    if source_minutes <= 0 or target_minutes <= source_minutes:
+        raise ValueError("candidate intervals require 0 < source_minutes < target_minutes")
     prepared_lower = _prepare_local(lower, policy)
     prepared_supplied = _prepare_local(supplied, policy)
     results = tuple(
@@ -105,6 +109,7 @@ def evaluate_period_candidates(
             prepared_supplied,
             policy=policy,
             period_semantics=candidate,
+            source_minutes=source_minutes,
             target_minutes=target_minutes,
             minimum_distinct_dates=policy.minimum_distinct_dates,
         )
@@ -189,6 +194,7 @@ def _evaluate_candidate(
     *,
     policy: SourceSemanticsPolicy,
     period_semantics: PeriodSemantics,
+    source_minutes: int,
     target_minutes: int,
     minimum_distinct_dates: int,
 ) -> ReconciliationCandidateEvidence:
@@ -218,11 +224,23 @@ def _evaluate_candidate(
         .dropna(subset=["open"])
     )
     dropped_boundary = 0
+    target_delta = pd.Timedelta(minutes=target_minutes)
+    source_delta = pd.Timedelta(minutes=source_minutes)
+    first_target_label = None if generated.empty else generated.index[0]
+    first_expected_source_label = (
+        None
+        if first_target_label is None
+        else first_target_label
+        if period_semantics is PeriodSemantics.PERIOD_START
+        else first_target_label - target_delta + source_delta
+    )
     if (
-        period_semantics is PeriodSemantics.PERIOD_START
+        policy.coverage_boundary_policy
+        is CoverageBoundaryPolicy.DROP_PARTIAL_FIRST
         and not generated.empty
         and not lower.empty
-        and lower["timestamp"].iloc[0] > generated.index[0]
+        and first_expected_source_label is not None
+        and lower["timestamp"].iloc[0] > first_expected_source_label
     ):
         generated = generated.iloc[1:]
         dropped_boundary = 1
