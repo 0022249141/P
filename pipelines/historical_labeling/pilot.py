@@ -147,10 +147,10 @@ def run_gated_pilot(
         and resampling_policy is not None
         and reconciliation_table is not None
     ):
-        if evaluation.canonicalization.frame is None:
-            raise ValueError("eligible canonical report did not provide canonical rows")
+        if evaluation.analytical_frame is None:
+            raise ValueError("eligible canonical report did not provide analytical rows")
         generated_m5 = resample_bars(
-            evaluation.canonicalization.frame,
+            evaluation.analytical_frame,
             resampling_policy,
         ).frame
         reconciliation = reconcile_bars(
@@ -217,8 +217,11 @@ def run_gated_pilot(
         "session_policy_version": policy.session.policy_version,
         "source_timeframe": policy.dataset.source_timeframe,
         "timestamp_period_semantics": policy.session.timestamp_period_semantics,
+        "timestamp_period_evidence": (
+            policy.session.period_semantics_evidence_status.value
+        ),
         "timezone": policy.session.timezone,
-        "timezone_period_evidence": policy.session.evidence_status.value,
+        "timezone_evidence": policy.session.timezone_evidence_status.value,
     }
     if status is PilotStatus.BLOCKED_BY_SOURCE_SEMANTICS:
         unresolved = (

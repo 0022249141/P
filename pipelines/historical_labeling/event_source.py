@@ -14,6 +14,7 @@ from pipelines.historical_labeling.contracts import (
     EventDirection,
     EventType,
     MarketEventIdentity,
+    SCHEMA_VERSION,
 )
 from pipelines.historical_labeling.policies import EventSourcePolicy
 
@@ -137,7 +138,7 @@ def generate_confirmed_swing_events(
             ).to_pydatetime()
             events.append(
                 MarketEventIdentity.create(
-                    schema_version="1.0.0",
+                    schema_version=SCHEMA_VERSION,
                     event_policy_version=policy.policy_version,
                     market=market,
                     symbol=symbol,

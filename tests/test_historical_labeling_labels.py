@@ -161,6 +161,36 @@ def test_session_boundary_censors_before_outcome_resolution() -> None:
     assert result.censoring.primary_reason is CensorReason.SESSION_BOUNDARY
 
 
+def test_final_period_start_bar_is_eligible_at_session_end_availability() -> None:
+    event = synthetic_event(
+        policy(),
+        EventDirection.ABOVE,
+        cutoff=datetime(2025, 1, 6, 18, 25, tzinfo=timezone.utc),
+    )
+    frame = synthetic_outcome_frame(event, OutcomeClass.DIRECT_CONTINUATION)
+    frame.loc[0, ["high", "low", "close"]] = [101.2, 99.95, 101.1]
+
+    result = label_historical_outcome(
+        frame,
+        event,
+        synthetic_snapshot(policy(), event),
+        label_policy=policy().labels,
+        session_policy=policy().session,
+        evidence=synthetic_labeling_evidence(),
+    )
+
+    assert result.label.outcome_class is OutcomeClass.DIRECT_CONTINUATION
+    assert result.label.horizon_end_timestamp == datetime(
+        2025,
+        1,
+        6,
+        18,
+        30,
+        tzinfo=timezone.utc,
+    )
+    assert result.censoring is None
+
+
 def test_label_is_bounded_and_ignores_candles_after_the_horizon() -> None:
     event = synthetic_event(policy(), EventDirection.ABOVE)
     frame = synthetic_outcome_frame(event, OutcomeClass.NO_RESOLUTION)

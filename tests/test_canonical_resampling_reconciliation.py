@@ -7,12 +7,15 @@ import pytest
 from pipelines.canonical import (
     BoundaryConvention,
     CalendarBehavior,
+    CoverageBoundaryPolicy,
+    GapPolicy,
     GateStatus,
     IncompleteBinPolicy,
     PeriodSemantics,
     ReconciliationTolerance,
     ResamplingError,
     ResamplingPolicy,
+    SessionEndConvention,
     VolumeAggregation,
     reconcile_bars,
     resample_bars,
@@ -41,6 +44,8 @@ def _policy(
     period: PeriodSemantics = PeriodSemantics.PERIOD_START,
     label: BoundaryConvention | None = None,
     closed: BoundaryConvention | None = None,
+    coverage: CoverageBoundaryPolicy = CoverageBoundaryPolicy.KEEP,
+    gap: GapPolicy = GapPolicy.REJECT,
 ) -> ResamplingPolicy:
     default_boundary = (
         BoundaryConvention.LEFT
@@ -58,6 +63,8 @@ def _policy(
         timezone="UTC",
         calendar_behavior=CalendarBehavior.CONTINUOUS,
         calendar_version="continuous-utc-v1",
+        source_gap_policy=gap,
+        coverage_boundary_policy=coverage,
         incomplete_bin_policy=incomplete,
         volume_aggregation=VolumeAggregation.SUM,
     )
@@ -152,6 +159,99 @@ def test_incomplete_target_bin_reject_drop_and_keep_are_explicit() -> None:
     assert dropped.incomplete_bin_count == 1
     assert len(kept.frame) == 2
     assert kept.incomplete_bin_count == 1
+
+
+def test_partial_coverage_boundary_is_dropped_before_later_incomplete_rejection() -> None:
+    policy = _policy(
+        "M5",
+        incomplete=IncompleteBinPolicy.REJECT,
+        coverage=CoverageBoundaryPolicy.DROP_PARTIAL_FIRST,
+    )
+
+    accepted = resample_bars(
+        _m1_bars(8, start="2024-01-01T00:02:00Z"),
+        policy,
+    )
+
+    assert accepted.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T00:05:00Z")
+    ]
+    assert accepted.incomplete_bin_count == 1
+    assert accepted.dropped_coverage_boundary_bin_count == 1
+    assert accepted.source_rows == (tuple(range(3, 8)),)
+
+    with pytest.raises(ResamplingError, match="2024-01-01T00:10:00"):
+        resample_bars(
+            _m1_bars(9, start="2024-01-01T00:02:00Z"),
+            policy,
+        )
+
+
+def test_period_end_partial_coverage_boundary_is_dropped_before_rejection() -> None:
+    policy = _policy(
+        "M5",
+        period=PeriodSemantics.PERIOD_END,
+        incomplete=IncompleteBinPolicy.REJECT,
+        coverage=CoverageBoundaryPolicy.DROP_PARTIAL_FIRST,
+    )
+
+    accepted = resample_bars(
+        _m1_bars(8, start="2024-01-01T00:03:00Z"),
+        policy,
+    )
+
+    assert accepted.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T00:10:00Z")
+    ]
+    assert accepted.incomplete_bin_count == 1
+    assert accepted.dropped_coverage_boundary_bin_count == 1
+    assert accepted.source_rows == (tuple(range(3, 8)),)
+
+
+def test_coverage_boundary_uses_target_label_edge_before_source_offset() -> None:
+    policy = _policy(
+        "M5",
+        period=PeriodSemantics.PERIOD_END,
+        label=BoundaryConvention.LEFT,
+        incomplete=IncompleteBinPolicy.REJECT,
+        coverage=CoverageBoundaryPolicy.DROP_PARTIAL_FIRST,
+        gap=GapPolicy.REPORT,
+    )
+    interior_gap = _m1_bars(5, start="2024-01-01T00:01:00Z").drop(index=2)
+
+    with pytest.raises(ResamplingError, match="2024-01-01T00:00:00"):
+        resample_bars(interior_gap.reset_index(drop=True), policy)
+
+
+def test_period_end_versioned_session_accepts_complete_final_bin() -> None:
+    policy = ResamplingPolicy(
+        policy_version="period-end-session-m1-to-m5-v1",
+        source_timeframe="M1",
+        target_timeframe="M5",
+        source_period_semantics=PeriodSemantics.PERIOD_END,
+        timestamp_label=BoundaryConvention.RIGHT,
+        closed_boundary=BoundaryConvention.RIGHT,
+        origin="start_day",
+        timezone="UTC",
+        calendar_behavior=CalendarBehavior.VERSIONED_SESSION,
+        calendar_version="period-end-session-v1",
+        session_start="09:00:00",
+        session_end="22:00:00",
+        session_end_convention=SessionEndConvention.EXCLUSIVE,
+        source_gap_policy=GapPolicy.REJECT,
+        incomplete_bin_policy=IncompleteBinPolicy.REJECT,
+        volume_aggregation=VolumeAggregation.SUM,
+    )
+
+    accepted = resample_bars(
+        _m1_bars(5, start="2024-01-01T21:56:00Z"),
+        policy,
+    )
+
+    assert accepted.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T22:00:00Z")
+    ]
+    assert accepted.source_rows == (tuple(range(5)),)
 
 
 def test_empty_source_and_zero_output_after_drop_are_rejected() -> None:

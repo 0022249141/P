@@ -30,6 +30,7 @@ from pipelines.historical_labeling.contracts import (
     LabelingEvidence,
     MarketEventIdentity,
     OutcomeClass,
+    SCHEMA_VERSION,
 )
 from pipelines.historical_labeling.policies import (
     PilotDatasetPolicy,
@@ -54,7 +55,7 @@ def synthetic_event(
         else EventType.SWING_LOW
     )
     return MarketEventIdentity.create(
-        schema_version="1.0.0",
+        schema_version=SCHEMA_VERSION,
         event_policy_version=policy.event_source.policy_version,
         market="ABSHODEH_FIXTURE",
         symbol="SYNTHETIC",

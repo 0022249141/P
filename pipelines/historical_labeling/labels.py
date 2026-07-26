@@ -45,8 +45,10 @@ def _prepared(frame: pd.DataFrame, *, period_seconds: int) -> pd.DataFrame:
     if missing:
         raise ValueError(f"label source is missing columns: {missing}")
     result = frame.loc[:, required].copy(deep=True)
-    result["timestamp"] = pd.to_datetime(result["timestamp"], utc=True)
-    result["timestamp"] = result["timestamp"] + pd.Timedelta(seconds=period_seconds)
+    result["_source_timestamp"] = pd.to_datetime(result["timestamp"], utc=True)
+    result["timestamp"] = result["_source_timestamp"] + pd.Timedelta(
+        seconds=period_seconds
+    )
     result = result.sort_values("timestamp", kind="stable").reset_index(drop=True)
     return result
 
@@ -119,7 +121,7 @@ def _inside_session(
     local = timestamp.tz_convert(ZoneInfo(policy.timezone))
     start = time.fromisoformat(policy.session_start)
     end = time.fromisoformat(policy.session_end)
-    return local.strftime("%Y-%m-%d") == anchor_date and start <= local.time() <= end
+    return local.strftime("%Y-%m-%d") == anchor_date and start <= local.time() < end
 
 
 def _oriented_values(
@@ -214,13 +216,16 @@ def label_historical_outcome(
     atr = float(snapshot.atr_value)
     continuation_threshold = float(label_policy.continuation_atr)
     reversal_threshold = float(label_policy.reversal_atr)
-    anchor_date = cutoff.tz_convert(ZoneInfo(session_policy.timezone)).strftime("%Y-%m-%d")
+    anchor_date = (
+        cutoff - pd.Timedelta(seconds=label_policy.expected_bar_seconds)
+    ).tz_convert(ZoneInfo(session_policy.timezone)).strftime("%Y-%m-%d")
     candidates = future.iloc[: label_policy.maximum_horizon_bars].copy(deep=True)
     terminal_kind: str | None = None
     processed_count = 0
     previous_timestamp = cutoff
     for index, row in candidates.iterrows():
         timestamp = pd.Timestamp(row["timestamp"])
+        source_timestamp = pd.Timestamp(row["_source_timestamp"])
         if int((candidates["timestamp"] == timestamp).sum()) > 1:
             end = None if processed_count == 0 else previous_timestamp
             return _censored(
@@ -230,7 +235,7 @@ def label_historical_outcome(
                 "Duplicate M5 evidence exists before a terminal.",
                 end=end,
             )
-        if not _inside_session(timestamp, anchor_date, session_policy):
+        if not _inside_session(source_timestamp, anchor_date, session_policy):
             end = None if processed_count == 0 else previous_timestamp
             return _censored(
                 event,

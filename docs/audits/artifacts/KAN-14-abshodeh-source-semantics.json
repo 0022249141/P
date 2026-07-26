@@ -1,0 +1,2209 @@
+{
+  "analytical_source_row_count": 49962,
+  "artifact_id": "KAN-14-abshodeh-source-semantics",
+  "canonical_source_row_count": 50000,
+  "censored_label_count": 69,
+  "excluded_out_of_session_examples": [
+    "2026-02-19 22:00:00",
+    "2026-02-20 22:00:00",
+    "2026-02-21 22:00:00",
+    "2026-02-23 22:00:00",
+    "2026-02-23 22:01:00",
+    "2026-02-24 22:00:00",
+    "2026-02-26 22:00:00",
+    "2026-03-03 22:00:00",
+    "2026-03-04 22:00:00",
+    "2026-03-05 22:00:00"
+  ],
+  "excluded_out_of_session_row_count": 38,
+  "external_reconciliation": {
+    "archive_sha256": "a051db3d5b35f972d9c63c0eb5fa5c1d5bc9c908cd9ae95df723bbeffd7c6c6d",
+    "distinct_date_count": 88,
+    "higher_member_sha256": "30efe139e13d3bcbced7580c1895ff04beaa48841b2c1bdd56b38718d1700f0a",
+    "higher_row_count": 4287,
+    "higher_timeframe": "M15",
+    "lower_member_sha256": "409b0d5d73cafb8d44ec81263ed47e1871ad213e3c5f396e0da280a61ee69e07",
+    "lower_row_count": 12487,
+    "lower_timeframe": "M5",
+    "maximum_volume_absolute_difference": 2,
+    "period_end_common_count": 4257,
+    "period_end_exact_ohlc_count": 25,
+    "period_end_exact_ohlcv_count": 9,
+    "period_start_common_count": 4287,
+    "period_start_exact_ohlc_count": 4287,
+    "period_start_exact_ohlcv_count": 4283,
+    "volume_only_mismatch_count": 4
+  },
+  "feature_ineligibility_reasons": {
+    "INSUFFICIENT_PAST_ONLY_HISTORY": 1,
+    "NON_POSITIVE_RANGE_FEATURE": 1
+  },
+  "feature_ineligibility_records": [
+    {
+      "detail": "insufficient past-only history for feature policy",
+      "event": {
+        "confirmation_or_availability_timestamp": "2026-02-18T07:45:00Z",
+        "direction": "ABOVE",
+        "event_id": "evt_35df27aa3f1e71fb3dff2ee88aac97c6e6338201c23c5b221739250fdee1b4ee",
+        "event_policy_version": "layer2-confirmed-swings-v1",
+        "event_type": "SWING_HIGH",
+        "first_feature_eligible_timestamp": "2026-02-18T07:45:00Z",
+        "implementation_identifier": "layer2-structure",
+        "level_origin_timestamp": "2026-02-18T07:30:00Z",
+        "level_price": "84350000",
+        "level_type": "SWING_HIGH",
+        "market": "ABSHODEH",
+        "observation_timestamp": "2026-02-18T07:30:00Z",
+        "schema_version": "1.1.0",
+        "source_dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+        "source_parameter_sha256": "b1cfdef3a36f05d978998d860870d7cc1b19d36d4f9be4cf66065321d5197e38",
+        "source_parameters": [
+          "event_bar_seconds=300",
+          "lookback=2",
+          "min_strength=0.6"
+        ],
+        "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+        "source_timeframe": "M1",
+        "symbol": "abshodeNaghdi",
+        "timeframe": "M5"
+      },
+      "event_id": "evt_35df27aa3f1e71fb3dff2ee88aac97c6e6338201c23c5b221739250fdee1b4ee",
+      "feature_policy_version": "asof-features-v1",
+      "reason_code": "INSUFFICIENT_PAST_ONLY_HISTORY"
+    },
+    {
+      "detail": "range features require positive bar ranges",
+      "event": {
+        "confirmation_or_availability_timestamp": "2026-03-22T08:50:00Z",
+        "direction": "ABOVE",
+        "event_id": "evt_df3ff20edc85a73ff11be39dafac47d70de0af2ed4b7ee8cb47f6ed29c4d8256",
+        "event_policy_version": "layer2-confirmed-swings-v1",
+        "event_type": "SWING_HIGH",
+        "first_feature_eligible_timestamp": "2026-03-22T08:50:00Z",
+        "implementation_identifier": "layer2-structure",
+        "level_origin_timestamp": "2026-03-22T08:35:00Z",
+        "level_price": "77150000",
+        "level_type": "SWING_HIGH",
+        "market": "ABSHODEH",
+        "observation_timestamp": "2026-03-22T08:35:00Z",
+        "schema_version": "1.1.0",
+        "source_dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+        "source_parameter_sha256": "b1cfdef3a36f05d978998d860870d7cc1b19d36d4f9be4cf66065321d5197e38",
+        "source_parameters": [
+          "event_bar_seconds=300",
+          "lookback=2",
+          "min_strength=0.6"
+        ],
+        "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+        "source_timeframe": "M1",
+        "symbol": "abshodeNaghdi",
+        "timeframe": "M5"
+      },
+      "event_id": "evt_df3ff20edc85a73ff11be39dafac47d70de0af2ed4b7ee8cb47f6ed29c4d8256",
+      "feature_policy_version": "asof-features-v1",
+      "reason_code": "NON_POSITIVE_RANGE_FEATURE"
+    }
+  ],
+  "feature_ineligible_event_count": 2,
+  "g0_g5_status": {
+    "G0_PROVENANCE": "PASS",
+    "G1_SCHEMA_PARSING": "PASS",
+    "G2_TEMPORAL_INTEGRITY": "PASS",
+    "G3_OHLC_NUMERIC": "PASS",
+    "G4_CALENDAR_COVERAGE": "PASS",
+    "G5_MTF_RECONCILIATION": "PASS"
+  },
+  "generated_m5_count": 12317,
+  "jira_key": "KAN-14",
+  "label_outcome_counts": {
+    "ACCEPTANCE_THEN_EXPANSION": 7,
+    "CENSORED": 69,
+    "DIRECT_CONTINUATION": 11,
+    "FALSE_BREAK_REENTRY": 17,
+    "FULL_RANGE_REVERSAL": 331,
+    "NO_RESOLUTION": 12,
+    "SWEEP_PULLBACK_CONTINUATION": 4
+  },
+  "limitations": [
+    "Holiday and trading-day completeness remains UNKNOWN.",
+    "Sparse M1 intervals cannot always distinguish no-print periods from feed outages.",
+    "Volume meaning remains UNKNOWN despite deterministic aggregation evidence.",
+    "The verified timezone applies to the captured Faraz export setting and selected datasets.",
+    "G6-G9, Herat, XAUUSD, execution costs, and live readiness remain NOT_EVALUATED."
+  ],
+  "manifest_sha256_after": "4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1",
+  "manifest_sha256_before": "4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1",
+  "native_m5_overlap_count": 12317,
+  "period_candidates": [
+    {
+      "common_count": 12317,
+      "daily_evidence": [
+        {
+          "common_count": 139,
+          "exact_ohlc_count": 139,
+          "exact_ohlcv_count": 139,
+          "generated_only_count": 0,
+          "session_date": "2026-02-18",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-02-19",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 152,
+          "exact_ohlc_count": 152,
+          "exact_ohlcv_count": 152,
+          "generated_only_count": 0,
+          "session_date": "2026-02-20",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-02-21",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-02-22",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-02-23",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-02-24",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-02-25",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-02-26",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 148,
+          "exact_ohlc_count": 148,
+          "exact_ohlcv_count": 148,
+          "generated_only_count": 0,
+          "session_date": "2026-02-27",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 150,
+          "exact_ohlc_count": 150,
+          "exact_ohlcv_count": 150,
+          "generated_only_count": 0,
+          "session_date": "2026-02-28",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 153,
+          "exact_ohlc_count": 153,
+          "exact_ohlcv_count": 153,
+          "generated_only_count": 0,
+          "session_date": "2026-03-01",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 142,
+          "exact_ohlc_count": 142,
+          "exact_ohlcv_count": 142,
+          "generated_only_count": 0,
+          "session_date": "2026-03-02",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 136,
+          "exact_ohlc_count": 136,
+          "exact_ohlcv_count": 136,
+          "generated_only_count": 0,
+          "session_date": "2026-03-03",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 150,
+          "exact_ohlc_count": 150,
+          "exact_ohlcv_count": 150,
+          "generated_only_count": 0,
+          "session_date": "2026-03-04",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 146,
+          "exact_ohlc_count": 146,
+          "exact_ohlcv_count": 146,
+          "generated_only_count": 0,
+          "session_date": "2026-03-05",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 137,
+          "exact_ohlc_count": 137,
+          "exact_ohlcv_count": 137,
+          "generated_only_count": 0,
+          "session_date": "2026-03-06",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 136,
+          "exact_ohlc_count": 136,
+          "exact_ohlcv_count": 136,
+          "generated_only_count": 0,
+          "session_date": "2026-03-07",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 24,
+          "exact_ohlc_count": 24,
+          "exact_ohlcv_count": 24,
+          "generated_only_count": 0,
+          "session_date": "2026-03-08",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 133,
+          "exact_ohlc_count": 133,
+          "exact_ohlcv_count": 133,
+          "generated_only_count": 0,
+          "session_date": "2026-03-09",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 100,
+          "exact_ohlc_count": 100,
+          "exact_ohlcv_count": 100,
+          "generated_only_count": 0,
+          "session_date": "2026-03-10",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 86,
+          "exact_ohlc_count": 86,
+          "exact_ohlcv_count": 86,
+          "generated_only_count": 0,
+          "session_date": "2026-03-11",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 86,
+          "exact_ohlc_count": 86,
+          "exact_ohlcv_count": 86,
+          "generated_only_count": 0,
+          "session_date": "2026-03-12",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 79,
+          "exact_ohlc_count": 79,
+          "exact_ohlcv_count": 79,
+          "generated_only_count": 0,
+          "session_date": "2026-03-13",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 79,
+          "exact_ohlc_count": 79,
+          "exact_ohlcv_count": 79,
+          "generated_only_count": 0,
+          "session_date": "2026-03-14",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 27,
+          "exact_ohlc_count": 27,
+          "exact_ohlcv_count": 27,
+          "generated_only_count": 0,
+          "session_date": "2026-03-15",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 17,
+          "exact_ohlc_count": 17,
+          "exact_ohlcv_count": 17,
+          "generated_only_count": 0,
+          "session_date": "2026-03-16",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 125,
+          "exact_ohlc_count": 125,
+          "exact_ohlcv_count": 125,
+          "generated_only_count": 0,
+          "session_date": "2026-03-18",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 134,
+          "exact_ohlc_count": 134,
+          "exact_ohlcv_count": 134,
+          "generated_only_count": 0,
+          "session_date": "2026-03-19",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 131,
+          "exact_ohlc_count": 131,
+          "exact_ohlcv_count": 131,
+          "generated_only_count": 0,
+          "session_date": "2026-03-20",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 138,
+          "exact_ohlc_count": 138,
+          "exact_ohlcv_count": 138,
+          "generated_only_count": 0,
+          "session_date": "2026-03-21",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 100,
+          "exact_ohlc_count": 100,
+          "exact_ohlcv_count": 100,
+          "generated_only_count": 0,
+          "session_date": "2026-03-22",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 144,
+          "exact_ohlc_count": 144,
+          "exact_ohlcv_count": 144,
+          "generated_only_count": 0,
+          "session_date": "2026-03-23",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 126,
+          "exact_ohlc_count": 126,
+          "exact_ohlcv_count": 126,
+          "generated_only_count": 0,
+          "session_date": "2026-03-24",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 137,
+          "exact_ohlc_count": 137,
+          "exact_ohlcv_count": 137,
+          "generated_only_count": 0,
+          "session_date": "2026-03-25",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 139,
+          "exact_ohlc_count": 139,
+          "exact_ohlcv_count": 139,
+          "generated_only_count": 0,
+          "session_date": "2026-03-26",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 83,
+          "exact_ohlc_count": 83,
+          "exact_ohlcv_count": 83,
+          "generated_only_count": 0,
+          "session_date": "2026-03-27",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 136,
+          "exact_ohlc_count": 136,
+          "exact_ohlcv_count": 136,
+          "generated_only_count": 0,
+          "session_date": "2026-03-28",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 110,
+          "exact_ohlc_count": 110,
+          "exact_ohlcv_count": 110,
+          "generated_only_count": 0,
+          "session_date": "2026-03-29",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 117,
+          "exact_ohlc_count": 117,
+          "exact_ohlcv_count": 117,
+          "generated_only_count": 0,
+          "session_date": "2026-03-30",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 133,
+          "exact_ohlc_count": 133,
+          "exact_ohlcv_count": 133,
+          "generated_only_count": 0,
+          "session_date": "2026-03-31",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 128,
+          "exact_ohlc_count": 128,
+          "exact_ohlcv_count": 128,
+          "generated_only_count": 0,
+          "session_date": "2026-04-01",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 118,
+          "exact_ohlc_count": 118,
+          "exact_ohlcv_count": 118,
+          "generated_only_count": 0,
+          "session_date": "2026-04-02",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 118,
+          "exact_ohlc_count": 118,
+          "exact_ohlcv_count": 118,
+          "generated_only_count": 0,
+          "session_date": "2026-04-03",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 146,
+          "exact_ohlc_count": 146,
+          "exact_ohlcv_count": 146,
+          "generated_only_count": 0,
+          "session_date": "2026-04-04",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 142,
+          "exact_ohlc_count": 142,
+          "exact_ohlcv_count": 142,
+          "generated_only_count": 0,
+          "session_date": "2026-04-05",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 152,
+          "exact_ohlc_count": 152,
+          "exact_ohlcv_count": 152,
+          "generated_only_count": 0,
+          "session_date": "2026-04-06",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 154,
+          "exact_ohlcv_count": 154,
+          "generated_only_count": 0,
+          "session_date": "2026-04-07",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 154,
+          "exact_ohlcv_count": 154,
+          "generated_only_count": 0,
+          "session_date": "2026-04-08",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-04-09",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 116,
+          "exact_ohlc_count": 116,
+          "exact_ohlcv_count": 116,
+          "generated_only_count": 0,
+          "session_date": "2026-04-10",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-11",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-12",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-13",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 152,
+          "exact_ohlc_count": 152,
+          "exact_ohlcv_count": 152,
+          "generated_only_count": 0,
+          "session_date": "2026-04-14",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 150,
+          "exact_ohlc_count": 150,
+          "exact_ohlcv_count": 150,
+          "generated_only_count": 0,
+          "session_date": "2026-04-15",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-04-16",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 150,
+          "exact_ohlc_count": 150,
+          "exact_ohlcv_count": 150,
+          "generated_only_count": 0,
+          "session_date": "2026-04-17",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-18",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-04-19",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-20",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-21",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-04-22",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-23",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 146,
+          "exact_ohlc_count": 146,
+          "exact_ohlcv_count": 146,
+          "generated_only_count": 0,
+          "session_date": "2026-04-24",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-25",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-04-26",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-27",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-28",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-04-29",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-04-30",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 144,
+          "exact_ohlc_count": 144,
+          "exact_ohlcv_count": 144,
+          "generated_only_count": 0,
+          "session_date": "2026-05-01",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-02",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-03",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-05-04",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-05",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-06",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-05-07",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 145,
+          "exact_ohlc_count": 145,
+          "exact_ohlcv_count": 145,
+          "generated_only_count": 0,
+          "session_date": "2026-05-08",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-09",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-10",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-11",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 155,
+          "exact_ohlcv_count": 155,
+          "generated_only_count": 0,
+          "session_date": "2026-05-12",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-13",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-14",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-15",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-16",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-17",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 156,
+          "exact_ohlcv_count": 156,
+          "generated_only_count": 0,
+          "session_date": "2026-05-18",
+          "supplied_only_count": 0
+        }
+      ],
+      "disposition": "PROMOTED",
+      "distinct_date_count": 89,
+      "dropped_coverage_boundary_count": 1,
+      "exact_ohlc_count": 12317,
+      "exact_ohlcv_count": 12317,
+      "generated_count": 12317,
+      "generated_only_count": 0,
+      "maximum_volume_absolute_difference": "0",
+      "period_semantics": "PERIOD_START",
+      "supplied_count": 12317,
+      "supplied_only_count": 0,
+      "volume_only_mismatch_count": 0
+    },
+    {
+      "common_count": 11922,
+      "daily_evidence": [
+        {
+          "common_count": 138,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-02-18",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-02-19",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 152,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-02-20",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-02-21",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-02-22",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-02-23",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-02-24",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-02-25",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-02-26",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 148,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-02-27",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 143,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 5,
+          "session_date": "2026-02-28",
+          "supplied_only_count": 6
+        },
+        {
+          "common_count": 150,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 3,
+          "session_date": "2026-03-01",
+          "supplied_only_count": 2
+        },
+        {
+          "common_count": 136,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 7,
+          "session_date": "2026-03-02",
+          "supplied_only_count": 5
+        },
+        {
+          "common_count": 132,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 6,
+          "session_date": "2026-03-03",
+          "supplied_only_count": 5
+        },
+        {
+          "common_count": 147,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 5,
+          "session_date": "2026-03-04",
+          "supplied_only_count": 3
+        },
+        {
+          "common_count": 138,
+          "exact_ohlc_count": 6,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 8,
+          "session_date": "2026-03-05",
+          "supplied_only_count": 8
+        },
+        {
+          "common_count": 127,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 9,
+          "session_date": "2026-03-06",
+          "supplied_only_count": 10
+        },
+        {
+          "common_count": 134,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 4,
+          "session_date": "2026-03-07",
+          "supplied_only_count": 3
+        },
+        {
+          "common_count": 18,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 8,
+          "session_date": "2026-03-08",
+          "supplied_only_count": 5
+        },
+        {
+          "common_count": 119,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 3,
+          "generated_only_count": 13,
+          "session_date": "2026-03-09",
+          "supplied_only_count": 14
+        },
+        {
+          "common_count": 81,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 19,
+          "session_date": "2026-03-10",
+          "supplied_only_count": 18
+        },
+        {
+          "common_count": 59,
+          "exact_ohlc_count": 9,
+          "exact_ohlcv_count": 7,
+          "generated_only_count": 21,
+          "session_date": "2026-03-11",
+          "supplied_only_count": 27
+        },
+        {
+          "common_count": 63,
+          "exact_ohlc_count": 9,
+          "exact_ohlcv_count": 7,
+          "generated_only_count": 21,
+          "session_date": "2026-03-12",
+          "supplied_only_count": 23
+        },
+        {
+          "common_count": 48,
+          "exact_ohlc_count": 11,
+          "exact_ohlcv_count": 8,
+          "generated_only_count": 29,
+          "session_date": "2026-03-13",
+          "supplied_only_count": 31
+        },
+        {
+          "common_count": 57,
+          "exact_ohlc_count": 18,
+          "exact_ohlcv_count": 13,
+          "generated_only_count": 23,
+          "session_date": "2026-03-14",
+          "supplied_only_count": 22
+        },
+        {
+          "common_count": 15,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 5,
+          "generated_only_count": 13,
+          "session_date": "2026-03-15",
+          "supplied_only_count": 12
+        },
+        {
+          "common_count": 9,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 6,
+          "session_date": "2026-03-16",
+          "supplied_only_count": 8
+        },
+        {
+          "common_count": 124,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-03-18",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 132,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-03-19",
+          "supplied_only_count": 2
+        },
+        {
+          "common_count": 129,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 2,
+          "session_date": "2026-03-20",
+          "supplied_only_count": 2
+        },
+        {
+          "common_count": 137,
+          "exact_ohlc_count": 136,
+          "exact_ohlcv_count": 102,
+          "generated_only_count": 1,
+          "session_date": "2026-03-21",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 89,
+          "exact_ohlc_count": 5,
+          "exact_ohlcv_count": 3,
+          "generated_only_count": 13,
+          "session_date": "2026-03-22",
+          "supplied_only_count": 11
+        },
+        {
+          "common_count": 140,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 6,
+          "session_date": "2026-03-23",
+          "supplied_only_count": 4
+        },
+        {
+          "common_count": 118,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 5,
+          "session_date": "2026-03-24",
+          "supplied_only_count": 7
+        },
+        {
+          "common_count": 136,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-03-25",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 137,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 5,
+          "session_date": "2026-03-26",
+          "supplied_only_count": 2
+        },
+        {
+          "common_count": 67,
+          "exact_ohlc_count": 6,
+          "exact_ohlcv_count": 3,
+          "generated_only_count": 20,
+          "session_date": "2026-03-27",
+          "supplied_only_count": 16
+        },
+        {
+          "common_count": 127,
+          "exact_ohlc_count": 5,
+          "exact_ohlcv_count": 3,
+          "generated_only_count": 11,
+          "session_date": "2026-03-28",
+          "supplied_only_count": 8
+        },
+        {
+          "common_count": 92,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 12,
+          "session_date": "2026-03-29",
+          "supplied_only_count": 18
+        },
+        {
+          "common_count": 114,
+          "exact_ohlc_count": 6,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 6,
+          "session_date": "2026-03-30",
+          "supplied_only_count": 3
+        },
+        {
+          "common_count": 119,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 13,
+          "session_date": "2026-03-31",
+          "supplied_only_count": 14
+        },
+        {
+          "common_count": 119,
+          "exact_ohlc_count": 6,
+          "exact_ohlcv_count": 3,
+          "generated_only_count": 9,
+          "session_date": "2026-04-01",
+          "supplied_only_count": 9
+        },
+        {
+          "common_count": 99,
+          "exact_ohlc_count": 9,
+          "exact_ohlcv_count": 4,
+          "generated_only_count": 14,
+          "session_date": "2026-04-02",
+          "supplied_only_count": 19
+        },
+        {
+          "common_count": 109,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 11,
+          "session_date": "2026-04-03",
+          "supplied_only_count": 9
+        },
+        {
+          "common_count": 141,
+          "exact_ohlc_count": 9,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 9,
+          "session_date": "2026-04-04",
+          "supplied_only_count": 5
+        },
+        {
+          "common_count": 135,
+          "exact_ohlc_count": 5,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 6,
+          "session_date": "2026-04-05",
+          "supplied_only_count": 7
+        },
+        {
+          "common_count": 145,
+          "exact_ohlc_count": 8,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 5,
+          "session_date": "2026-04-06",
+          "supplied_only_count": 6
+        },
+        {
+          "common_count": 152,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 2,
+          "session_date": "2026-04-07",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 152,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 2,
+          "session_date": "2026-04-08",
+          "supplied_only_count": 2
+        },
+        {
+          "common_count": 153,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 2,
+          "session_date": "2026-04-09",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 111,
+          "exact_ohlc_count": 8,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 6,
+          "session_date": "2026-04-10",
+          "supplied_only_count": 5
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-04-11",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-12",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 6,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-04-13",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 151,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 1,
+          "session_date": "2026-04-14",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 148,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-15",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 5,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-16",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 150,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-17",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-04-18",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-19",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-04-20",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-04-21",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 153,
+          "exact_ohlc_count": 4,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 2,
+          "session_date": "2026-04-22",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 9,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 0,
+          "session_date": "2026-04-23",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 143,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 3,
+          "session_date": "2026-04-24",
+          "supplied_only_count": 3
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 5,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-04-25",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 8,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-26",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-27",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-28",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-29",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-04-30",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 143,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-05-01",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-02",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-03",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-04",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-05-05",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-05-06",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 2,
+          "session_date": "2026-05-07",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 145,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 2,
+          "session_date": "2026-05-08",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-09",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-10",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 155,
+          "exact_ohlc_count": 0,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-05-11",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 2,
+          "session_date": "2026-05-12",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 2,
+          "generated_only_count": 0,
+          "session_date": "2026-05-13",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 154,
+          "exact_ohlc_count": 6,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 1,
+          "session_date": "2026-05-14",
+          "supplied_only_count": 1
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-15",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 1,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-16",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-17",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 156,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-18",
+          "supplied_only_count": 0
+        }
+      ],
+      "disposition": "REJECTED",
+      "distinct_date_count": 89,
+      "dropped_coverage_boundary_count": 1,
+      "exact_ohlc_count": 445,
+      "exact_ohlcv_count": 192,
+      "generated_count": 12318,
+      "generated_only_count": 396,
+      "maximum_volume_absolute_difference": "320",
+      "period_semantics": "PERIOD_END",
+      "supplied_count": 12298,
+      "supplied_only_count": 376,
+      "volume_only_mismatch_count": 253
+    }
+  ],
+  "pilot_summary": {
+    "artifact_id": "KAN-13-abshodeh-pilot-summary",
+    "byte_size": 2910574,
+    "catalog_generated": true,
+    "coverage_end": "2026-05-18 22:00:00",
+    "coverage_start": "2026-02-18 10:22:00",
+    "dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+    "dataset_path": "data_clean/abshodeNaghdi-1.csv",
+    "eligible_event_count": 451,
+    "eligible_feature_count": 451,
+    "eligible_label_count": 451,
+    "g6_g9_status": {
+      "G6_FEATURE_REPRODUCTION": "NOT_EVALUATED",
+      "G7_ANALYTICAL_ELIGIBILITY": "NOT_EVALUATED",
+      "G8_STATISTICAL_ELIGIBILITY": "NOT_EVALUATED",
+      "G9_EXECUTION_BACKTEST_ELIGIBILITY": "NOT_EVALUATED"
+    },
+    "gate_audit": [
+      {
+        "findings": [],
+        "gate_id": "G0_PROVENANCE",
+        "limitations": [],
+        "message": "Dataset identity matches one complete manifest record.",
+        "reason_code": "G0_PROVENANCE_OK",
+        "status": "PASS"
+      },
+      {
+        "findings": [],
+        "gate_id": "G1_SCHEMA_PARSING",
+        "limitations": [],
+        "message": "Canonical columns and parser evidence are valid.",
+        "reason_code": "G1_SCHEMA_PARSING_OK",
+        "status": "PASS"
+      },
+      {
+        "findings": [],
+        "gate_id": "G2_TEMPORAL_INTEGRITY",
+        "limitations": [],
+        "message": "Timestamp evidence and temporal ordering are valid.",
+        "reason_code": "G2_TEMPORAL_INTEGRITY_OK",
+        "status": "PASS"
+      },
+      {
+        "findings": [],
+        "gate_id": "G3_OHLC_NUMERIC",
+        "limitations": [],
+        "message": "OHLC geometry and configured numeric policies are valid.",
+        "reason_code": "G3_OHLC_NUMERIC_OK",
+        "status": "PASS"
+      },
+      {
+        "findings": [
+          "OUT_OF_SESSION_BARS_EXCLUDED",
+          "MISSING_INTERVALS"
+        ],
+        "gate_id": "G4_CALENDAR_COVERAGE",
+        "limitations": [
+          "Holiday and trading-day completeness was not evaluated because no trading-day calendar evidence was supplied.",
+          "Incomplete final bar was not evaluated without coverage_end_utc."
+        ],
+        "message": "Calendar diagnostics were reported under a non-reject gap policy.",
+        "reason_code": "G4_DIAGNOSTICS_REPORTED",
+        "status": "PASS"
+      },
+      {
+        "findings": [],
+        "gate_id": "G5_MTF_RECONCILIATION",
+        "limitations": [
+          "No tolerance-only matches were required."
+        ],
+        "message": "Generated bars match supplied bars within declared tolerances.",
+        "reason_code": "G5_RECONCILIATION_OK",
+        "status": "PASS"
+      },
+      {
+        "findings": [],
+        "gate_id": "G6_FEATURE_REPRODUCTION",
+        "limitations": [
+          "KAN-10 defines the contract but no evaluator is implemented."
+        ],
+        "message": "No evaluator result is available.",
+        "reason_code": "G6_FEATURE_REPRODUCTION_NOT_EVALUATED",
+        "status": "NOT_EVALUATED"
+      },
+      {
+        "findings": [],
+        "gate_id": "G7_ANALYTICAL_ELIGIBILITY",
+        "limitations": [
+          "KAN-10 defines the contract but no evaluator is implemented."
+        ],
+        "message": "No evaluator result is available.",
+        "reason_code": "G7_ANALYTICAL_ELIGIBILITY_NOT_EVALUATED",
+        "status": "NOT_EVALUATED"
+      },
+      {
+        "findings": [],
+        "gate_id": "G8_STATISTICAL_ELIGIBILITY",
+        "limitations": [
+          "KAN-10 defines the contract but no evaluator is implemented."
+        ],
+        "message": "No evaluator result is available.",
+        "reason_code": "G8_STATISTICAL_ELIGIBILITY_NOT_EVALUATED",
+        "status": "NOT_EVALUATED"
+      },
+      {
+        "findings": [],
+        "gate_id": "G9_EXECUTION_BACKTEST_ELIGIBILITY",
+        "limitations": [
+          "KAN-10 defines the contract but no evaluator is implemented."
+        ],
+        "message": "No evaluator result is available.",
+        "reason_code": "G9_EXECUTION_BACKTEST_ELIGIBILITY_NOT_EVALUATED",
+        "status": "NOT_EVALUATED"
+      }
+    ],
+    "herat_status": "NOT_EVALUATED",
+    "jira_key": "KAN-13",
+    "limitations": [
+      "Eligible extraction is an in-memory deterministic result, not a committed catalog.",
+      "G6-G9 remain NOT_EVALUATED."
+    ],
+    "requested_configuration": {
+      "bundle_version": "abshodeh-historical-labeling-v2",
+      "calendar_evidence": "UNKNOWN",
+      "canonical_request_version": "abshodeh-canonical-request-v1",
+      "diagnostic_timeframe": "H1",
+      "event_policy_version": "layer2-confirmed-swings-v1",
+      "event_timeframe": "M5",
+      "feature_policy_version": "asof-features-v1",
+      "label_policy_version": "abshodeh-level-outcome-v1",
+      "policy_sha256": "29ae3c67b68c43785edc6be770edc3516e00828effd62d3ea3e6bebac65947c8",
+      "reconciliation_path": "data_clean/abshodeNaghdi-5.csv",
+      "session": "09:00:00-22:00:00",
+      "session_policy_version": "abshodeh-research-session-v2",
+      "source_timeframe": "M1",
+      "timestamp_period_evidence": "DERIVED",
+      "timestamp_period_semantics": "PERIOD_START",
+      "timezone": "Asia/Tehran",
+      "timezone_evidence": "DECLARED"
+    },
+    "row_count": 50000,
+    "schema_version": "1.1.0",
+    "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+    "status": "ELIGIBLE",
+    "unresolved_evidence": [],
+    "xauusd_status": "NOT_EVALUATED"
+  },
+  "policy_sha256": "c4552024e0c2a60fe4cf14608cb50c0736120bd80b6569aeaf1ea322f0a93de2",
+  "policy_version": "abshodeh-faraz-source-semantics-v1",
+  "promoted_semantics": {
+    "out_of_session_policy": "EXCLUDE_AND_REPORT",
+    "period_semantics": "PERIOD_START",
+    "session": "[09:00:00,22:00:00)",
+    "session_end_convention": "EXCLUSIVE",
+    "source_gap_policy": "REPORT",
+    "timezone": "Asia/Tehran"
+  },
+  "protected_source_hashes_after": {
+    "data_clean/XAU_USD-1.csv": "1386fcc87e4b169a957a10655b35d053de74d51d70e00ecb1a02ea8f2dd60497",
+    "data_clean/XAU_USD-15.csv": "39a116c4a554dd1f6d2070eedd8d064cae8575d1a6fc1cc034222599eb5d219f",
+    "data_clean/XAU_USD-1D.csv": "4a1aa1a0c8889532d3de75d1093a65f35d793b9c2751e95e89c738ae076f74bf",
+    "data_clean/XAU_USD-1M.csv": "8212944eed80d2254eb0a8fba7ef7e474e70debbda5681549757121a1bfc7da8",
+    "data_clean/XAU_USD-1W.csv": "dfef70d8ed9a6acd7b286144c9216181bd38597482c5dccb1db5b60f7c23da27",
+    "data_clean/XAU_USD-240.csv": "cea69cdf1d2371192d56f49a548d67b356f1f7467c518d5f845e4356c76d4a1f",
+    "data_clean/XAU_USD-30.csv": "3b601e349fdb1745fc40e382826a8ccbaae14805eb210b9749a1f7d70c7a209b",
+    "data_clean/XAU_USD-5.csv": "d76d77d2eec2e429498b1388e27496e056bac466476262211126ef384d8f60a7",
+    "data_clean/XAU_USD-60.csv": "0ec7293d263b13a5518ef44f8f29fb7df9f9dccf9bdbb67a5cc777c0b65c0f3a",
+    "data_clean/abshodeNaghdi-1.csv": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+    "data_clean/abshodeNaghdi-15.csv": "8218da57a562ce3b85c668b09252428b0cc52bec8e00f3f03fbe8eb7df098fd2",
+    "data_clean/abshodeNaghdi-1D.csv": "82e7c6320ce33574273f45438bc8766282f8c4c3df6c59f283a7a411e0751169",
+    "data_clean/abshodeNaghdi-1M.csv": "672d5b599743099bfeae64ef8bc145de519ff5e2b5a460b4c58fc8b4883e8c2b",
+    "data_clean/abshodeNaghdi-1W.csv": "820e73730b99969ed1d5f45d2a89c520346bb97785a65a0a0c9c2437048d4d7f",
+    "data_clean/abshodeNaghdi-240.csv": "3c7aade0f5deb188adec7f6c0847a0b3c52ecef4e08adafa7817a2f960405146",
+    "data_clean/abshodeNaghdi-30.csv": "854e066ba28dbe3bf877f960b7c4a71a87ab71febbe6e080cc82113e9eb295d5",
+    "data_clean/abshodeNaghdi-5.csv": "a48d3adf07a31b36069ae3ee4d01ba1ee0ab0b9c3db78d3404a05ebe48744e97",
+    "data_clean/abshodeNaghdi-60.csv": "92796753e33b260a7c5c5862fe1ac98f133364d318bba76c5553c1aacb5bb9e0",
+    "data_clean/haratFardayi-1.csv": "5bdab3adc12c9e8416386596a9010635a97eb0aae8f78fbbf629cde88c43307b",
+    "data_clean/haratFardayi-15.csv": "15af9a7b45d416a7da2159e9cd938c1d606ad6abb2d3000ad060cbe8f04a6c37",
+    "data_clean/haratFardayi-1D.csv": "6a42901a4e760bb12704ab8bd125ea4f1e72cb8463a9a429c9a86371f413cc11",
+    "data_clean/haratFardayi-1M.csv": "b7b69dd3dca602a83933dcbdb488cc675ee973be289bc67ea1ba99b60825e395",
+    "data_clean/haratFardayi-1W.csv": "90d24b62ef8f1aad600020936b0ac46837589897492744f14939ed5bd42a4d08",
+    "data_clean/haratFardayi-240.csv": "748fcfa5adf8ed630466b92c29124689185d0fdd6c4e3de265ad5073bf4d0a13",
+    "data_clean/haratFardayi-30.csv": "c8de79c5fb623ce6047c988940590c917f73b6e98414b9c83a26e58f9926abd8",
+    "data_clean/haratFardayi-5.csv": "7366cab70af754c70572baa205bd6f889af9c5b2acd1c51b97f79e7f596244c2",
+    "data_clean/haratFardayi-60.csv": "545ad1424730187dc4c34760b91e5a605253429517a86f00813c68859c07464c",
+    "data_features/abshodeNaghdi-1_15m.csv": "0b819ccd5cb55cd8ec9b116035412e04966ec13c8e5ace0c0d1f89f5b818254f",
+    "data_features/abshodeNaghdi-1_5m.csv": "984735a9570cba89d258c0eec0876883f78b3e8f0cfc0289b9e32304c05dffcc",
+    "raw_data/XAU_USD-1.csv": "4b3501bec38301a36a3e3c2ce7e6d51c75651e048924aa51d99f5df8ffdd7b20",
+    "raw_data/XAU_USD-15.csv": "24a1458790667c66a07992ed19d2c7556c558e0470960cb285a020e83da80bc4",
+    "raw_data/XAU_USD-1D.csv": "d694c5cc0b79f9b4e4c5946401463cde8161dd9b11950844692b202dc96a4f03",
+    "raw_data/XAU_USD-1M.csv": "27a8f93c1ca5abb3eb75342d994302cd863ad3c416ae6110a596cffb58f918b1",
+    "raw_data/XAU_USD-1W.csv": "32e72609135b0d2a18a389c77f62b7de9c2a932ced13975bed3b4c91eb5940b7",
+    "raw_data/XAU_USD-240.csv": "77aea53c71cba6e7f398d104ac0b54f4afedf785fed785ef7083527aa4e7f530",
+    "raw_data/XAU_USD-30.csv": "4d6092d3908eee06a787bff2f2bc2c1a27321616505f9db25ed589904175e4f7",
+    "raw_data/XAU_USD-5.csv": "b203cfeb3e0a00bb81bd6cabd49d0acc661af69ca31ce8b8cbdf4dc2c78a797c",
+    "raw_data/XAU_USD-60.csv": "701729aa8f9f9df11e3dd79d46e45a5d18ff437f8e6eb5bc4392528744f86443",
+    "raw_data/abshodeNaghdi-1.csv": "274be4cefd9293cea2b9b772e9feac9f4e755377070f35f8db25d905033ef5a0",
+    "raw_data/abshodeNaghdi-15.csv": "f0e7808c74bae17c726dcb86c960d59f3f483e4568a74c811ff11436ad3a25fc",
+    "raw_data/abshodeNaghdi-1D.csv": "47f7ef9cc3d75b53cf9cc1452539fa58dff89cd21c0f287733c17e38b21d2952",
+    "raw_data/abshodeNaghdi-1M.csv": "7ee6ed118e240f7e4e77c1c6ad3139aead4fbb48bf0cf8b34ea39b63bebe1538",
+    "raw_data/abshodeNaghdi-1W.csv": "9ba98caa17043446f9b382328a2fd26ba1a7719e25255c0d4ef37977458e9908",
+    "raw_data/abshodeNaghdi-240.csv": "0bc9ac2a791fe6979b517e5aaf8632b297d6b15630a42f27ced83341fdd17be2",
+    "raw_data/abshodeNaghdi-30.csv": "d63bf1bd32aa03d9fab5310015351af46b94a67c791f20aec8058c04d7a0e187",
+    "raw_data/abshodeNaghdi-5.csv": "01ceed702592485c530a4cbdc0c91efeb44979b489963745a49c9f3d4a20c182",
+    "raw_data/abshodeNaghdi-60.csv": "bd350f21f0b1d3658fd58f47202430be62ff373d91f24a5fc3daee10febb0f0b",
+    "raw_data/haratFardayi-1.csv": "4564cdd49cf613e2f3913711c2a7dc5af80a72a1b15254e7533c69fd0f1e963c",
+    "raw_data/haratFardayi-15.csv": "deb99dfa66719f04f4a5b5c84685a11fa767a5c512de74dda27f733a58f8ff70",
+    "raw_data/haratFardayi-1D.csv": "a83c7a37467c8778786226b64d3c49adad6bbe71514b38b509400cf8100d3c2b",
+    "raw_data/haratFardayi-1M.csv": "ea0e2e2aaa1399bcc6967be6e5dcb99d0d0868a212bdb1dfc4e4f751e5edf42f",
+    "raw_data/haratFardayi-1W.csv": "12929f1a37cc24f0454a11741b4b91b478b5ffc9e6dd048080d5e4967b54c13d",
+    "raw_data/haratFardayi-240.csv": "d29467edcf49fb1a52ad0d0d996dcf51287e57ac6a5b822097b196996ab1961b",
+    "raw_data/haratFardayi-30.csv": "5dc2f43c4c385977cd49a71f750ac55a8ee2dd38acdba505d4934cc7e924c53a",
+    "raw_data/haratFardayi-5.csv": "9419372b7ad39b76eb1425ea58cce7bc8188ff5d4b309aec281399cca84c8ea5",
+    "raw_data/haratFardayi-60.csv": "d25a79cfa6970aa820f2ef32c987fc2c23ee1bc72bd083825895ecb81c1b808e"
+  },
+  "protected_source_hashes_before": {
+    "data_clean/XAU_USD-1.csv": "1386fcc87e4b169a957a10655b35d053de74d51d70e00ecb1a02ea8f2dd60497",
+    "data_clean/XAU_USD-15.csv": "39a116c4a554dd1f6d2070eedd8d064cae8575d1a6fc1cc034222599eb5d219f",
+    "data_clean/XAU_USD-1D.csv": "4a1aa1a0c8889532d3de75d1093a65f35d793b9c2751e95e89c738ae076f74bf",
+    "data_clean/XAU_USD-1M.csv": "8212944eed80d2254eb0a8fba7ef7e474e70debbda5681549757121a1bfc7da8",
+    "data_clean/XAU_USD-1W.csv": "dfef70d8ed9a6acd7b286144c9216181bd38597482c5dccb1db5b60f7c23da27",
+    "data_clean/XAU_USD-240.csv": "cea69cdf1d2371192d56f49a548d67b356f1f7467c518d5f845e4356c76d4a1f",
+    "data_clean/XAU_USD-30.csv": "3b601e349fdb1745fc40e382826a8ccbaae14805eb210b9749a1f7d70c7a209b",
+    "data_clean/XAU_USD-5.csv": "d76d77d2eec2e429498b1388e27496e056bac466476262211126ef384d8f60a7",
+    "data_clean/XAU_USD-60.csv": "0ec7293d263b13a5518ef44f8f29fb7df9f9dccf9bdbb67a5cc777c0b65c0f3a",
+    "data_clean/abshodeNaghdi-1.csv": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+    "data_clean/abshodeNaghdi-15.csv": "8218da57a562ce3b85c668b09252428b0cc52bec8e00f3f03fbe8eb7df098fd2",
+    "data_clean/abshodeNaghdi-1D.csv": "82e7c6320ce33574273f45438bc8766282f8c4c3df6c59f283a7a411e0751169",
+    "data_clean/abshodeNaghdi-1M.csv": "672d5b599743099bfeae64ef8bc145de519ff5e2b5a460b4c58fc8b4883e8c2b",
+    "data_clean/abshodeNaghdi-1W.csv": "820e73730b99969ed1d5f45d2a89c520346bb97785a65a0a0c9c2437048d4d7f",
+    "data_clean/abshodeNaghdi-240.csv": "3c7aade0f5deb188adec7f6c0847a0b3c52ecef4e08adafa7817a2f960405146",
+    "data_clean/abshodeNaghdi-30.csv": "854e066ba28dbe3bf877f960b7c4a71a87ab71febbe6e080cc82113e9eb295d5",
+    "data_clean/abshodeNaghdi-5.csv": "a48d3adf07a31b36069ae3ee4d01ba1ee0ab0b9c3db78d3404a05ebe48744e97",
+    "data_clean/abshodeNaghdi-60.csv": "92796753e33b260a7c5c5862fe1ac98f133364d318bba76c5553c1aacb5bb9e0",
+    "data_clean/haratFardayi-1.csv": "5bdab3adc12c9e8416386596a9010635a97eb0aae8f78fbbf629cde88c43307b",
+    "data_clean/haratFardayi-15.csv": "15af9a7b45d416a7da2159e9cd938c1d606ad6abb2d3000ad060cbe8f04a6c37",
+    "data_clean/haratFardayi-1D.csv": "6a42901a4e760bb12704ab8bd125ea4f1e72cb8463a9a429c9a86371f413cc11",
+    "data_clean/haratFardayi-1M.csv": "b7b69dd3dca602a83933dcbdb488cc675ee973be289bc67ea1ba99b60825e395",
+    "data_clean/haratFardayi-1W.csv": "90d24b62ef8f1aad600020936b0ac46837589897492744f14939ed5bd42a4d08",
+    "data_clean/haratFardayi-240.csv": "748fcfa5adf8ed630466b92c29124689185d0fdd6c4e3de265ad5073bf4d0a13",
+    "data_clean/haratFardayi-30.csv": "c8de79c5fb623ce6047c988940590c917f73b6e98414b9c83a26e58f9926abd8",
+    "data_clean/haratFardayi-5.csv": "7366cab70af754c70572baa205bd6f889af9c5b2acd1c51b97f79e7f596244c2",
+    "data_clean/haratFardayi-60.csv": "545ad1424730187dc4c34760b91e5a605253429517a86f00813c68859c07464c",
+    "data_features/abshodeNaghdi-1_15m.csv": "0b819ccd5cb55cd8ec9b116035412e04966ec13c8e5ace0c0d1f89f5b818254f",
+    "data_features/abshodeNaghdi-1_5m.csv": "984735a9570cba89d258c0eec0876883f78b3e8f0cfc0289b9e32304c05dffcc",
+    "raw_data/XAU_USD-1.csv": "4b3501bec38301a36a3e3c2ce7e6d51c75651e048924aa51d99f5df8ffdd7b20",
+    "raw_data/XAU_USD-15.csv": "24a1458790667c66a07992ed19d2c7556c558e0470960cb285a020e83da80bc4",
+    "raw_data/XAU_USD-1D.csv": "d694c5cc0b79f9b4e4c5946401463cde8161dd9b11950844692b202dc96a4f03",
+    "raw_data/XAU_USD-1M.csv": "27a8f93c1ca5abb3eb75342d994302cd863ad3c416ae6110a596cffb58f918b1",
+    "raw_data/XAU_USD-1W.csv": "32e72609135b0d2a18a389c77f62b7de9c2a932ced13975bed3b4c91eb5940b7",
+    "raw_data/XAU_USD-240.csv": "77aea53c71cba6e7f398d104ac0b54f4afedf785fed785ef7083527aa4e7f530",
+    "raw_data/XAU_USD-30.csv": "4d6092d3908eee06a787bff2f2bc2c1a27321616505f9db25ed589904175e4f7",
+    "raw_data/XAU_USD-5.csv": "b203cfeb3e0a00bb81bd6cabd49d0acc661af69ca31ce8b8cbdf4dc2c78a797c",
+    "raw_data/XAU_USD-60.csv": "701729aa8f9f9df11e3dd79d46e45a5d18ff437f8e6eb5bc4392528744f86443",
+    "raw_data/abshodeNaghdi-1.csv": "274be4cefd9293cea2b9b772e9feac9f4e755377070f35f8db25d905033ef5a0",
+    "raw_data/abshodeNaghdi-15.csv": "f0e7808c74bae17c726dcb86c960d59f3f483e4568a74c811ff11436ad3a25fc",
+    "raw_data/abshodeNaghdi-1D.csv": "47f7ef9cc3d75b53cf9cc1452539fa58dff89cd21c0f287733c17e38b21d2952",
+    "raw_data/abshodeNaghdi-1M.csv": "7ee6ed118e240f7e4e77c1c6ad3139aead4fbb48bf0cf8b34ea39b63bebe1538",
+    "raw_data/abshodeNaghdi-1W.csv": "9ba98caa17043446f9b382328a2fd26ba1a7719e25255c0d4ef37977458e9908",
+    "raw_data/abshodeNaghdi-240.csv": "0bc9ac2a791fe6979b517e5aaf8632b297d6b15630a42f27ced83341fdd17be2",
+    "raw_data/abshodeNaghdi-30.csv": "d63bf1bd32aa03d9fab5310015351af46b94a67c791f20aec8058c04d7a0e187",
+    "raw_data/abshodeNaghdi-5.csv": "01ceed702592485c530a4cbdc0c91efeb44979b489963745a49c9f3d4a20c182",
+    "raw_data/abshodeNaghdi-60.csv": "bd350f21f0b1d3658fd58f47202430be62ff373d91f24a5fc3daee10febb0f0b",
+    "raw_data/haratFardayi-1.csv": "4564cdd49cf613e2f3913711c2a7dc5af80a72a1b15254e7533c69fd0f1e963c",
+    "raw_data/haratFardayi-15.csv": "deb99dfa66719f04f4a5b5c84685a11fa767a5c512de74dda27f733a58f8ff70",
+    "raw_data/haratFardayi-1D.csv": "a83c7a37467c8778786226b64d3c49adad6bbe71514b38b509400cf8100d3c2b",
+    "raw_data/haratFardayi-1M.csv": "ea0e2e2aaa1399bcc6967be6e5dcb99d0d0868a212bdb1dfc4e4f751e5edf42f",
+    "raw_data/haratFardayi-1W.csv": "12929f1a37cc24f0454a11741b4b91b478b5ffc9e6dd048080d5e4967b54c13d",
+    "raw_data/haratFardayi-240.csv": "d29467edcf49fb1a52ad0d0d996dcf51287e57ac6a5b822097b196996ab1961b",
+    "raw_data/haratFardayi-30.csv": "5dc2f43c4c385977cd49a71f750ac55a8ee2dd38acdba505d4934cc7e924c53a",
+    "raw_data/haratFardayi-5.csv": "9419372b7ad39b76eb1425ea58cce7bc8188ff5d4b309aec281399cca84c8ea5",
+    "raw_data/haratFardayi-60.csv": "d25a79cfa6970aa820f2ef32c987fc2c23ee1bc72bd083825895ecb81c1b808e"
+  },
+  "run_manifest": {
+    "analytical_timezone": "Asia/Tehran",
+    "bar_builder_version": "abshodeh-faraz-source-semantics-v1-m1-to-m5",
+    "calendar_version": "abshodeh-faraz-source-semantics-v1",
+    "cli_arguments": [
+      "--research"
+    ],
+    "code_revision": "139a0e15c39ad48ababd6f864edc866385b10bfd",
+    "configuration_snapshot_path": "configs/research/abshodeh-source-semantics-v1.json",
+    "configuration_snapshot_sha256": "c4552024e0c2a60fe4cf14608cb50c0736120bd80b6569aeaf1ea322f0a93de2",
+    "entrypoint": "scripts/run_abshodeh_source_semantics.py",
+    "floating_point_backend": "numpy.float64/IEEE-754/64-bit",
+    "floating_point_settings": {
+      "float64_eps": "2.220446049250313e-16",
+      "numpy_geterr_divide": "warn",
+      "numpy_geterr_invalid": "warn",
+      "numpy_geterr_over": "warn",
+      "numpy_geterr_under": "ignore"
+    },
+    "git_diff_sha256": "34a37a0dce984c2d642792da68ae6ee4194946435a47da48e3f6127b735067f0",
+    "git_dirty": true,
+    "locale": "LC_CTYPE=C.UTF-8;LC_NUMERIC=C;LC_TIME=C;LC_COLLATE=C;LC_MONETARY=C;LC_MESSAGES=C;LC_PAPER=C;LC_NAME=C;LC_ADDRESS=C;LC_TELEPHONE=C;LC_MEASUREMENT=C;LC_IDENTIFICATION=C",
+    "numpy_version": "2.5.1",
+    "pandas_version": "3.0.5",
+    "python_version": "3.12.13",
+    "random_seeds": {
+      "numpy": null,
+      "python": null
+    },
+    "randomness_policy": "NO_RANDOMNESS_USED_DETERMINISTIC_PIPELINE",
+    "runtime_timezone": "TZ=UNSET;tzname=CET|CEST",
+    "schema_version": "1.0.0",
+    "source_inputs": [
+      {
+        "byte_size": 2892653,
+        "path": "data_clean/XAU_USD-1.csv",
+        "sha256": "1386fcc87e4b169a957a10655b35d053de74d51d70e00ecb1a02ea8f2dd60497"
+      },
+      {
+        "byte_size": 2942904,
+        "path": "data_clean/XAU_USD-15.csv",
+        "sha256": "39a116c4a554dd1f6d2070eedd8d064cae8575d1a6fc1cc034222599eb5d219f"
+      },
+      {
+        "byte_size": 263568,
+        "path": "data_clean/XAU_USD-1D.csv",
+        "sha256": "4a1aa1a0c8889532d3de75d1093a65f35d793b9c2751e95e89c738ae076f74bf"
+      },
+      {
+        "byte_size": 12621,
+        "path": "data_clean/XAU_USD-1M.csv",
+        "sha256": "8212944eed80d2254eb0a8fba7ef7e474e70debbda5681549757121a1bfc7da8"
+      },
+      {
+        "byte_size": 53991,
+        "path": "data_clean/XAU_USD-1W.csv",
+        "sha256": "dfef70d8ed9a6acd7b286144c9216181bd38597482c5dccb1db5b60f7c23da27"
+      },
+      {
+        "byte_size": 1876298,
+        "path": "data_clean/XAU_USD-240.csv",
+        "sha256": "cea69cdf1d2371192d56f49a548d67b356f1f7467c518d5f845e4356c76d4a1f"
+      },
+      {
+        "byte_size": 2943870,
+        "path": "data_clean/XAU_USD-30.csv",
+        "sha256": "3b601e349fdb1745fc40e382826a8ccbaae14805eb210b9749a1f7d70c7a209b"
+      },
+      {
+        "byte_size": 2932008,
+        "path": "data_clean/XAU_USD-5.csv",
+        "sha256": "d76d77d2eec2e429498b1388e27496e056bac466476262211126ef384d8f60a7"
+      },
+      {
+        "byte_size": 2970860,
+        "path": "data_clean/XAU_USD-60.csv",
+        "sha256": "0ec7293d263b13a5518ef44f8f29fb7df9f9dccf9bdbb67a5cc777c0b65c0f3a"
+      },
+      {
+        "byte_size": 2910574,
+        "path": "data_clean/abshodeNaghdi-1.csv",
+        "sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc"
+      },
+      {
+        "byte_size": 2936364,
+        "path": "data_clean/abshodeNaghdi-15.csv",
+        "sha256": "8218da57a562ce3b85c668b09252428b0cc52bec8e00f3f03fbe8eb7df098fd2"
+      },
+      {
+        "byte_size": 220192,
+        "path": "data_clean/abshodeNaghdi-1D.csv",
+        "sha256": "82e7c6320ce33574273f45438bc8766282f8c4c3df6c59f283a7a411e0751169"
+      },
+      {
+        "byte_size": 7963,
+        "path": "data_clean/abshodeNaghdi-1M.csv",
+        "sha256": "672d5b599743099bfeae64ef8bc145de519ff5e2b5a460b4c58fc8b4883e8c2b"
+      },
+      {
+        "byte_size": 33653,
+        "path": "data_clean/abshodeNaghdi-1W.csv",
+        "sha256": "820e73730b99969ed1d5f45d2a89c520346bb97785a65a0a0c9c2437048d4d7f"
+      },
+      {
+        "byte_size": 761506,
+        "path": "data_clean/abshodeNaghdi-240.csv",
+        "sha256": "3c7aade0f5deb188adec7f6c0847a0b3c52ecef4e08adafa7817a2f960405146"
+      },
+      {
+        "byte_size": 2844776,
+        "path": "data_clean/abshodeNaghdi-30.csv",
+        "sha256": "854e066ba28dbe3bf877f960b7c4a71a87ab71febbe6e080cc82113e9eb295d5"
+      },
+      {
+        "byte_size": 2939151,
+        "path": "data_clean/abshodeNaghdi-5.csv",
+        "sha256": "a48d3adf07a31b36069ae3ee4d01ba1ee0ab0b9c3db78d3404a05ebe48744e97"
+      },
+      {
+        "byte_size": 2028958,
+        "path": "data_clean/abshodeNaghdi-60.csv",
+        "sha256": "92796753e33b260a7c5c5862fe1ac98f133364d318bba76c5553c1aacb5bb9e0"
+      },
+      {
+        "byte_size": 2701837,
+        "path": "data_clean/haratFardayi-1.csv",
+        "sha256": "5bdab3adc12c9e8416386596a9010635a97eb0aae8f78fbbf629cde88c43307b"
+      },
+      {
+        "byte_size": 2591725,
+        "path": "data_clean/haratFardayi-15.csv",
+        "sha256": "15af9a7b45d416a7da2159e9cd938c1d606ad6abb2d3000ad060cbe8f04a6c37"
+      },
+      {
+        "byte_size": 118070,
+        "path": "data_clean/haratFardayi-1D.csv",
+        "sha256": "6a42901a4e760bb12704ab8bd125ea4f1e72cb8463a9a429c9a86371f413cc11"
+      },
+      {
+        "byte_size": 4475,
+        "path": "data_clean/haratFardayi-1M.csv",
+        "sha256": "b7b69dd3dca602a83933dcbdb488cc675ee973be289bc67ea1ba99b60825e395"
+      },
+      {
+        "byte_size": 18411,
+        "path": "data_clean/haratFardayi-1W.csv",
+        "sha256": "90d24b62ef8f1aad600020936b0ac46837589897492744f14939ed5bd42a4d08"
+      },
+      {
+        "byte_size": 528723,
+        "path": "data_clean/haratFardayi-240.csv",
+        "sha256": "748fcfa5adf8ed630466b92c29124689185d0fdd6c4e3de265ad5073bf4d0a13"
+      },
+      {
+        "byte_size": 2584827,
+        "path": "data_clean/haratFardayi-30.csv",
+        "sha256": "c8de79c5fb623ce6047c988940590c917f73b6e98414b9c83a26e58f9926abd8"
+      },
+      {
+        "byte_size": 2624400,
+        "path": "data_clean/haratFardayi-5.csv",
+        "sha256": "7366cab70af754c70572baa205bd6f889af9c5b2acd1c51b97f79e7f596244c2"
+      },
+      {
+        "byte_size": 1702086,
+        "path": "data_clean/haratFardayi-60.csv",
+        "sha256": "545ad1424730187dc4c34760b91e5a605253429517a86f00813c68859c07464c"
+      },
+      {
+        "byte_size": 292006,
+        "path": "data_features/abshodeNaghdi-1_15m.csv",
+        "sha256": "0b819ccd5cb55cd8ec9b116035412e04966ec13c8e5ace0c0d1f89f5b818254f"
+      },
+      {
+        "byte_size": 824760,
+        "path": "data_features/abshodeNaghdi-1_5m.csv",
+        "sha256": "984735a9570cba89d258c0eec0876883f78b3e8f0cfc0289b9e32304c05dffcc"
+      },
+      {
+        "byte_size": 2940727,
+        "path": "raw_data/XAU_USD-1.csv",
+        "sha256": "4b3501bec38301a36a3e3c2ce7e6d51c75651e048924aa51d99f5df8ffdd7b20"
+      },
+      {
+        "byte_size": 2993052,
+        "path": "raw_data/XAU_USD-15.csv",
+        "sha256": "24a1458790667c66a07992ed19d2c7556c558e0470960cb285a020e83da80bc4"
+      },
+      {
+        "byte_size": 316111,
+        "path": "raw_data/XAU_USD-1D.csv",
+        "sha256": "d694c5cc0b79f9b4e4c5946401463cde8161dd9b11950844692b202dc96a4f03"
+      },
+      {
+        "byte_size": 15054,
+        "path": "raw_data/XAU_USD-1M.csv",
+        "sha256": "27a8f93c1ca5abb3eb75342d994302cd863ad3c416ae6110a596cffb58f918b1"
+      },
+      {
+        "byte_size": 64585,
+        "path": "raw_data/XAU_USD-1W.csv",
+        "sha256": "32e72609135b0d2a18a389c77f62b7de9c2a932ced13975bed3b4c91eb5940b7"
+      },
+      {
+        "byte_size": 1910146,
+        "path": "raw_data/XAU_USD-240.csv",
+        "sha256": "77aea53c71cba6e7f398d104ac0b54f4afedf785fed785ef7083527aa4e7f530"
+      },
+      {
+        "byte_size": 2993694,
+        "path": "raw_data/XAU_USD-30.csv",
+        "sha256": "4d6092d3908eee06a787bff2f2bc2c1a27321616505f9db25ed589904175e4f7"
+      },
+      {
+        "byte_size": 2981967,
+        "path": "raw_data/XAU_USD-5.csv",
+        "sha256": "b203cfeb3e0a00bb81bd6cabd49d0acc661af69ca31ce8b8cbdf4dc2c78a797c"
+      },
+      {
+        "byte_size": 3020645,
+        "path": "raw_data/XAU_USD-60.csv",
+        "sha256": "701729aa8f9f9df11e3dd79d46e45a5d18ff437f8e6eb5bc4392528744f86443"
+      },
+      {
+        "byte_size": 2961446,
+        "path": "raw_data/abshodeNaghdi-1.csv",
+        "sha256": "274be4cefd9293cea2b9b772e9feac9f4e755377070f35f8db25d905033ef5a0"
+      },
+      {
+        "byte_size": 2988128,
+        "path": "raw_data/abshodeNaghdi-15.csv",
+        "sha256": "f0e7808c74bae17c726dcb86c960d59f3f483e4568a74c811ff11436ad3a25fc"
+      },
+      {
+        "byte_size": 268207,
+        "path": "raw_data/abshodeNaghdi-1D.csv",
+        "sha256": "47f7ef9cc3d75b53cf9cc1452539fa58dff89cd21c0f287733c17e38b21d2952"
+      },
+      {
+        "byte_size": 9625,
+        "path": "raw_data/abshodeNaghdi-1M.csv",
+        "sha256": "7ee6ed118e240f7e4e77c1c6ad3139aead4fbb48bf0cf8b34ea39b63bebe1538"
+      },
+      {
+        "byte_size": 40867,
+        "path": "raw_data/abshodeNaghdi-1W.csv",
+        "sha256": "9ba98caa17043446f9b382328a2fd26ba1a7719e25255c0d4ef37977458e9908"
+      },
+      {
+        "byte_size": 776944,
+        "path": "raw_data/abshodeNaghdi-240.csv",
+        "sha256": "0bc9ac2a791fe6979b517e5aaf8632b297d6b15630a42f27ced83341fdd17be2"
+      },
+      {
+        "byte_size": 2895777,
+        "path": "raw_data/abshodeNaghdi-30.csv",
+        "sha256": "d63bf1bd32aa03d9fab5310015351af46b94a67c791f20aec8058c04d7a0e187"
+      },
+      {
+        "byte_size": 2989596,
+        "path": "raw_data/abshodeNaghdi-5.csv",
+        "sha256": "01ceed702592485c530a4cbdc0c91efeb44979b489963745a49c9f3d4a20c182"
+      },
+      {
+        "byte_size": 2071209,
+        "path": "raw_data/abshodeNaghdi-60.csv",
+        "sha256": "bd350f21f0b1d3658fd58f47202430be62ff373d91f24a5fc3daee10febb0f0b"
+      },
+      {
+        "byte_size": 2752463,
+        "path": "raw_data/haratFardayi-1.csv",
+        "sha256": "4564cdd49cf613e2f3913711c2a7dc5af80a72a1b15254e7533c69fd0f1e963c"
+      },
+      {
+        "byte_size": 2642475,
+        "path": "raw_data/haratFardayi-15.csv",
+        "sha256": "deb99dfa66719f04f4a5b5c84685a11fa767a5c512de74dda27f733a58f8ff70"
+      },
+      {
+        "byte_size": 145371,
+        "path": "raw_data/haratFardayi-1D.csv",
+        "sha256": "a83c7a37467c8778786226b64d3c49adad6bbe71514b38b509400cf8100d3c2b"
+      },
+      {
+        "byte_size": 5447,
+        "path": "raw_data/haratFardayi-1M.csv",
+        "sha256": "ea0e2e2aaa1399bcc6967be6e5dcb99d0d0868a212bdb1dfc4e4f751e5edf42f"
+      },
+      {
+        "byte_size": 22590,
+        "path": "raw_data/haratFardayi-1W.csv",
+        "sha256": "12929f1a37cc24f0454a11741b4b91b478b5ffc9e6dd048080d5e4967b54c13d"
+      },
+      {
+        "byte_size": 540034,
+        "path": "raw_data/haratFardayi-240.csv",
+        "sha256": "d29467edcf49fb1a52ad0d0d996dcf51287e57ac6a5b822097b196996ab1961b"
+      },
+      {
+        "byte_size": 2635501,
+        "path": "raw_data/haratFardayi-30.csv",
+        "sha256": "5dc2f43c4c385977cd49a71f750ac55a8ee2dd38acdba505d4934cc7e924c53a"
+      },
+      {
+        "byte_size": 2677132,
+        "path": "raw_data/haratFardayi-5.csv",
+        "sha256": "9419372b7ad39b76eb1425ea58cce7bc8188ff5d4b309aec281399cca84c8ea5"
+      },
+      {
+        "byte_size": 1738767,
+        "path": "raw_data/haratFardayi-60.csv",
+        "sha256": "d25a79cfa6970aa820f2ef32c987fc2c23ee1bc72bd083825895ecb81c1b808e"
+      }
+    ]
+  },
+  "schema_version": "1.0.0",
+  "timezone_candidate_matrix": [
+    {
+      "candidate": "Asia/Tehran",
+      "disposition": "PROMOTED",
+      "evidence_basis": "USER_VERIFIED_PLATFORM_SETTING",
+      "evidence_status": "DECLARED"
+    },
+    {
+      "candidate": "UTC",
+      "disposition": "REJECTED",
+      "reason": "contradicts the user-verified Faraz export setting"
+    },
+    {
+      "candidate": "UNKNOWN_SERVER_TIME",
+      "disposition": "REJECTED",
+      "reason": "higher-strength explicit platform-setting evidence is available"
+    }
+  ],
+  "unresolved_evidence": [
+    "authoritative holiday and trading-day calendar is unavailable",
+    "individual sparse intervals cannot always distinguish no-print from feed outage",
+    "volume meaning is unknown"
+  ]
+}

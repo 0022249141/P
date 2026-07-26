@@ -102,7 +102,7 @@ def test_gate_report_serialization_is_stable_and_versioned() -> None:
     )
 
     assert report.to_json_bytes() == report.model_copy(deep=True).to_json_bytes()
-    assert b'"schema_version":"1.0.0"' in report.to_json_bytes()
+    assert b'"schema_version":"1.1.0"' in report.to_json_bytes()
 
 
 def test_canonical_imports_have_no_application_io_or_network_side_effects() -> None:

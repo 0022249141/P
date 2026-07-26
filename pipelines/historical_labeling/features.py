@@ -81,7 +81,7 @@ def _session_bucket(local: pd.Timestamp, policy: SessionPolicy) -> str:
     current = local.strftime("%H:%M")
     for bucket in policy.neutral_buckets:
         start, end = bucket.split("-")
-        if start <= current < end or (current == end and end == "22:00"):
+        if start <= current < end:
             return bucket
     return "OUT_OF_SESSION"
 
@@ -177,9 +177,10 @@ def build_asof_feature_snapshot(
                 htf_location = _decimal((level - float(bar.low)) / span)
                 htf_status = EvidenceStatus.DERIVED
 
-    local = pd.Timestamp(event.first_feature_eligible_timestamp).tz_convert(
-        ZoneInfo(session_policy.timezone)
-    )
+    local = (
+        pd.Timestamp(event.first_feature_eligible_timestamp)
+        - pd.Timedelta(seconds=feature_policy.event_bar_seconds)
+    ).tz_convert(ZoneInfo(session_policy.timezone))
     return AsOfFeatureSnapshot(
         event_id=event.event_id,
         feature_policy_version=feature_policy.policy_version,

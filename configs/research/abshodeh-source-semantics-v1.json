@@ -1,0 +1,78 @@
+{
+  "coverage_boundary_policy": "DROP_PARTIAL_FIRST",
+  "external_reconciliation": {
+    "archive_sha256": "a051db3d5b35f972d9c63c0eb5fa5c1d5bc9c908cd9ae95df723bbeffd7c6c6d",
+    "distinct_date_count": 88,
+    "higher_member_sha256": "30efe139e13d3bcbced7580c1895ff04beaa48841b2c1bdd56b38718d1700f0a",
+    "higher_row_count": 4287,
+    "higher_timeframe": "M15",
+    "lower_member_sha256": "409b0d5d73cafb8d44ec81263ed47e1871ad213e3c5f396e0da280a61ee69e07",
+    "lower_row_count": 12487,
+    "lower_timeframe": "M5",
+    "maximum_volume_absolute_difference": 2,
+    "period_end_common_count": 4257,
+    "period_end_exact_ohlc_count": 25,
+    "period_end_exact_ohlcv_count": 9,
+    "period_start_common_count": 4287,
+    "period_start_exact_ohlc_count": 4287,
+    "period_start_exact_ohlcv_count": 4283,
+    "volume_only_mismatch_count": 4
+  },
+  "historical_policy_path": "configs/research/abshodeh-historical-labeling-v2.json",
+  "holiday_calendar_evidence": {
+    "basis": "UNAVAILABLE",
+    "references": [
+      "KAN-14:authoritative-holiday-calendar-not-supplied"
+    ],
+    "status": "UNKNOWN"
+  },
+  "incomplete_bin_policy": "KEEP",
+  "limitations": [
+    "Holiday and trading-day completeness remains UNKNOWN.",
+    "Sparse M1 intervals cannot always distinguish no-print periods from feed outages.",
+    "Volume meaning remains UNKNOWN despite deterministic aggregation evidence.",
+    "The verified timezone applies to the captured Faraz export setting and selected datasets.",
+    "G6-G9, Herat, XAUUSD, execution costs, and live readiness remain NOT_EVALUATED."
+  ],
+  "m1_dataset_path": "data_clean/abshodeNaghdi-1.csv",
+  "manifest_path": "data/manifests/committed_datasets.json",
+  "market": "ABSHODEH",
+  "minimum_distinct_dates": 3,
+  "native_m5_dataset_path": "data_clean/abshodeNaghdi-5.csv",
+  "out_of_session_policy": "EXCLUDE_AND_REPORT",
+  "period_evidence": {
+    "basis": "DETERMINISTIC_REAL_DATA_RECONCILIATION",
+    "references": [
+      "protected-M1-to-native-M5:12317-of-12317-exact-OHLCV-across-89-dates",
+      "external-M5-to-M15:4287-of-4287-exact-OHLC-across-88-dates"
+    ],
+    "status": "DERIVED"
+  },
+  "period_semantics": "PERIOD_START",
+  "policy_version": "abshodeh-faraz-source-semantics-v1",
+  "schema_version": "1.0.0",
+  "session_end": "22:00:00",
+  "session_end_convention": "EXCLUSIVE",
+  "session_evidence": {
+    "basis": "HUMAN_APPROVED_MARKET_DEFINITION",
+    "references": [
+      "user-confirmation:2026-07-26:[09:00,22:00)",
+      "user-confirmation:retain-source-exclude-analytics-at-and-after-22:00"
+    ],
+    "status": "DECLARED"
+  },
+  "session_start": "09:00:00",
+  "source_gap_policy": "REPORT",
+  "source_name": "FARAZ_CHART_GENERAL_PLATFORMS_CSV",
+  "source_timezone": "Asia/Tehran",
+  "symbol": "abshodeNaghdi",
+  "timezone_evidence": {
+    "basis": "USER_VERIFIED_PLATFORM_SETTING",
+    "references": [
+      "user-declaration:2026-07-26:CSV-export-uses-chart-timezone",
+      "screenshot:Faraz-chart-UTC+03:30"
+    ],
+    "status": "DECLARED"
+  },
+  "volume_aggregation": "SUM"
+}
