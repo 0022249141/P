@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 
 import pandas as pd
+import pytest
 
 from core.dataset_manifest import MANIFEST_SCHEMA_VERSION, PARSER_SCHEMA_VERSION, RECORD_KEYS
 from pipelines.canonical import (
@@ -16,7 +17,9 @@ from pipelines.canonical import (
     GateId,
     GateReport,
     GateStatus,
+    OutOfSessionPolicy,
     PeriodSemantics,
+    SessionEndConvention,
     TimestampSemantics,
     evaluate_eligibility,
     evaluate_quality,
@@ -246,6 +249,62 @@ def test_g4_blocks_without_explicit_calendar_policy() -> None:
 
     assert result.status is GateStatus.BLOCKED
     assert result.reason_code == "G4_CALENDAR_POLICY_MISSING"
+
+
+def test_continuous_calendar_rejects_session_exclusion_policy() -> None:
+    with pytest.raises(
+        ValueError,
+        match="EXCLUDE_AND_REPORT requires VERSIONED_SESSION",
+    ):
+        CalendarPolicy(
+            policy_version="invalid-continuous-exclusion-v1",
+            behavior=CalendarBehavior.CONTINUOUS,
+            expected_interval_seconds=60,
+            session_start="09:00:00",
+            session_end="22:00:00",
+            out_of_session_policy=OutOfSessionPolicy.EXCLUDE_AND_REPORT,
+        )
+
+
+def test_period_end_session_partition_uses_interval_start_membership() -> None:
+    policy = CanonicalizationPolicy(
+        timestamp=TimestampSemantics(
+            timezone="UTC",
+            timezone_evidence=EvidenceStatus.DECLARED,
+            period_semantics=PeriodSemantics.PERIOD_END,
+            period_evidence=EvidenceStatus.DECLARED,
+        ),
+        calendar=CalendarPolicy(
+            policy_version="period-end-session-v1",
+            behavior=CalendarBehavior.VERSIONED_SESSION,
+            expected_interval_seconds=60,
+            timezone="UTC",
+            session_start="09:00:00",
+            session_end="22:00:00",
+            session_end_convention=SessionEndConvention.EXCLUSIVE,
+            out_of_session_policy=OutOfSessionPolicy.EXCLUDE_AND_REPORT,
+        ),
+    )
+    evaluation = evaluate_quality(
+        _bars(
+            [
+                "2024-01-01T09:00:00Z",
+                "2024-01-01T09:01:00Z",
+                "2024-01-01T22:00:00Z",
+                "2024-01-01T22:01:00Z",
+            ]
+        ),
+        dataset=_identity(),
+        policy=policy,
+        manifest=_manifest(),
+    )
+
+    assert evaluation.analytical_frame is not None
+    assert evaluation.analytical_frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T09:01:00Z"),
+        pd.Timestamp("2024-01-01T22:00:00Z"),
+    ]
+    assert evaluation.excluded_out_of_session_rows == (0, 3)
 
 
 def test_g4_reports_missing_and_irregular_intervals() -> None:

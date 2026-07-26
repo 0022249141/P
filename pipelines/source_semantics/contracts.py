@@ -222,12 +222,79 @@ class ReconciliationCandidateEvidence(FrozenContract):
         return self
 
 
+class RunInputEvidence(FrozenContract):
+    path: str = Field(min_length=1)
+    sha256: str
+    byte_size: int = Field(ge=0)
+
+    @field_validator("path")
+    @classmethod
+    def validate_relative_path(cls, value: str) -> str:
+        candidate = PurePosixPath(value)
+        if candidate.is_absolute() or ".." in candidate.parts or "\\" in value:
+            raise ValueError("run input path must be repository-relative")
+        return value
+
+    @field_validator("sha256")
+    @classmethod
+    def validate_sha256(cls, value: str) -> str:
+        if _SHA256.fullmatch(value) is None:
+            raise ValueError("run input hash must be lowercase SHA-256")
+        return value
+
+
+class AnalyticalRunManifest(FrozenContract):
+    schema_version: str = SCHEMA_VERSION
+    code_revision: str = Field(pattern=r"^[0-9a-f]{40}$")
+    git_dirty: bool
+    git_diff_sha256: str | None = None
+    entrypoint: str = Field(min_length=1)
+    cli_arguments: tuple[str, ...] = Field(min_length=1)
+    configuration_snapshot_path: str = Field(min_length=1)
+    configuration_snapshot_sha256: str
+    source_inputs: tuple[RunInputEvidence, ...] = Field(min_length=1)
+    locale: str = Field(min_length=1)
+    runtime_timezone: str = Field(min_length=1)
+    analytical_timezone: str = Field(min_length=1)
+    calendar_version: str = Field(min_length=1)
+    bar_builder_version: str = Field(min_length=1)
+    python_version: str = Field(min_length=1)
+    pandas_version: str = Field(min_length=1)
+    numpy_version: str = Field(min_length=1)
+    floating_point_backend: str = Field(min_length=1)
+    floating_point_settings: dict[str, str] = Field(min_length=1)
+    random_seeds: dict[str, int | None] = Field(min_length=1)
+    randomness_policy: str = Field(min_length=1)
+
+    @field_validator("entrypoint", "configuration_snapshot_path")
+    @classmethod
+    def validate_manifest_path(cls, value: str) -> str:
+        candidate = PurePosixPath(value)
+        if candidate.is_absolute() or ".." in candidate.parts or "\\" in value:
+            raise ValueError("run manifest paths must be repository-relative")
+        return value
+
+    @field_validator("configuration_snapshot_sha256", "git_diff_sha256")
+    @classmethod
+    def validate_optional_hash(cls, value: str | None) -> str | None:
+        if value is not None and _SHA256.fullmatch(value) is None:
+            raise ValueError("run manifest hashes must be lowercase SHA-256")
+        return value
+
+    @model_validator(mode="after")
+    def require_dirty_diff_hash(self) -> "AnalyticalRunManifest":
+        if self.git_dirty != (self.git_diff_sha256 is not None):
+            raise ValueError("dirty run provenance requires exactly one diff hash")
+        return self
+
+
 class SourceSemanticsArtifact(FrozenContract):
     artifact_id: str = "KAN-14-abshodeh-source-semantics"
     jira_key: str = "KAN-14"
     schema_version: str = SCHEMA_VERSION
     policy_version: str
     policy_sha256: str
+    run_manifest: AnalyticalRunManifest
     manifest_sha256_before: str
     manifest_sha256_after: str
     protected_source_hashes_before: dict[str, str]
@@ -286,11 +353,13 @@ class SourceSemanticsArtifact(FrozenContract):
 
 
 __all__ = [
+    "AnalyticalRunManifest",
     "CandidateDisposition",
     "DailyReconciliationEvidence",
     "EvidenceBasis",
     "ExternalReconciliationEvidence",
     "ReconciliationCandidateEvidence",
+    "RunInputEvidence",
     "SCHEMA_VERSION",
     "SemanticEvidence",
     "SourceSemanticsArtifact",

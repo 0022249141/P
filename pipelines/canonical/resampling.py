@@ -83,6 +83,7 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
     incomplete_examples: list[str] = []
     dropped_boundary_examples: list[str] = []
     incomplete_count = 0
+    first_source_timestamp = pd.Timestamp(indexed.index[0])
     for label, group in _group_source(indexed, rule, policy):
         if group.empty:
             continue
@@ -93,8 +94,12 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
             and not dropped_boundary_examples
             and policy.coverage_boundary_policy
             is CoverageBoundaryPolicy.DROP_PARTIAL_FIRST
-            and policy.source_period_semantics.value == "PERIOD_START"
-            and pd.Timestamp(indexed.index[0]) > pd.Timestamp(label)
+            and first_source_timestamp
+            > _first_expected_source_label(
+                pd.Timestamp(label),
+                target_minutes,
+                policy,
+            )
         )
         if is_incomplete:
             incomplete_count += 1
@@ -139,6 +144,16 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
         dropped_coverage_boundary_bin_examples=tuple(dropped_boundary_examples),
         policy=policy,
     )
+
+
+def _first_expected_source_label(
+    target_label: pd.Timestamp,
+    target_minutes: int,
+    policy: ResamplingPolicy,
+) -> pd.Timestamp:
+    if policy.source_period_semantics.value == "PERIOD_START":
+        return target_label
+    return target_label - pd.Timedelta(minutes=target_minutes - 1)
 
 
 def _validate_source(frame: pd.DataFrame, policy: ResamplingPolicy) -> None:

@@ -6,10 +6,16 @@ import argparse
 from collections import Counter
 import hashlib
 import json
+import locale
+import os
+import platform
+import subprocess
 import sys
+import time as runtime_time
 from pathlib import Path
 from typing import Mapping, Sequence
 
+import numpy as np
 import pandas as pd
 
 
@@ -36,6 +42,8 @@ from pipelines.historical_labeling.policies import (  # noqa: E402
     load_policy as load_historical_policy,
 )
 from pipelines.source_semantics import (  # noqa: E402
+    AnalyticalRunManifest,
+    RunInputEvidence,
     SourceSemanticsArtifact,
     build_canonical_policy,
     build_m1_to_m5_policy,
@@ -69,6 +77,105 @@ def _path(value: str | Path) -> Path:
 
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _repository_relative(path: Path) -> str:
+    return path.resolve().relative_to(REPOSITORY_ROOT.resolve()).as_posix()
+
+
+def _git_output(*args: str) -> bytes:
+    return subprocess.check_output(
+        ("git", *args),
+        cwd=REPOSITORY_ROOT,
+        stderr=subprocess.DEVNULL,
+    )
+
+
+def _git_provenance() -> tuple[str, bool, str | None]:
+    revision = _git_output("rev-parse", "HEAD").decode("ascii").strip()
+    status = _git_output(
+        "status",
+        "--porcelain=v1",
+        "--untracked-files=all",
+    )
+    if not status:
+        return revision, False, None
+
+    digest = hashlib.sha256()
+    digest.update(_git_output("diff", "--binary", "HEAD", "--", "."))
+    untracked = _git_output(
+        "ls-files",
+        "--others",
+        "--exclude-standard",
+        "-z",
+    )
+    for raw_path in sorted(item for item in untracked.split(b"\0") if item):
+        path = REPOSITORY_ROOT / raw_path.decode("utf-8")
+        digest.update(b"\0UNTRACKED\0")
+        digest.update(raw_path)
+        digest.update(b"\0")
+        if path.is_file():
+            digest.update(path.read_bytes())
+    return revision, True, digest.hexdigest()
+
+
+def _build_run_manifest(
+    *,
+    cli_arguments: Sequence[str],
+    config_path: Path,
+    semantics: object,
+    manifest: Mapping[str, object],
+) -> AnalyticalRunManifest:
+    revision, dirty, diff_sha256 = _git_provenance()
+    source_inputs = tuple(
+        RunInputEvidence(
+            path=str(record["path"]),
+            sha256=str(record["sha256"]),
+            byte_size=int(record["bytes"]),
+        )
+        for record in sorted(
+            (
+                record
+                for record in manifest["datasets"]  # type: ignore[index]
+                if isinstance(record, dict)
+            ),
+            key=lambda record: str(record["path"]),
+        )
+    )
+    resampling_policy = build_m1_to_m5_policy(semantics)  # type: ignore[arg-type]
+    return AnalyticalRunManifest(
+        code_revision=revision,
+        git_dirty=dirty,
+        git_diff_sha256=diff_sha256,
+        entrypoint="scripts/run_abshodeh_source_semantics.py",
+        cli_arguments=tuple(cli_arguments),
+        configuration_snapshot_path=_repository_relative(config_path),
+        configuration_snapshot_sha256=_sha256(config_path),
+        source_inputs=source_inputs,
+        locale=locale.setlocale(locale.LC_ALL, None),
+        runtime_timezone=(
+            f"TZ={os.environ.get('TZ', 'UNSET')};"
+            f"tzname={'|'.join(runtime_time.tzname)}"
+        ),
+        analytical_timezone=semantics.source_timezone,  # type: ignore[attr-defined]
+        calendar_version=resampling_policy.calendar_version,
+        bar_builder_version=resampling_policy.policy_version,
+        python_version=platform.python_version(),
+        pandas_version=pd.__version__,
+        numpy_version=np.__version__,
+        floating_point_backend=(
+            f"numpy.float64/IEEE-754/{np.finfo(np.float64).bits}-bit"
+        ),
+        floating_point_settings={
+            **{
+                f"numpy_geterr_{key}": str(value)
+                for key, value in sorted(np.geterr().items())
+            },
+            "float64_eps": repr(float(np.finfo(np.float64).eps)),
+        },
+        random_seeds={"numpy": None, "python": None},
+        randomness_policy="NO_RANDOMNESS_USED_DETERMINISTIC_PIPELINE",
+    )
 
 
 def _protected_input_paths(config_path: Path) -> frozenset[Path]:
@@ -145,14 +252,25 @@ def _require_g0_g4_pass(evaluation: object, label: str) -> None:
         raise ValueError(f"{label} G0-G4 did not pass: {failed}")
 
 
-def build_artifact() -> SourceSemanticsArtifact:
-    semantics = load_policy(_path(DEFAULT_CONFIG))
+def build_artifact(
+    *,
+    cli_arguments: Sequence[str] = ("--research",),
+    config_path: Path | None = None,
+) -> SourceSemanticsArtifact:
+    resolved_config = _path(DEFAULT_CONFIG) if config_path is None else config_path
+    semantics = load_policy(resolved_config)
     manifest_path = _path(semantics.manifest_path)
     manifest_before = _sha256(manifest_path)
     manifest_errors = verify_manifest(REPOSITORY_ROOT, manifest_path)
     if manifest_errors:
         raise ValueError(f"committed dataset manifest is invalid: {manifest_errors}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    run_manifest = _build_run_manifest(
+        cli_arguments=cli_arguments,
+        config_path=resolved_config,
+        semantics=semantics,
+        manifest=manifest,
+    )
     protected_paths = [
         str(record["path"])
         for record in manifest["datasets"]
@@ -277,6 +395,7 @@ def build_artifact() -> SourceSemanticsArtifact:
     return SourceSemanticsArtifact(
         policy_version=semantics.policy_version,
         policy_sha256=policy_sha256(semantics),
+        run_manifest=run_manifest,
         manifest_sha256_before=manifest_before,
         manifest_sha256_after=manifest_after,
         protected_source_hashes_before=protected_before,
@@ -345,7 +464,8 @@ def build_artifact() -> SourceSemanticsArtifact:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    args = parse_args(argv)
+    cli_arguments = tuple(sys.argv[1:] if argv is None else argv)
+    args = parse_args(cli_arguments)
     if not args.research:
         print("KAN-14 full-corpus evidence requires explicit --research.", file=sys.stderr)
         return 2
@@ -359,10 +479,26 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    artifact = build_artifact()
+    artifact = build_artifact(
+        cli_arguments=cli_arguments,
+        config_path=config_path,
+    )
     content = artifact.to_json_bytes()
     if args.check:
-        if not output.is_file() or output.read_bytes() != content:
+        if not output.is_file():
+            print("KAN-14 source-semantics artifact is missing or stale.")
+            return 1
+        try:
+            recorded = SourceSemanticsArtifact.model_validate_json(
+                output.read_text(encoding="ascii")
+            )
+        except ValueError:
+            print("KAN-14 source-semantics artifact is missing or stale.")
+            return 1
+        reproducible = artifact.model_copy(
+            update={"run_manifest": recorded.run_manifest}
+        ).to_json_bytes()
+        if output.read_bytes() != reproducible:
             print("KAN-14 source-semantics artifact is missing or stale.")
             return 1
         print(

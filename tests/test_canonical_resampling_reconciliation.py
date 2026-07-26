@@ -183,6 +183,27 @@ def test_partial_coverage_boundary_is_dropped_before_later_incomplete_rejection(
         )
 
 
+def test_period_end_partial_coverage_boundary_is_dropped_before_rejection() -> None:
+    policy = _policy(
+        "M5",
+        period=PeriodSemantics.PERIOD_END,
+        incomplete=IncompleteBinPolicy.REJECT,
+        coverage=CoverageBoundaryPolicy.DROP_PARTIAL_FIRST,
+    )
+
+    accepted = resample_bars(
+        _m1_bars(8, start="2024-01-01T00:03:00Z"),
+        policy,
+    )
+
+    assert accepted.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T00:10:00Z")
+    ]
+    assert accepted.incomplete_bin_count == 1
+    assert accepted.dropped_coverage_boundary_bin_count == 1
+    assert accepted.source_rows == (tuple(range(3, 8)),)
+
+
 def test_empty_source_and_zero_output_after_drop_are_rejected() -> None:
     with pytest.raises(ResamplingError, match="at least one canonical bar"):
         resample_bars(_m1_bars(0), _policy("M5"))

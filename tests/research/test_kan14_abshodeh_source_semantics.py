@@ -34,8 +34,32 @@ def test_real_abshodeh_semantics_and_pilot_are_reproducible(tmp_path: Path) -> N
         )
         == 0
     )
-    assert output.read_bytes() == COMMITTED_ARTIFACT.read_bytes()
     payload = json.loads(output.read_text(encoding="ascii"))
+    committed = json.loads(COMMITTED_ARTIFACT.read_text(encoding="ascii"))
+    run_manifest = payload.pop("run_manifest")
+    assert run_manifest["cli_arguments"] == [
+        "--research",
+        "--output",
+        str(output),
+    ]
+    committed_run = committed.pop("run_manifest")
+    assert committed_run["code_revision"]
+    assert committed_run["git_dirty"] == (
+        committed_run["git_diff_sha256"] is not None
+    )
+    assert committed_run["configuration_snapshot_sha256"]
+    assert committed_run["source_inputs"]
+    assert committed_run["locale"]
+    assert committed_run["runtime_timezone"]
+    assert committed_run["analytical_timezone"] == "Asia/Tehran"
+    assert committed_run["calendar_version"]
+    assert committed_run["bar_builder_version"]
+    assert committed_run["python_version"]
+    assert committed_run["pandas_version"]
+    assert committed_run["numpy_version"]
+    assert committed_run["floating_point_settings"]
+    assert committed_run["random_seeds"] == {"numpy": None, "python": None}
+    assert payload == committed
 
     candidates = {
         item["period_semantics"]: item for item in payload["period_candidates"]

@@ -116,6 +116,11 @@ Five labels that were previously censored at the boundary are therefore evaluate
 valid in-session evidence: one false-break/re-entry, three full-range reversals, and one
 no-resolution horizon.
 
+The canonical session partition uses the same interval rule. A `PERIOD_START` source
+uses `[09:00, 22:00)`, while an equivalent `PERIOD_END` source uses `(09:00, 22:00]`.
+Continuous-calendar policies cannot request session exclusion; that contradictory
+combination is rejected at contract validation instead of silently retaining rows.
+
 Two additional source events are explicitly recorded as feature-ineligible: one lacks
 sufficient past-only history and one has a non-positive range feature. They are not
 silently omitted or misrepresented as eligible records. These counts are a deterministic
@@ -145,5 +150,12 @@ Machine-readable evidence:
 
 `docs/audits/artifacts/KAN-14-abshodeh-source-semantics.json`
 
-The run verifies that all protected CSV hashes and
+The artifact includes a mandatory run manifest containing code revision and dirty/diff
+state, CLI and entrypoint, configuration snapshot, all source hashes and byte sizes,
+locale and runtime/analytical timezones, calendar and bar-builder versions, Python,
+pandas, numpy and floating-point settings, and explicit null seeds under the
+no-randomness policy. `--check` reproduces the analytical payload while preserving the
+recorded provenance of the run that wrote the artifact.
+
+The run also verifies that all protected CSV hashes and
 `data/manifests/committed_datasets.json` remain byte-identical.

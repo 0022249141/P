@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import os
 from pathlib import Path
 
@@ -320,3 +321,33 @@ def test_policy_model_is_immutable() -> None:
     policy = _policy()
     copied = copy.deepcopy(policy)
     assert copied.to_json_bytes() == policy.to_json_bytes()
+
+
+def test_run_manifest_records_mandatory_reproducibility_provenance() -> None:
+    semantics = _policy()
+    manifest_path = REPOSITORY_ROOT / semantics.manifest_path
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    run = runner._build_run_manifest(
+        cli_arguments=("--research",),
+        config_path=POLICY_PATH,
+        semantics=semantics,
+        manifest=manifest,
+    )
+
+    assert len(run.code_revision) == 40
+    assert run.git_dirty == (run.git_diff_sha256 is not None)
+    assert run.entrypoint == "scripts/run_abshodeh_source_semantics.py"
+    assert run.cli_arguments == ("--research",)
+    assert run.configuration_snapshot_path == (
+        "configs/research/abshodeh-source-semantics-v1.json"
+    )
+    assert run.configuration_snapshot_sha256 == runner._sha256(POLICY_PATH)
+    assert len(run.source_inputs) == len(manifest["datasets"])
+    assert all(item.sha256 and item.byte_size > 0 for item in run.source_inputs)
+    assert run.analytical_timezone == "Asia/Tehran"
+    assert run.calendar_version and run.bar_builder_version
+    assert run.python_version and run.pandas_version and run.numpy_version
+    assert run.floating_point_backend.startswith("numpy.float64")
+    assert run.floating_point_settings["float64_eps"]
+    assert run.random_seeds == {"numpy": None, "python": None}

@@ -264,7 +264,10 @@ def _partition_analytical_frame(
     included = np.array(
         [
             _session_anchor(
-                timestamp,
+                timestamp
+                if policy.timestamp.period_semantics is PeriodSemantics.PERIOD_START
+                else timestamp
+                - timedelta(seconds=calendar.expected_interval_seconds),
                 start,
                 end,
                 calendar.session_end_convention,

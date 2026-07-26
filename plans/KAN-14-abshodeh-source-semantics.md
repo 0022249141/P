@@ -254,6 +254,11 @@ Leave untouched:
    - retain the complete typed identity of every feature-ineligible event;
    - preserve separate `DECLARED` timezone and `DERIVED` period-semantics evidence
      statuses in policy and audit output.
+10. Address the four final-review contract findings:
+   - record the complete mandatory analytical run manifest in the artifact;
+   - apply partial-coverage handling to `PERIOD_END` resampling;
+   - reject continuous-calendar session-exclusion policies;
+   - derive canonical session membership from period semantics.
 
 ## 8. Verification
 
@@ -298,6 +303,11 @@ Review-regression safety:
 - existing hard-link aliases are rejected by file identity, not only by resolved path;
 - `DROP_PARTIAL_FIRST` evaluates the candidate interval start for both `PERIOD_START`
   and `PERIOD_END`;
+- canonical `PERIOD_END` session membership represents `[09:00, 22:00)` as
+  `(09:00, 22:00]`;
+- continuous calendars reject `EXCLUDE_AND_REPORT` instead of silently ignoring it;
+- the artifact records all mandatory run provenance and `--check` preserves the
+  provenance of the run that produced the committed artifact;
 - feature-ineligibility records expose the rejected event's pivot and confirmation
   identity;
 - requested configuration reports timezone and period evidence independently.
@@ -366,6 +376,12 @@ Rollback:
 - 2026-07-27: both second-review findings were remediated with real inode-identity and
   candidate-interval regression tests; verification passed with 224 ordinary tests and
   3 research tests, while G0-G5 and the 451-event pilot remained unchanged.
+- 2026-07-27: final Codex re-review found four additional contract gaps in mandatory
+  run provenance, generic `PERIOD_END` boundary handling, continuous-calendar exclusion,
+  and canonical `PERIOD_END` session membership.
+- 2026-07-27: all four final-review findings were remediated with strict contracts and
+  direct regression tests; the analytical result remained 12,317/12,317 exact M1-to-M5
+  matches, 451 events/features/labels, and 69 censored labels.
 
 ## 12. Completion evidence
 
@@ -383,8 +399,8 @@ Implemented surfaces:
 
 Verification:
 
-- ordinary suite: `224 passed, 3 deselected`;
-- research suite: `3 passed, 224 deselected`;
+- ordinary suite: `228 passed, 3 deselected`;
+- research suite: `3 passed, 228 deselected`;
 - G0-G5: all `PASS`;
 - protected M1-to-M5 reconciliation: 12,317/12,317 exact OHLCV;
 - canonical/source rows: 50,000 retained;
@@ -393,7 +409,7 @@ Verification:
 - real pilot: `ELIGIBLE`, 451 events/features/labels, 69 censored labels;
 - explicit feature-ineligible events: 2;
 - KAN-14 artifact SHA-256:
-  `6e149358d0a21aef2c08726e7dfaca3d332a7c8807b83469e657b8a27e24530f`;
+  `1ad802adcd713329ac8254e420d29ddfb6a2d7869cad2f11eee5d5a205099164`;
 - committed manifest SHA-256 before/after:
   `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`;
 - all 56 protected source hashes are byte-identical before/after;

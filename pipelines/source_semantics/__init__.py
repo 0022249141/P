@@ -1,11 +1,13 @@
 """KAN-14 Abshodeh source-semantics evidence and deterministic probes."""
 
 from .contracts import (
+    AnalyticalRunManifest,
     CandidateDisposition,
     DailyReconciliationEvidence,
     EvidenceBasis,
     ExternalReconciliationEvidence,
     ReconciliationCandidateEvidence,
+    RunInputEvidence,
     SemanticEvidence,
     SourceSemanticsArtifact,
     SourceSemanticsPolicy,
@@ -22,11 +24,13 @@ from .probe import (
 
 
 __all__ = [
+    "AnalyticalRunManifest",
     "CandidateDisposition",
     "DailyReconciliationEvidence",
     "EvidenceBasis",
     "ExternalReconciliationEvidence",
     "ReconciliationCandidateEvidence",
+    "RunInputEvidence",
     "SemanticEvidence",
     "SourceSemanticsArtifact",
     "SourceSemanticsPolicy",

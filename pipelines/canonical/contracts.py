@@ -239,6 +239,13 @@ class CalendarPolicy(FrozenContract):
             raise ValueError("session_start and session_end must be declared together")
         if self.behavior is CalendarBehavior.VERSIONED_SESSION and not has_start:
             raise ValueError("versioned session behavior requires explicit session bounds")
+        if (
+            self.behavior is CalendarBehavior.CONTINUOUS
+            and self.out_of_session_policy is OutOfSessionPolicy.EXCLUDE_AND_REPORT
+        ):
+            raise ValueError(
+                "EXCLUDE_AND_REPORT requires VERSIONED_SESSION calendar behavior"
+            )
         for value in (self.session_start, self.session_end):
             if value is not None:
                 try:
