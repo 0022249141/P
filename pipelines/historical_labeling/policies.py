@@ -102,10 +102,24 @@ class SessionPolicy(FrozenContract):
     timestamp_period_semantics: str
     session_start: str
     session_end: str
-    evidence_status: EvidenceStatus
+    evidence_status: EvidenceStatus | None = None
+    timezone_evidence_status: EvidenceStatus | None = None
+    period_semantics_evidence_status: EvidenceStatus | None = None
     holiday_calendar_status: EvidenceStatus
     allow_cross_session_outcomes: bool = False
     neutral_buckets: tuple[str, ...]
+
+    @model_validator(mode="before")
+    @classmethod
+    def expand_legacy_combined_evidence(cls, value: Any) -> Any:
+        if not isinstance(value, dict):
+            return value
+        prepared = dict(value)
+        legacy = prepared.get("evidence_status")
+        if legacy is not None:
+            prepared.setdefault("timezone_evidence_status", legacy)
+            prepared.setdefault("period_semantics_evidence_status", legacy)
+        return prepared
 
     @model_validator(mode="after")
     def preserve_research_boundary(self) -> "SessionPolicy":
@@ -115,12 +129,26 @@ class SessionPolicy(FrozenContract):
             raise ValueError("KAN-13 pilot requests PERIOD_START semantics")
         if self.session_start != "09:00:00" or self.session_end != "22:00:00":
             raise ValueError("KAN-13 pilot session request is 09:00-22:00")
-        if self.evidence_status not in {
+        if self.timezone_evidence_status not in {
+            EvidenceStatus.HYPOTHESIS,
+            EvidenceStatus.DECLARED,
+        }:
+            raise ValueError(
+                "timezone evidence must remain HYPOTHESIS or use KAN-14 DECLARED evidence"
+            )
+        if self.period_semantics_evidence_status not in {
             EvidenceStatus.HYPOTHESIS,
             EvidenceStatus.DERIVED,
         }:
             raise ValueError(
-                "source semantics must remain HYPOTHESIS or use KAN-14 DERIVED evidence"
+                "period semantics must remain HYPOTHESIS or use KAN-14 DERIVED evidence"
+            )
+        if self.evidence_status is not None and (
+            self.timezone_evidence_status is not self.evidence_status
+            or self.period_semantics_evidence_status is not self.evidence_status
+        ):
+            raise ValueError(
+                "legacy combined evidence cannot conflict with separate evidence statuses"
             )
         if self.holiday_calendar_status not in {
             EvidenceStatus.UNKNOWN,

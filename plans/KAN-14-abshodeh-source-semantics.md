@@ -102,7 +102,7 @@ global coverage-boundary M5 bin:
 
 - 12,317 common M5 bars across 89 dates;
 - `PERIOD_START`: 12,317/12,317 exact OHLCV matches;
-- `PERIOD_END`: 447/11,907 OHLC and 194/11,907 OHLCV matches, with hundreds of timestamp
+- `PERIOD_END`: 445/11,923 OHLC and 192/11,923 OHLCV matches, with hundreds of timestamp
   membership differences;
 - 38 M1 rows occur at or after 22:00 and must be retained as source evidence but excluded
   from the analytical frame.
@@ -208,7 +208,14 @@ Modify:
 - `pipelines/canonical/quality.py`
 - `pipelines/canonical/resampling.py`
 - `pipelines/canonical/__init__.py`
+- `pipelines/historical_labeling/contracts.py`
+- `pipelines/historical_labeling/extraction.py`
+- `pipelines/historical_labeling/features.py`
+- `pipelines/historical_labeling/labels.py`
+- `pipelines/historical_labeling/policies.py`
 - `pipelines/historical_labeling/pilot.py`
+- `configs/research/abshodeh-historical-labeling-v2.json`
+- `scripts/run_abshodeh_source_semantics.py`
 - focused canonical and historical-labeling tests as required.
 
 Leave untouched:
@@ -235,6 +242,18 @@ Leave untouched:
 6. Generate deterministic machine-readable and human-readable evidence.
 7. Run focused, ordinary, research-only, manifest, hygiene, and dependency checks.
 8. Commit, push, and open one draft PR. Do not merge.
+9. Address the six actionable Codex review findings without widening KAN-14:
+   - reject output paths that alias protected datasets, the manifest, or either
+     source-semantics/historical-policy configuration before artifact construction;
+   - drop and audit the first partial coverage bin before applying the ordinary
+     incomplete-bin policy;
+   - apply session membership separately for `PERIOD_START` and `PERIOD_END`
+     candidates;
+   - evaluate final in-session period-start bars by their source labels while retaining
+     availability timestamps for leakage control;
+   - retain the complete typed identity of every feature-ineligible event;
+   - preserve separate `DECLARED` timezone and `DERIVED` period-semantics evidence
+     statuses in policy and audit output.
 
 ## 8. Verification
 
@@ -264,8 +283,21 @@ Temporal safety:
 
 - no period-end candidate may be promoted from weak matching;
 - no `22:00` or later bar may enter the analytical frame;
+- a valid `21:55` M5 bar remains usable when its availability timestamp is `22:00`;
 - no source bar is deleted from canonical/raw evidence;
 - no analytical extraction executes unless G0-G5 pass.
+
+Review-regression safety:
+
+- `DROP_PARTIAL_FIRST + REJECT` drops only the partial global coverage boundary and
+  still rejects later incomplete bins;
+- period-end candidate evidence uses `(09:00, 22:00]`, not the promoted period-start
+  membership rule;
+- the KAN-14 runner rejects output aliases to every protected/configuration input before
+  reading market data or writing an artifact;
+- feature-ineligibility records expose the rejected event's pivot and confirmation
+  identity;
+- requested configuration reports timezone and period evidence independently.
 
 ## 9. Data and migration impact
 
@@ -309,10 +341,22 @@ Rollback:
   `PERIOD_START` after one partial global boundary bin.
 - 2026-07-26: canonical evaluation retained all 50,000 source rows, partitioned 49,962
   analytical rows, and explicitly excluded 38 rows at or after `22:00`.
-- 2026-07-26: the guarded KAN-13 pilot became `ELIGIBLE` with 451 events, 451
+- 2026-07-26: the initial guarded KAN-13 pilot became `ELIGIBLE` with 451 events, 451
   as-of features, 451 retrospective labels, 74 censored labels, and two explicitly
   audited feature-ineligible events.
 - 2026-07-26: full verification passed: 214 ordinary tests and 3 research tests.
+- 2026-07-26: Codex review on Draft PR #30 reported six actionable findings: one P1
+  protected-output overwrite path and five P2 semantic/audit defects.
+- 2026-07-26: all six findings were accepted for remediation on the existing KAN-14
+  branch; `main` remains unchanged and merge remains out of scope.
+- 2026-07-26: review remediation retained the final `21:55` M5 bar through its `22:00`
+  availability time, reducing boundary-driven censoring from 74 to 69 while leaving all
+  451 event/feature/label identities and G0-G5 eligibility intact.
+- 2026-07-26: the two feature-ineligible records now retain full typed event identities,
+  including pivot and confirmation timestamps.
+- 2026-07-26: review-remediated verification passed: 223 ordinary tests, 3 real-data
+  research tests, manifest verification, git-hygiene verification, dependency check,
+  deterministic artifact checks, and protected-source hash equality.
 
 ## 12. Completion evidence
 
@@ -330,17 +374,17 @@ Implemented surfaces:
 
 Verification:
 
-- ordinary suite: `214 passed, 3 deselected`;
-- research suite: `3 passed, 214 deselected`;
+- ordinary suite: `223 passed, 3 deselected`;
+- research suite: `3 passed, 223 deselected`;
 - G0-G5: all `PASS`;
 - protected M1-to-M5 reconciliation: 12,317/12,317 exact OHLCV;
 - canonical/source rows: 50,000 retained;
 - analytical rows: 49,962;
 - out-of-session rows excluded from analytics: 38;
-- real pilot: `ELIGIBLE`, 451 events/features/labels, 74 censored labels;
+- real pilot: `ELIGIBLE`, 451 events/features/labels, 69 censored labels;
 - explicit feature-ineligible events: 2;
 - KAN-14 artifact SHA-256:
-  `6e1756df149b813ec54b30accb09c93427ed1d26286e0431a5d0fc048fee1eb1`;
+  `dd5f3865c3d72a19ea982d4d8dab3e34a1f8f02105897f3ba6fcac2ce9502d35`;
 - committed manifest SHA-256 before/after:
   `4d6c65d91a3c67448b60ba2e499ceea14e7536cd69b12c873fae06f8a7afceb1`;
 - all 56 protected source hashes are byte-identical before/after;

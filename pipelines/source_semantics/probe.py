@@ -103,6 +103,7 @@ def evaluate_period_candidates(
         _evaluate_candidate(
             prepared_lower,
             prepared_supplied,
+            policy=policy,
             period_semantics=candidate,
             target_minutes=target_minutes,
             minimum_distinct_dates=policy.minimum_distinct_dates,
@@ -157,22 +158,42 @@ def _prepare_local(
     prepared = prepared.sort_values("timestamp", kind="stable").reset_index(drop=True)
     if prepared["timestamp"].duplicated().any():
         raise ValueError("candidate timestamps must be unique")
-    clock = prepared["timestamp"].dt.strftime("%H:%M:%S")
-    if policy.session_start <= policy.session_end:
-        inside = (clock >= policy.session_start) & (clock < policy.session_end)
+    return prepared
+
+
+def _candidate_session_frame(
+    frame: pd.DataFrame,
+    policy: SourceSemanticsPolicy,
+    period_semantics: PeriodSemantics,
+) -> pd.DataFrame:
+    """Apply session membership in the candidate's own label convention."""
+
+    clock = frame["timestamp"].dt.strftime("%H:%M:%S")
+    if period_semantics is PeriodSemantics.PERIOD_START:
+        lower = clock >= policy.session_start
+        upper = clock < policy.session_end
     else:
-        inside = (clock >= policy.session_start) | (clock < policy.session_end)
-    return prepared.loc[inside].reset_index(drop=True)
+        lower = clock > policy.session_start
+        upper = clock <= policy.session_end
+    inside = (
+        lower & upper
+        if policy.session_start <= policy.session_end
+        else lower | upper
+    )
+    return frame.loc[inside].reset_index(drop=True)
 
 
 def _evaluate_candidate(
     lower: pd.DataFrame,
     supplied: pd.DataFrame,
     *,
+    policy: SourceSemanticsPolicy,
     period_semantics: PeriodSemantics,
     target_minutes: int,
     minimum_distinct_dates: int,
 ) -> ReconciliationCandidateEvidence:
+    lower = _candidate_session_frame(lower, policy, period_semantics)
+    supplied = _candidate_session_frame(supplied, policy, period_semantics)
     if period_semantics is PeriodSemantics.PERIOD_START:
         label = closed = "left"
     else:

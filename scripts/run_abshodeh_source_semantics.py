@@ -71,6 +71,31 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _protected_input_paths(config_path: Path) -> frozenset[Path]:
+    semantics = load_policy(config_path)
+    manifest_path = _path(semantics.manifest_path).resolve()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    protected = {
+        config_path.resolve(),
+        manifest_path,
+        _path(semantics.historical_policy_path).resolve(),
+    }
+    protected.update(
+        _path(str(record["path"])).resolve()
+        for record in manifest.get("datasets", [])
+        if isinstance(record, dict) and isinstance(record.get("path"), str)
+    )
+    return frozenset(protected)
+
+
+def _validate_output_path(output: Path, config_path: Path) -> None:
+    if output.resolve() in _protected_input_paths(config_path):
+        raise ValueError(
+            "KAN-14 output must not overwrite a protected dataset, manifest, "
+            "or configuration input."
+        )
+
+
 def _record(
     manifest: Mapping[str, object],
     path: str,
@@ -291,6 +316,9 @@ def build_artifact() -> SourceSemanticsArtifact:
         feature_ineligible_event_count=(
             execution.eligible_output.feature_ineligibility_count
         ),
+        feature_ineligibility_records=(
+            execution.eligible_output.feature_ineligibility
+        ),
         feature_ineligibility_reasons=dict(
             sorted(feature_ineligibility_reasons.items())
         ),
@@ -320,9 +348,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     if config_path != _path(DEFAULT_CONFIG):
         print("Only the reviewed KAN-14 source-semantics config is supported.", file=sys.stderr)
         return 2
+    output = _path(args.output)
+    try:
+        _validate_output_path(output, config_path)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
     artifact = build_artifact()
     content = artifact.to_json_bytes()
-    output = _path(args.output)
     if args.check:
         if not output.is_file() or output.read_bytes() != content:
             print("KAN-14 source-semantics artifact is missing or stale.")

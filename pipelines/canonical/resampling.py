@@ -81,16 +81,31 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
     output_rows: list[dict[str, Any]] = []
     source_rows: list[tuple[int, ...]] = []
     incomplete_examples: list[str] = []
+    dropped_boundary_examples: list[str] = []
     incomplete_count = 0
     for label, group in _group_source(indexed, rule, policy):
         if group.empty:
             continue
         source_group = tuple(int(row) for row in group["_source_row"].tolist())
         is_incomplete = len(group) != expected_count
+        is_partial_coverage_boundary = (
+            not output_rows
+            and not dropped_boundary_examples
+            and policy.coverage_boundary_policy
+            is CoverageBoundaryPolicy.DROP_PARTIAL_FIRST
+            and policy.source_period_semantics.value == "PERIOD_START"
+            and pd.Timestamp(indexed.index[0]) > pd.Timestamp(label)
+        )
         if is_incomplete:
             incomplete_count += 1
             if len(incomplete_examples) < 10:
                 incomplete_examples.append(f"{pd.Timestamp(label).isoformat()}:{len(group)}/{expected_count}")
+            if is_partial_coverage_boundary:
+                dropped_boundary_examples.append(
+                    f"{pd.Timestamp(label).isoformat()}:"
+                    f"{pd.Timestamp(indexed.index[0]).isoformat()}"
+                )
+                continue
             if policy.incomplete_bin_policy is IncompleteBinPolicy.REJECT:
                 raise ResamplingError(
                     f"incomplete target bin at {pd.Timestamp(label).isoformat()}: "
@@ -110,22 +125,6 @@ def resample_bars(frame: pd.DataFrame, policy: ResamplingPolicy) -> ResamplingRe
             }
         )
         source_rows.append(source_group)
-
-    dropped_boundary_examples: list[str] = []
-    if (
-        output_rows
-        and policy.coverage_boundary_policy
-        is CoverageBoundaryPolicy.DROP_PARTIAL_FIRST
-        and policy.source_period_semantics.value == "PERIOD_START"
-    ):
-        first_label = pd.Timestamp(output_rows[0]["timestamp"])
-        first_source = pd.Timestamp(indexed.index[0])
-        if first_source > first_label:
-            dropped_boundary_examples.append(
-                f"{first_label.isoformat()}:{first_source.isoformat()}"
-            )
-            del output_rows[0]
-            del source_rows[0]
 
     output = pd.DataFrame(output_rows, columns=CANONICAL_COLUMNS)
     if output.empty:

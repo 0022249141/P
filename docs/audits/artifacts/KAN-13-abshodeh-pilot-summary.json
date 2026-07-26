@@ -129,14 +129,15 @@
     "event_timeframe": "M5",
     "feature_policy_version": "asof-features-v1",
     "label_policy_version": "abshodeh-level-outcome-v1",
-    "policy_sha256": "689c5dbc1b2271ef6d854f26e3d5d93e29a8faaf8e6d839068febbf2d63a90a0",
+    "policy_sha256": "69c53e0f25b4034c991bbe12bed187c78490199f1b1a40fca3c3ef4e6447bb40",
     "reconciliation_path": "data_clean/abshodeNaghdi-5.csv",
     "session": "09:00:00-22:00:00",
     "session_policy_version": "abshodeh-research-session-v1",
     "source_timeframe": "M1",
+    "timestamp_period_evidence": "HYPOTHESIS",
     "timestamp_period_semantics": "PERIOD_START",
     "timezone": "Asia/Tehran",
-    "timezone_period_evidence": "HYPOTHESIS"
+    "timezone_evidence": "HYPOTHESIS"
   },
   "row_count": 50000,
   "schema_version": "1.0.0",

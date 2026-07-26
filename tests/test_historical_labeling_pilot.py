@@ -154,7 +154,8 @@ def test_requested_hypothesis_is_audited_but_does_not_promote_gates(monkeypatch)
     assert requested["session_policy_version"] == "abshodeh-research-session-v1"
     assert requested["timezone"] == "Asia/Tehran"
     assert requested["timestamp_period_semantics"] == "PERIOD_START"
-    assert requested["timezone_period_evidence"] == "HYPOTHESIS"
+    assert requested["timezone_evidence"] == "HYPOTHESIS"
+    assert requested["timestamp_period_evidence"] == "HYPOTHESIS"
 
 
 def test_g5_not_evaluated_blocks_analytical_extraction(monkeypatch) -> None:
@@ -234,7 +235,7 @@ def test_synthetic_g0_g5_pass_executes_deterministic_end_to_end_extraction() -> 
     assert second.eligible_output is not None
     assert first.eligible_output.to_json_bytes() == second.eligible_output.to_json_bytes()
     result = first.eligible_output
-    assert result.schema_version == "1.1.0"
+    assert result.schema_version == "1.2.0"
     assert result.feature_ineligibility_count == 0
     assert result.feature_ineligibility == ()
     assert result.event_count > 0

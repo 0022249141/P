@@ -3,7 +3,7 @@
   "eligible_extraction": {
     "censoring_count": 0,
     "event_count": 2,
-    "extraction_sha256": "bea387a2a0613dccefa17c746ec5791d97a2fcd08ae1c40b7391e42b6cc590cd",
+    "extraction_sha256": "eb2962581d7cc4f0058f70381c39b78c3cbf8af58a596ad6c160f2027c2f3ee8",
     "feature_count": 2,
     "gate_statuses": [
       "G0_PROVENANCE:PASS",
@@ -235,7 +235,7 @@
     "No probability, model, entry, invalidation, target, or trading decision is emitted."
   ],
   "policy_bundle_version": "abshodeh-historical-labeling-v1",
-  "policy_sha256": "689c5dbc1b2271ef6d854f26e3d5d93e29a8faaf8e6d839068febbf2d63a90a0",
+  "policy_sha256": "69c53e0f25b4034c991bbe12bed187c78490199f1b1a40fca3c3ef4e6447bb40",
   "schema_evidence": [
     {
       "contract_name": "MarketEventIdentity",
@@ -243,7 +243,7 @@
     },
     {
       "contract_name": "AsOfFeatureSnapshot",
-      "json_schema_sha256": "b440e6ee4058cef2bf9c3b65b89039bb4389bd1e2c227ca4036d60c2ab79ec11"
+      "json_schema_sha256": "109f9101a7636276c21c0819cc86d87bcc0af83d0f90194bbd73687406b56c77"
     },
     {
       "contract_name": "HistoricalOutcomeLabel",
@@ -259,7 +259,7 @@
     },
     {
       "contract_name": "HistoricalExtractionResult",
-      "json_schema_sha256": "6e774d74664b930165fbc46ab1708a01affeadec8e03b11734afaaa28a7d0843"
+      "json_schema_sha256": "d95b168bfeeab91b0e44adfb4c7e73822ce084e342f240e4876b30edc632993e"
     },
     {
       "contract_name": "LabelingEvidence",

@@ -20,6 +20,7 @@ from pipelines.canonical.contracts import (
     SessionEndConvention,
     VolumeAggregation,
 )
+from pipelines.historical_labeling.contracts import FeatureIneligibilityRecord
 
 
 SCHEMA_VERSION = "1.0.0"
@@ -241,6 +242,7 @@ class SourceSemanticsArtifact(FrozenContract):
     generated_m5_count: int = Field(ge=0)
     native_m5_overlap_count: int = Field(ge=0)
     feature_ineligible_event_count: int = Field(ge=0)
+    feature_ineligibility_records: tuple[FeatureIneligibilityRecord, ...]
     feature_ineligibility_reasons: dict[str, int]
     censored_label_count: int = Field(ge=0)
     label_outcome_counts: dict[str, int]
@@ -274,6 +276,12 @@ class SourceSemanticsArtifact(FrozenContract):
         ]
         if len(promoted) != 1 or promoted[0].period_semantics is not PeriodSemantics.PERIOD_START:
             raise ValueError("exactly one PERIOD_START candidate must be promoted")
+        if self.feature_ineligible_event_count != len(
+            self.feature_ineligibility_records
+        ):
+            raise ValueError(
+                "feature-ineligible event count must match retained identity records"
+            )
         return self
 
 

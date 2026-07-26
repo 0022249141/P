@@ -4,6 +4,7 @@ import copy
 from pathlib import Path
 
 import pandas as pd
+import pytest
 
 from core.dataset_manifest import MANIFEST_SCHEMA_VERSION, PARSER_SCHEMA_VERSION, RECORD_KEYS
 from pipelines.canonical import (
@@ -22,6 +23,11 @@ from pipelines.source_semantics import (
     evaluate_period_candidates,
     load_policy,
 )
+from pipelines.source_semantics.probe import (
+    _candidate_session_frame,
+    _prepare_local,
+)
+from scripts import run_abshodeh_source_semantics as runner
 from scripts.run_abshodeh_source_semantics import main
 
 
@@ -119,7 +125,15 @@ def test_reviewed_policy_and_historical_v2_are_explicit() -> None:
     assert semantics.period_semantics is PeriodSemantics.PERIOD_START
     assert semantics.session_start == "09:00:00"
     assert semantics.session_end == "22:00:00"
-    assert historical.session.evidence_status is HistoricalEvidenceStatus.DERIVED
+    assert historical.session.evidence_status is None
+    assert (
+        historical.session.timezone_evidence_status
+        is HistoricalEvidenceStatus.DECLARED
+    )
+    assert (
+        historical.session.period_semantics_evidence_status
+        is HistoricalEvidenceStatus.DERIVED
+    )
 
 
 def test_period_start_is_uniquely_promoted_on_non_adjacent_dates() -> None:
@@ -151,6 +165,42 @@ def test_period_start_is_uniquely_promoted_on_non_adjacent_dates() -> None:
     assert start.distinct_date_count == 3
     assert end.disposition is CandidateDisposition.REJECTED
     assert end.exact_ohlcv_count < end.common_count
+
+
+def test_candidate_session_membership_respects_each_timestamp_convention() -> None:
+    prepared = _prepare_local(
+        _bars(
+            [
+                "2026-01-03 09:00:00",
+                "2026-01-03 09:01:00",
+                "2026-01-03 21:59:00",
+                "2026-01-03 22:00:00",
+            ]
+        ),
+        _policy(),
+    )
+
+    period_start = _candidate_session_frame(
+        prepared,
+        _policy(),
+        PeriodSemantics.PERIOD_START,
+    )
+    period_end = _candidate_session_frame(
+        prepared,
+        _policy(),
+        PeriodSemantics.PERIOD_END,
+    )
+
+    assert period_start["timestamp"].dt.strftime("%H:%M").tolist() == [
+        "09:00",
+        "09:01",
+        "21:59",
+    ]
+    assert period_end["timestamp"].dt.strftime("%H:%M").tolist() == [
+        "09:01",
+        "21:59",
+        "22:00",
+    ]
 
 
 def test_session_partition_retains_canonical_rows_and_excludes_22_00() -> None:
@@ -216,6 +266,29 @@ def test_sparse_session_resampling_drops_only_global_partial_first_bin() -> None
 def test_full_corpus_command_requires_explicit_research(capsys) -> None:
     assert main([]) == 2
     assert "requires explicit --research" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize(
+    "protected_output",
+    (
+        "/".join(("data" + "_clean", "abshodeNaghdi-1.csv")),
+        "data/manifests/committed_datasets.json",
+        "configs/research/abshodeh-source-semantics-v1.json",
+        "configs/research/abshodeh-historical-labeling-v2.json",
+    ),
+)
+def test_runner_rejects_output_aliases_to_protected_inputs_before_writing(
+    protected_output: str,
+    capsys,
+    monkeypatch,
+) -> None:
+    def forbidden_build():
+        raise AssertionError("artifact construction must not start")
+
+    monkeypatch.setattr(runner, "build_artifact", forbidden_build)
+
+    assert runner.main(["--research", "--output", protected_output]) == 2
+    assert "must not overwrite" in capsys.readouterr().err
 
 
 def test_policy_model_is_immutable() -> None:

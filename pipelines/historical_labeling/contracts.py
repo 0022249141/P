@@ -14,12 +14,13 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 
 SCHEMA_VERSION = "1.0.0"
-EXTRACTION_SCHEMA_VERSION = "1.1.0"
+EXTRACTION_SCHEMA_VERSION = "1.2.0"
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 class EvidenceStatus(str, Enum):
     OBSERVED = "OBSERVED"
+    DECLARED = "DECLARED"
     DERIVED = "DERIVED"
     HYPOTHESIS = "HYPOTHESIS"
     UNKNOWN = "UNKNOWN"
@@ -462,9 +463,18 @@ class GateAudit(FrozenContract):
 
 class FeatureIneligibilityRecord(FrozenContract):
     event_id: str = Field(pattern=r"^evt_[0-9a-f]{64}$")
+    event: MarketEventIdentity
     feature_policy_version: str = Field(min_length=1)
     reason_code: str = Field(min_length=1)
     detail: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_event_identity(self) -> "FeatureIneligibilityRecord":
+        if self.event_id != self.event.event_id:
+            raise ValueError(
+                "feature-ineligibility record must retain the rejected event identity"
+            )
+        return self
 
 
 class HistoricalExtractionResult(FrozenContract):
@@ -535,6 +545,12 @@ class HistoricalExtractionResult(FrozenContract):
         }
         if len(ineligible_ids) != len(self.feature_ineligibility):
             raise ValueError("feature-ineligible event records must be unique")
+        if ineligible_ids != {
+            record.event.event_id for record in self.feature_ineligibility
+        }:
+            raise ValueError(
+                "feature-ineligible event records must retain matching identities"
+            )
         if event_ids & ineligible_ids:
             raise ValueError(
                 "eligible and feature-ineligible event identities must be disjoint"

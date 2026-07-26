@@ -54,7 +54,16 @@ def test_real_abshodeh_semantics_and_pilot_are_reproducible(tmp_path: Path) -> N
     assert sum(payload["feature_ineligibility_reasons"].values()) == (
         payload["feature_ineligible_event_count"]
     )
-    assert payload["censored_label_count"] == 74
+    assert len(payload["feature_ineligibility_records"]) == (
+        payload["feature_ineligible_event_count"]
+    )
+    assert all(
+        record["event_id"] == record["event"]["event_id"]
+        and record["event"]["level_origin_timestamp"]
+        and record["event"]["confirmation_or_availability_timestamp"]
+        for record in payload["feature_ineligibility_records"]
+    )
+    assert payload["censored_label_count"] == 69
     assert sum(payload["label_outcome_counts"].values()) == 451
     assert (
         payload["manifest_sha256_before"]

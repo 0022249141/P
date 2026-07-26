@@ -7,6 +7,7 @@ import pytest
 from pipelines.canonical import (
     BoundaryConvention,
     CalendarBehavior,
+    CoverageBoundaryPolicy,
     GateStatus,
     IncompleteBinPolicy,
     PeriodSemantics,
@@ -41,6 +42,7 @@ def _policy(
     period: PeriodSemantics = PeriodSemantics.PERIOD_START,
     label: BoundaryConvention | None = None,
     closed: BoundaryConvention | None = None,
+    coverage: CoverageBoundaryPolicy = CoverageBoundaryPolicy.KEEP,
 ) -> ResamplingPolicy:
     default_boundary = (
         BoundaryConvention.LEFT
@@ -58,6 +60,7 @@ def _policy(
         timezone="UTC",
         calendar_behavior=CalendarBehavior.CONTINUOUS,
         calendar_version="continuous-utc-v1",
+        coverage_boundary_policy=coverage,
         incomplete_bin_policy=incomplete,
         volume_aggregation=VolumeAggregation.SUM,
     )
@@ -152,6 +155,32 @@ def test_incomplete_target_bin_reject_drop_and_keep_are_explicit() -> None:
     assert dropped.incomplete_bin_count == 1
     assert len(kept.frame) == 2
     assert kept.incomplete_bin_count == 1
+
+
+def test_partial_coverage_boundary_is_dropped_before_later_incomplete_rejection() -> None:
+    policy = _policy(
+        "M5",
+        incomplete=IncompleteBinPolicy.REJECT,
+        coverage=CoverageBoundaryPolicy.DROP_PARTIAL_FIRST,
+    )
+
+    accepted = resample_bars(
+        _m1_bars(8, start="2024-01-01T00:02:00Z"),
+        policy,
+    )
+
+    assert accepted.frame["timestamp"].tolist() == [
+        pd.Timestamp("2024-01-01T00:05:00Z")
+    ]
+    assert accepted.incomplete_bin_count == 1
+    assert accepted.dropped_coverage_boundary_bin_count == 1
+    assert accepted.source_rows == (tuple(range(3, 8)),)
+
+    with pytest.raises(ResamplingError, match="2024-01-01T00:10:00"):
+        resample_bars(
+            _m1_bars(9, start="2024-01-01T00:02:00Z"),
+            policy,
+        )
 
 
 def test_empty_source_and_zero_output_after_drop_are_rejected() -> None:

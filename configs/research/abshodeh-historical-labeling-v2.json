@@ -51,7 +51,6 @@
   },
   "session": {
     "allow_cross_session_outcomes": false,
-    "evidence_status": "DERIVED",
     "holiday_calendar_status": "UNKNOWN",
     "neutral_buckets": [
       "09:00-12:00",
@@ -63,6 +62,8 @@
     "session_end": "22:00:00",
     "session_start": "09:00:00",
     "timestamp_period_semantics": "PERIOD_START",
-    "timezone": "Asia/Tehran"
+    "timezone": "Asia/Tehran",
+    "timezone_evidence_status": "DECLARED",
+    "period_semantics_evidence_status": "DERIVED"
   }
 }

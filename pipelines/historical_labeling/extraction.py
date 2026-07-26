@@ -83,6 +83,7 @@ def extract_eligible_historical(
             feature_ineligibility.append(
                 FeatureIneligibilityRecord(
                     event_id=event.event_id,
+                    event=event,
                     feature_policy_version=policy.features.policy_version,
                     reason_code=_EXPECTED_FEATURE_INELIGIBILITY[detail],
                     detail=detail,

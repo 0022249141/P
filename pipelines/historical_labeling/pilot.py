@@ -217,8 +217,11 @@ def run_gated_pilot(
         "session_policy_version": policy.session.policy_version,
         "source_timeframe": policy.dataset.source_timeframe,
         "timestamp_period_semantics": policy.session.timestamp_period_semantics,
+        "timestamp_period_evidence": (
+            policy.session.period_semantics_evidence_status.value
+        ),
         "timezone": policy.session.timezone,
-        "timezone_period_evidence": policy.session.evidence_status.value,
+        "timezone_evidence": policy.session.timezone_evidence_status.value,
     }
     if status is PilotStatus.BLOCKED_BY_SOURCE_SEMANTICS:
         unresolved = (

@@ -36,7 +36,7 @@ explicit platform-setting evidence.
 
 | Evidence | Dates | PERIOD_START | PERIOD_END |
 |---|---:|---:|---:|
-| Protected M1 → native M5 | 89 | 12,317/12,317 exact OHLCV | 194/11,907 exact OHLCV |
+| Protected M1 → native M5 | 89 | 12,317/12,317 exact OHLCV | 192/11,923 exact OHLCV |
 | External M5 → native M15 | 88 | 4,287/4,287 exact OHLC; 4,283 exact OHLCV | 25/4,257 exact OHLC; 9 exact OHLCV |
 
 The four external start-label mismatches are volume-only differences of 1-2 units.
@@ -107,7 +107,13 @@ The guarded KAN-13 extraction is `ELIGIBLE` and emits:
 - 451 eligible events;
 - 451 past-only feature snapshots;
 - 451 bounded historical labels;
-- 74 censored labels where outcome evidence is incomplete or ambiguous.
+- 69 censored labels where outcome evidence is incomplete or ambiguous.
+
+The review-corrected run uses each timestamp candidate's own session membership and
+keeps the valid `21:55` M5 period-start bar when it becomes available at `22:00`.
+Five labels that were previously censored at the boundary are therefore evaluated from
+valid in-session evidence: one false-break/re-entry, three full-range reversals, and one
+no-resolution horizon.
 
 Two additional source events are explicitly recorded as feature-ineligible: one lacks
 sufficient past-only history and one has a non-positive range feature. They are not

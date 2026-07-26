@@ -8,6 +8,7 @@ from pydantic import ValidationError
 
 from pipelines.historical_labeling.contracts import (
     AsOfFeatureSnapshot,
+    FeatureIneligibilityRecord,
     HistoricalOutcomeLabel,
     MarketEventIdentity,
     OutcomeClass,
@@ -36,6 +37,11 @@ def test_approved_policy_values_are_externalized_and_exact() -> None:
     assert configured.session.timezone == "Asia/Tehran"
     assert configured.session.timestamp_period_semantics == "PERIOD_START"
     assert configured.session.evidence_status.value == "HYPOTHESIS"
+    assert configured.session.timezone_evidence_status.value == "HYPOTHESIS"
+    assert (
+        configured.session.period_semantics_evidence_status.value
+        == "HYPOTHESIS"
+    )
     assert configured.features.event_bar_seconds == 300
     assert configured.features.htf_bar_seconds == 3600
 
@@ -94,6 +100,24 @@ def test_feature_and_label_contracts_are_structurally_separate() -> None:
     assert "approach_velocity_atr" not in label_fields
     assert "prior_touch_count" not in label_fields
     assert feature_fields & label_fields == {"event_id", "schema_version"}
+
+
+def test_feature_ineligibility_retains_complete_rejected_event_identity() -> None:
+    event = synthetic_event(policy(), policy_direction())
+
+    record = FeatureIneligibilityRecord(
+        event_id=event.event_id,
+        event=event,
+        feature_policy_version=policy().features.policy_version,
+        reason_code="INSUFFICIENT_PAST_ONLY_HISTORY",
+        detail="insufficient past-only history for feature policy",
+    )
+
+    assert record.event.level_origin_timestamp == event.level_origin_timestamp
+    assert (
+        record.event.confirmation_or_availability_timestamp
+        == event.confirmation_or_availability_timestamp
+    )
 
 
 def test_label_contract_rejects_inconsistent_outcome_state() -> None:

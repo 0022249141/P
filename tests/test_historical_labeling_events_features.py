@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -8,13 +9,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from pipelines.historical_labeling.contracts import EventType
+from pipelines.historical_labeling.contracts import EventDirection, EventType
 from pipelines.historical_labeling.event_source import (
     EventSourceEligibilityError,
     generate_confirmed_swing_events,
     require_kan11_eligible,
 )
 from pipelines.historical_labeling.features import build_asof_feature_snapshot
+from pipelines.historical_labeling.fixtures import synthetic_event
 from tests.historical_labeling_helpers import REPOSITORY_ROOT, policy
 
 
@@ -205,6 +207,29 @@ def test_htf_location_uses_only_last_available_completed_bar() -> None:
 
     assert snapshot.htf_location_status.value == "DERIVED"
     assert snapshot.htf_location == pytest.approx(0.75)
+
+
+def test_feature_bucket_uses_period_start_for_session_end_availability() -> None:
+    frame = _source_frame()
+    frame["timestamp"] = pd.date_range(
+        "2025-01-06T10:10:00Z",
+        periods=len(frame),
+        freq="5min",
+    )
+    event = synthetic_event(
+        policy(),
+        EventDirection.ABOVE,
+        cutoff=datetime(2025, 1, 6, 18, 30, tzinfo=timezone.utc),
+    )
+
+    snapshot = build_asof_feature_snapshot(
+        frame,
+        event,
+        feature_policy=policy().features,
+        session_policy=policy().session,
+    )
+
+    assert snapshot.neutral_session_bucket == "18:00-22:00"
 
 
 def test_feature_source_contains_no_forbidden_future_operations() -> None:

@@ -2,7 +2,7 @@
   "analytical_source_row_count": 49962,
   "artifact_id": "KAN-14-abshodeh-source-semantics",
   "canonical_source_row_count": 50000,
-  "censored_label_count": 74,
+  "censored_label_count": 69,
   "excluded_out_of_session_examples": [
     "2026-02-19 22:00:00",
     "2026-02-20 22:00:00",
@@ -38,6 +38,72 @@
     "INSUFFICIENT_PAST_ONLY_HISTORY": 1,
     "NON_POSITIVE_RANGE_FEATURE": 1
   },
+  "feature_ineligibility_records": [
+    {
+      "detail": "insufficient past-only history for feature policy",
+      "event": {
+        "confirmation_or_availability_timestamp": "2026-02-18T07:45:00Z",
+        "direction": "ABOVE",
+        "event_id": "evt_e05b9e2527f9c2fab958469e0e72d14ab5f40617f1658b0915a0a8321bb896ae",
+        "event_policy_version": "layer2-confirmed-swings-v1",
+        "event_type": "SWING_HIGH",
+        "first_feature_eligible_timestamp": "2026-02-18T07:45:00Z",
+        "implementation_identifier": "layer2-structure",
+        "level_origin_timestamp": "2026-02-18T07:30:00Z",
+        "level_price": "84350000",
+        "level_type": "SWING_HIGH",
+        "market": "ABSHODEH",
+        "observation_timestamp": "2026-02-18T07:30:00Z",
+        "schema_version": "1.0.0",
+        "source_dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+        "source_parameter_sha256": "b1cfdef3a36f05d978998d860870d7cc1b19d36d4f9be4cf66065321d5197e38",
+        "source_parameters": [
+          "event_bar_seconds=300",
+          "lookback=2",
+          "min_strength=0.6"
+        ],
+        "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+        "source_timeframe": "M1",
+        "symbol": "abshodeNaghdi",
+        "timeframe": "M5"
+      },
+      "event_id": "evt_e05b9e2527f9c2fab958469e0e72d14ab5f40617f1658b0915a0a8321bb896ae",
+      "feature_policy_version": "asof-features-v1",
+      "reason_code": "INSUFFICIENT_PAST_ONLY_HISTORY"
+    },
+    {
+      "detail": "range features require positive bar ranges",
+      "event": {
+        "confirmation_or_availability_timestamp": "2026-03-22T08:50:00Z",
+        "direction": "ABOVE",
+        "event_id": "evt_41ef751bbe7427bb7a857129c0a030db7c17be40198997083f2c33c0af346fde",
+        "event_policy_version": "layer2-confirmed-swings-v1",
+        "event_type": "SWING_HIGH",
+        "first_feature_eligible_timestamp": "2026-03-22T08:50:00Z",
+        "implementation_identifier": "layer2-structure",
+        "level_origin_timestamp": "2026-03-22T08:35:00Z",
+        "level_price": "77150000",
+        "level_type": "SWING_HIGH",
+        "market": "ABSHODEH",
+        "observation_timestamp": "2026-03-22T08:35:00Z",
+        "schema_version": "1.0.0",
+        "source_dataset_id": "abshode-naghdi-clean-m1-manifest-v1",
+        "source_parameter_sha256": "b1cfdef3a36f05d978998d860870d7cc1b19d36d4f9be4cf66065321d5197e38",
+        "source_parameters": [
+          "event_bar_seconds=300",
+          "lookback=2",
+          "min_strength=0.6"
+        ],
+        "source_sha256": "73da57fbc4be42f6243b367a15d94285b511e9357428af011bc5c5e00bed1ddc",
+        "source_timeframe": "M1",
+        "symbol": "abshodeNaghdi",
+        "timeframe": "M5"
+      },
+      "event_id": "evt_41ef751bbe7427bb7a857129c0a030db7c17be40198997083f2c33c0af346fde",
+      "feature_policy_version": "asof-features-v1",
+      "reason_code": "NON_POSITIVE_RANGE_FEATURE"
+    }
+  ],
   "feature_ineligible_event_count": 2,
   "g0_g5_status": {
     "G0_PROVENANCE": "PASS",
@@ -51,11 +117,11 @@
   "jira_key": "KAN-14",
   "label_outcome_counts": {
     "ACCEPTANCE_THEN_EXPANSION": 7,
-    "CENSORED": 74,
+    "CENSORED": 69,
     "DIRECT_CONTINUATION": 11,
-    "FALSE_BREAK_REENTRY": 16,
-    "FULL_RANGE_REVERSAL": 328,
-    "NO_RESOLUTION": 11,
+    "FALSE_BREAK_REENTRY": 17,
+    "FULL_RANGE_REVERSAL": 331,
+    "NO_RESOLUTION": 12,
     "SWEEP_PULLBACK_CONTINUATION": 4
   },
   "limitations": [
@@ -799,7 +865,7 @@
       "volume_only_mismatch_count": 0
     },
     {
-      "common_count": 11907,
+      "common_count": 11923,
       "daily_evidence": [
         {
           "common_count": 139,
@@ -810,28 +876,28 @@
           "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 4,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-02-19",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 151,
+          "common_count": 152,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-02-20",
           "supplied_only_count": 1
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-02-21",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 154,
@@ -842,20 +908,20 @@
           "supplied_only_count": 1
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-02-23",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 154,
+          "common_count": 155,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-02-24",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 155,
@@ -863,13 +929,13 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
           "session_date": "2026-02-25",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 156,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-02-26",
           "supplied_only_count": 0
         },
@@ -887,12 +953,12 @@
           "exact_ohlcv_count": 1,
           "generated_only_count": 5,
           "session_date": "2026-02-28",
-          "supplied_only_count": 7
+          "supplied_only_count": 6
         },
         {
-          "common_count": 151,
-          "exact_ohlc_count": 3,
-          "exact_ohlcv_count": 1,
+          "common_count": 150,
+          "exact_ohlc_count": 2,
+          "exact_ohlcv_count": 0,
           "generated_only_count": 3,
           "session_date": "2026-03-01",
           "supplied_only_count": 2
@@ -903,29 +969,29 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 7,
           "session_date": "2026-03-02",
-          "supplied_only_count": 6
+          "supplied_only_count": 5
         },
         {
-          "common_count": 131,
+          "common_count": 132,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 7,
+          "generated_only_count": 6,
           "session_date": "2026-03-03",
           "supplied_only_count": 5
         },
         {
-          "common_count": 146,
+          "common_count": 147,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 1,
-          "generated_only_count": 6,
+          "generated_only_count": 5,
           "session_date": "2026-03-04",
-          "supplied_only_count": 4
+          "supplied_only_count": 3
         },
         {
           "common_count": 138,
           "exact_ohlc_count": 6,
           "exact_ohlcv_count": 2,
-          "generated_only_count": 9,
+          "generated_only_count": 8,
           "session_date": "2026-03-05",
           "supplied_only_count": 8
         },
@@ -938,10 +1004,10 @@
           "supplied_only_count": 10
         },
         {
-          "common_count": 133,
+          "common_count": 134,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 5,
+          "generated_only_count": 4,
           "session_date": "2026-03-07",
           "supplied_only_count": 3
         },
@@ -951,7 +1017,7 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 8,
           "session_date": "2026-03-08",
-          "supplied_only_count": 6
+          "supplied_only_count": 5
         },
         {
           "common_count": 119,
@@ -962,9 +1028,9 @@
           "supplied_only_count": 14
         },
         {
-          "common_count": 82,
-          "exact_ohlc_count": 4,
-          "exact_ohlcv_count": 3,
+          "common_count": 81,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 2,
           "generated_only_count": 19,
           "session_date": "2026-03-10",
           "supplied_only_count": 18
@@ -1071,7 +1137,7 @@
           "exact_ohlcv_count": 2,
           "generated_only_count": 5,
           "session_date": "2026-03-24",
-          "supplied_only_count": 8
+          "supplied_only_count": 7
         },
         {
           "common_count": 136,
@@ -1098,7 +1164,7 @@
           "supplied_only_count": 16
         },
         {
-          "common_count": 128,
+          "common_count": 127,
           "exact_ohlc_count": 5,
           "exact_ohlcv_count": 3,
           "generated_only_count": 11,
@@ -1125,7 +1191,7 @@
           "common_count": 119,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 1,
-          "generated_only_count": 14,
+          "generated_only_count": 13,
           "session_date": "2026-03-31",
           "supplied_only_count": 14
         },
@@ -1175,7 +1241,7 @@
           "exact_ohlcv_count": 2,
           "generated_only_count": 5,
           "session_date": "2026-04-06",
-          "supplied_only_count": 7
+          "supplied_only_count": 6
         },
         {
           "common_count": 152,
@@ -1183,7 +1249,7 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 2,
           "session_date": "2026-04-07",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
           "common_count": 152,
@@ -1199,7 +1265,7 @@
           "exact_ohlcv_count": 1,
           "generated_only_count": 2,
           "session_date": "2026-04-09",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
           "common_count": 111,
@@ -1210,12 +1276,12 @@
           "supplied_only_count": 5
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-11",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 155,
@@ -1223,15 +1289,15 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
           "session_date": "2026-04-12",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 154,
+          "common_count": 155,
           "exact_ohlc_count": 6,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-13",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
           "common_count": 151,
@@ -1247,37 +1313,37 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
           "session_date": "2026-04-15",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
-          "common_count": 153,
+          "common_count": 154,
           "exact_ohlc_count": 5,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-04-16",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
-          "common_count": 149,
+          "common_count": 150,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-04-17",
           "supplied_only_count": 1
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-18",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 154,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-04-19",
           "supplied_only_count": 1
         },
@@ -1285,7 +1351,7 @@
           "common_count": 155,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-20",
           "supplied_only_count": 1
         },
@@ -1293,7 +1359,7 @@
           "common_count": 156,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-21",
           "supplied_only_count": 0
         },
@@ -1303,13 +1369,13 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 2,
           "session_date": "2026-04-22",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
           "common_count": 155,
-          "exact_ohlc_count": 10,
+          "exact_ohlc_count": 9,
           "exact_ohlcv_count": 1,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-23",
           "supplied_only_count": 1
         },
@@ -1322,18 +1388,18 @@
           "supplied_only_count": 3
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 5,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-04-25",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 155,
-          "exact_ohlc_count": 7,
+          "exact_ohlc_count": 8,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-04-26",
           "supplied_only_count": 0
         },
@@ -1343,7 +1409,7 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
           "session_date": "2026-04-27",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 155,
@@ -1351,10 +1417,10 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
           "session_date": "2026-04-28",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 154,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
@@ -1365,7 +1431,7 @@
           "common_count": 155,
           "exact_ohlc_count": 3,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 2,
+          "generated_only_count": 1,
           "session_date": "2026-04-30",
           "supplied_only_count": 0
         },
@@ -1378,31 +1444,31 @@
           "supplied_only_count": 1
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-02",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-03",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
           "common_count": 154,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-04",
           "supplied_only_count": 1
         },
         {
-          "common_count": 156,
+          "common_count": 155,
           "exact_ohlc_count": 0,
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
@@ -1410,7 +1476,7 @@
           "supplied_only_count": 0
         },
         {
-          "common_count": 156,
+          "common_count": 155,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
@@ -1423,31 +1489,31 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 2,
           "session_date": "2026-05-07",
+          "supplied_only_count": 0
+        },
+        {
+          "common_count": 145,
+          "exact_ohlc_count": 7,
+          "exact_ohlcv_count": 1,
+          "generated_only_count": 2,
+          "session_date": "2026-05-08",
           "supplied_only_count": 1
         },
         {
-          "common_count": 144,
-          "exact_ohlc_count": 7,
-          "exact_ohlcv_count": 1,
-          "generated_only_count": 3,
-          "session_date": "2026-05-08",
-          "supplied_only_count": 1
+          "common_count": 156,
+          "exact_ohlc_count": 3,
+          "exact_ohlcv_count": 0,
+          "generated_only_count": 0,
+          "session_date": "2026-05-09",
+          "supplied_only_count": 0
         },
         {
           "common_count": 155,
           "exact_ohlc_count": 3,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
-          "session_date": "2026-05-09",
-          "supplied_only_count": 1
-        },
-        {
-          "common_count": 154,
-          "exact_ohlc_count": 3,
-          "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-10",
-          "supplied_only_count": 2
+          "supplied_only_count": 1
         },
         {
           "common_count": 155,
@@ -1455,10 +1521,10 @@
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
           "session_date": "2026-05-11",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 154,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
           "generated_only_count": 2,
@@ -1466,15 +1532,15 @@
           "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 3,
           "exact_ohlcv_count": 2,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-13",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 154,
           "exact_ohlc_count": 6,
           "exact_ohlcv_count": 0,
           "generated_only_count": 1,
@@ -1482,49 +1548,49 @@
           "supplied_only_count": 1
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 2,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-15",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 1,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-16",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 3,
           "exact_ohlcv_count": 0,
-          "generated_only_count": 1,
+          "generated_only_count": 0,
           "session_date": "2026-05-17",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         },
         {
-          "common_count": 155,
+          "common_count": 156,
           "exact_ohlc_count": 3,
           "exact_ohlcv_count": 0,
           "generated_only_count": 0,
           "session_date": "2026-05-18",
-          "supplied_only_count": 1
+          "supplied_only_count": 0
         }
       ],
       "disposition": "REJECTED",
       "distinct_date_count": 89,
       "dropped_coverage_boundary_count": 0,
-      "exact_ohlc_count": 447,
-      "exact_ohlcv_count": 194,
-      "generated_count": 12336,
-      "generated_only_count": 429,
+      "exact_ohlc_count": 445,
+      "exact_ohlcv_count": 192,
+      "generated_count": 12319,
+      "generated_only_count": 396,
       "maximum_volume_absolute_difference": "320",
       "period_semantics": "PERIOD_END",
-      "supplied_count": 12317,
-      "supplied_only_count": 410,
+      "supplied_count": 12299,
+      "supplied_only_count": 376,
       "volume_only_mismatch_count": 253
     }
   ],
@@ -1658,14 +1724,15 @@
       "event_timeframe": "M5",
       "feature_policy_version": "asof-features-v1",
       "label_policy_version": "abshodeh-level-outcome-v1",
-      "policy_sha256": "d8afb01287436464bf9a7bee213f4815df9725762cd119c231f5e4df0d918c3b",
+      "policy_sha256": "29ae3c67b68c43785edc6be770edc3516e00828effd62d3ea3e6bebac65947c8",
       "reconciliation_path": "data_clean/abshodeNaghdi-5.csv",
       "session": "09:00:00-22:00:00",
       "session_policy_version": "abshodeh-research-session-v2",
       "source_timeframe": "M1",
+      "timestamp_period_evidence": "DERIVED",
       "timestamp_period_semantics": "PERIOD_START",
       "timezone": "Asia/Tehran",
-      "timezone_period_evidence": "DERIVED"
+      "timezone_evidence": "DECLARED"
     },
     "row_count": 50000,
     "schema_version": "1.0.0",
