@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0.0",
+  "policy_version": "abshodeh-behavioral-fingerprint-v1",
+  "descriptive_frequency_semantics": "DESCRIPTIVE_IN_SAMPLE_EMPIRICAL_FREQUENCY",
+  "quantile_method": "DECIMAL_LINEAR_TYPE7",
+  "dimensions": [
+    {
+      "dimension": "prior_touch_count",
+      "edges": [
+        "1",
+        "3"
+      ],
+      "unit": "COUNT",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    },
+    {
+      "dimension": "approach_velocity_atr",
+      "edges": [
+        "-1",
+        "0",
+        "1"
+      ],
+      "unit": "ATR",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    },
+    {
+      "dimension": "approach_overlap_ratio",
+      "edges": [
+        "0.33",
+        "0.66"
+      ],
+      "unit": "RATIO",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    },
+    {
+      "dimension": "range_expansion_ratio",
+      "edges": [
+        "0.80",
+        "1.20"
+      ],
+      "unit": "RATIO",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    },
+    {
+      "dimension": "body_ratio",
+      "edges": [
+        "0.33",
+        "0.66"
+      ],
+      "unit": "RATIO",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    },
+    {
+      "dimension": "level_age_seconds",
+      "edges": [
+        "3600",
+        "14400"
+      ],
+      "unit": "SECONDS",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    },
+    {
+      "dimension": "penetration_at_snapshot_atr",
+      "edges": [
+        "-0.10",
+        "0.10",
+        "0.50"
+      ],
+      "unit": "ATR",
+      "evidence_label": "DERIVED_AS_OF_FEATURE"
+    }
+  ],
+  "views": [
+    {
+      "view_id": "CORE",
+      "dimensions": [],
+      "description": "Event type, direction, and neutral Tehran session bucket."
+    },
+    {
+      "view_id": "TOUCH_CONTEXT",
+      "dimensions": [
+        "prior_touch_count"
+      ],
+      "description": "CORE plus past-only prior-touch count."
+    },
+    {
+      "view_id": "APPROACH_CONTEXT",
+      "dimensions": [
+        "approach_velocity_atr",
+        "approach_overlap_ratio"
+      ],
+      "description": "CORE plus direction-adjusted approach velocity and compression overlap."
+    },
+    {
+      "view_id": "ORIGIN_BAR_CONTEXT",
+      "dimensions": [
+        "range_expansion_ratio",
+        "body_ratio"
+      ],
+      "description": "CORE plus origin-bar expansion and body ratios."
+    },
+    {
+      "view_id": "LEVEL_AGE_CONTEXT",
+      "dimensions": [
+        "level_age_seconds"
+      ],
+      "description": "CORE plus the event level age known at eligibility."
+    },
+    {
+      "view_id": "SNAPSHOT_CONTEXT",
+      "dimensions": [
+        "penetration_at_snapshot_atr"
+      ],
+      "description": "CORE plus eligibility-time penetration through the level."
+    }
+  ],
+  "chronological_partitions": {
+    "strategy": "CONTIGUOUS_EQUAL_EVENT_COUNT",
+    "partition_count": 3
+  },
+  "support": {
+    "minimum_cell_events": 12,
+    "minimum_resolved_labels": 9,
+    "minimum_resolved_per_partition": 2,
+    "maximum_descriptive_frequency_range": "0.35"
+  },
+  "required_upstream_gates": [
+    "G0_PROVENANCE",
+    "G1_SCHEMA_PARSING",
+    "G2_TEMPORAL_INTEGRITY",
+    "G3_OHLC_NUMERIC",
+    "G4_CALENDAR_COVERAGE",
+    "G5_MTF_RECONCILIATION"
+  ],
+  "limitations": [
+    "All frequencies are descriptive in-sample empirical frequencies, not calibrated probabilities.",
+    "Chronological partition ranges are support diagnostics, not out-of-sample or purged validation.",
+    "Holiday and trading-day completeness remains UNKNOWN.",
+    "Sparse M1 intervals cannot always distinguish no-print periods from feed outages.",
+    "Volume meaning remains UNKNOWN.",
+    "HTF location, Herat, XAUUSD, regime, analog, execution, and live evidence are NOT_EVALUATED.",
+    "No bid/ask, spread, fill, slippage, news, order-flow, or institutional inventory evidence is available."
+  ]
+}
