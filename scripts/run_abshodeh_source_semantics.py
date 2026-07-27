@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from dataclasses import dataclass
 import hashlib
 import json
 import locale
@@ -35,6 +36,7 @@ from pipelines.canonical import (  # noqa: E402
 from pipelines.historical_labeling.contracts import (  # noqa: E402
     CalendarSemanticsEvidence,
     EligibilityEvidenceState,
+    HistoricalExtractionResult,
     PilotStatus,
 )
 from pipelines.historical_labeling.pilot import run_gated_pilot  # noqa: E402
@@ -59,6 +61,12 @@ DEFAULT_CONFIG = Path("configs/research/abshodeh-source-semantics-v1.json")
 DEFAULT_OUTPUT = Path(
     "docs/audits/artifacts/KAN-14-abshodeh-source-semantics.json"
 )
+
+
+@dataclass(frozen=True)
+class SourceSemanticsEvidenceBundle:
+    artifact: SourceSemanticsArtifact
+    extraction: HistoricalExtractionResult
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -269,12 +277,12 @@ def _require_g0_g4_pass(evaluation: object, label: str) -> None:
         raise ValueError(f"{label} G0-G4 did not pass: {failed}")
 
 
-def build_artifact(
+def build_evidence_bundle(
     *,
     cli_arguments: Sequence[str] = ("--research",),
     config_path: Path | None = None,
     output_path: Path | None = None,
-) -> SourceSemanticsArtifact:
+) -> SourceSemanticsEvidenceBundle:
     resolved_config = _path(DEFAULT_CONFIG) if config_path is None else config_path
     resolved_output = _path(DEFAULT_OUTPUT) if output_path is None else output_path
     semantics = load_policy(resolved_config)
@@ -412,7 +420,7 @@ def build_artifact(
         for gate in execution.summary.gate_audit
         if gate.gate_id.startswith(tuple(f"G{index}_" for index in range(6)))
     }
-    return SourceSemanticsArtifact(
+    artifact = SourceSemanticsArtifact(
         policy_version=semantics.policy_version,
         policy_sha256=policy_sha256(semantics),
         run_manifest=run_manifest,
@@ -481,6 +489,25 @@ def build_artifact(
         ),
         limitations=semantics.limitations,
     )
+    return SourceSemanticsEvidenceBundle(
+        artifact=artifact,
+        extraction=execution.eligible_output,
+    )
+
+
+def build_artifact(
+    *,
+    cli_arguments: Sequence[str] = ("--research",),
+    config_path: Path | None = None,
+    output_path: Path | None = None,
+) -> SourceSemanticsArtifact:
+    """Preserve the KAN-14 artifact API while exposing a typed KAN-15 handoff."""
+
+    return build_evidence_bundle(
+        cli_arguments=cli_arguments,
+        config_path=config_path,
+        output_path=output_path,
+    ).artifact
 
 
 def main(argv: Sequence[str] | None = None) -> int:

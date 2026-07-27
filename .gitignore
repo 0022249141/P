@@ -35,6 +35,7 @@ Thumbs.db
 output.txt
 all_output.txt
 /outputs/research/KAN-13/
+/outputs/research/KAN-15/
 
 # Root runtime and local inventory artifacts
 /live_prices.json
