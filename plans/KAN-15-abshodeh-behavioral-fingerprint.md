@@ -1,7 +1,9 @@
 # KAN-15 Abshodeh Behavioral Fingerprint
 
-Status: implementation and local verification complete on
-`KAN-15-abshodeh-behavioral-fingerprint`; publication to a Draft PR is pending.
+Status: implementation, local verification, and publication complete on
+`KAN-15-abshodeh-behavioral-fingerprint`. Draft PR #31 is open, mergeable, and
+unmerged; GitHub Actions run 120 passed. Automated Codex review was requested but
+did not run because the account review-usage limit was reached.
 The branch starts from the merged KAN-14 squash commit
 `1e4e921f91b23e467014b660b05dcd89230ee3e2`. No KAN-12 work, protected
 dataset edit, manifest edit, threshold optimization, probability model, or trading
@@ -296,6 +298,8 @@ Leave untouched:
 | 2026-07-27 | Real-corpus run produced 451 eligible events, 382 resolved labels, 69 censored labels, two unassigned feature-ineligible events, and 177 cells across six views. |
 | 2026-07-27 | Real classification: 54 cells `HEURISTIC_ONLY`, 123 cells `NOT_STATISTICALLY_ELIGIBLE`; G6 passed and G7-G9 remained not evaluated. |
 | 2026-07-27 | Full catalog remained ignored (about 1.9 MB); a bounded compact audit (about 24 KB) was generated with all 56 protected source hashes and manifest hash unchanged. |
+| 2026-07-27 | Published exact local tree to remote commit `c6685dcad1a91fca62ed1b2c3b10eaadbe2824b0` and opened Draft PR #31; branch was one commit ahead and zero behind `main`. |
+| 2026-07-27 | GitHub Actions `Python tests` run 120 passed. `@codex review` was accepted by the connector but the bot reported that the account code-review usage limit had been reached; no review threads were created. |
 
 ## 12. Completion Evidence
 
@@ -355,5 +359,14 @@ All 56 protected source hashes and the committed manifest hash are identical bef
 and after the real run. The approximately 1.9 MB full catalog is ignored and
 uncommitted; only the bounded approximately 24 KB audit is in scope for publication.
 
-Draft PR URL, CI result, review findings, and final disposition remain to be appended
-after publication. Merge remains blocked on explicit human approval.
+- Remote implementation commit:
+  `c6685dcad1a91fca62ed1b2c3b10eaadbe2824b0`.
+- Draft PR: [#31 KAN-15 Build Abshodeh Behavioral Fingerprint Engine](https://github.com/0022249141/P/pull/31).
+- GitHub Actions: `Python tests`, run 120, `success`.
+- PR state at publication: open, Draft, mergeable, 19 changed files, unmerged.
+- Automated Codex review: not executed because the account code-review usage limit was
+  reached; the bot recorded the blocker in the PR and created zero review threads.
+- Jira KAN-15 remains `In Progress` with the implementation/validation evidence and
+  Draft PR link recorded.
+
+Merge remains blocked on explicit human approval and review completion.
